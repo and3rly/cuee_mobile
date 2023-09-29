@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".controladores.MainActivity">
+
+    <ScrollView
+        android:id="@+id/scrollBody"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/relBot"
+        android:layout_below="@+id/relTop"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="01dp"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:id="@+id/relLogin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="45dp"
+                android:src="@drawable/logo" />
+
+            <RelativeLayout
+                android:id="@+id/relFrm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imageView2"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="50dp">
+
+                <TextView
+                    android:id="@+id/lblTitulo"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="0dp"
+                    android:background="@color/pink"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="Iniciar Sesión"
+                    android:textColor="#FFFFFF"
+                    android:textSize="17sp" />
+
+                <LinearLayout
+                    android:id="@+id/lyFrm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lblTitulo"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/lblRuta"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="Ruta:"
+                            android:textColor="#000000"
+                            android:textSize="17sp" />
+
+                        <EditText
+                            android:id="@+id/txtRuta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:inputType="text"
+                            android:textColor="#000000" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/lblUsuario"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="Usuario:"
+                            android:textColor="#000000"
+                            android:textSize="17sp" />
+
+                        <EditText
+                            android:id="@+id/txtUsuario"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:inputType="text"
+                            android:textColor="#000000" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/lblClave"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="Clave:"
+                            android:textColor="#000000"
+                            android:textSize="17sp" />
+
+                        <EditText
+                            android:id="@+id/txtClave"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:inputType="textPassword"
+                            android:textColor="#000000"/>
+
+                    </TableRow>
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lyFrm"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="25dp"
+                    android:backgroundTint="@color/blue_gray"
+                    android:text="Login"
+                    android:textColor="#FFFFFF"
+                    android:textSize="17sp" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/relTop"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/blue_gray"
+        android:gravity="top">
+
+        <TextView
+            android:id="@+id/lblTop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="CUEE"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relBot"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/blue_gray"
+        android:gravity="center_horizontal|center_vertical">
+
+        <TextView
+            android:id="@+id/lblVersion"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="Versión 1.0"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+</RelativeLayout>
