@@ -159,6 +159,96 @@ public class ScriptBD {
                     ");";
             db.execSQL(sql);
 
+            sql = "CREATE TABLE [PARAMETROS] (" +
+                    "idparametro INTEGER NOT NULL," +
+                    "parametro TEXT DEFAULT NULL," +
+                    "VALOR REAL DEFAULT NULL," +
+                    "PRIMARY KEY([idparametro])" +
+                    ");";
+            db.execSQL(sql);
+
+            sql = "CREATE TABLE [RUTA_LECTURA] (" +
+                    "IdRuta INTEGER NOT NULL," +
+                    "Nombre TEXT DEFAULT NULL," +
+                    "Activo TEXT DEFAULT NULL," +
+                    "IdTecnicoDef INTEGER DEFAULT NULL," +
+                    "PRIMARY KEY([IdRuta])" +
+                    ");";
+            db.execSQL(sql);
+
+            sql = "CREATE TABLE [RUTA_TECNICO] (" +
+                    "IdRutaTecnico INTEGER NOT NULL," +
+                    "IdTecnico INTEGER DEFAULT NULL," +
+                    "IdRuta INTEGER DEFAULT NULL," +
+                    "Activo INTEGER DEFAULT 0," +
+                    "Fecha_Agr TEXT DEFAULT NULL," +
+                    "User_Agr INTEGER DEFAULT NULL," +
+                    "Fecha_Mod TEXT DEFAULT NULL," +
+                    "User_Mod INTEGER DEFAULT NULL," +
+                    "PRIMARY KEY ([IdRutaTecnico])" +
+                    ");";
+            db.execSQL(sql);
+
+            sql = "CREATE TABLE [TECNICOS] (" +
+                    "IdTecnico INTEGER NOT NULL," +
+                    "Nombre TEXT DEFAULT NULL," +
+                    "Dpi TEXT DEFAULT NULL," +
+                    "Direccion TEXT DEFAULT NULL," +
+                    "Activo INTEGER DEFAULT 0," +
+                    "Codigo TEXT DEFAULT NULL," +
+                    "Clave TEXT DEFAULT NULL," +
+                    "PRIMARY KEY ([IdTecnico])" +
+                    ");";
+            db.execSQL(sql);
+
+            sql = "CREATE TABLE [USUARIOS_POR_RUTA] (" +
+                    "IdRuta INTEGER NOT NULL," +
+                    "IdItinerario INTEGER NOT NULL," +
+                    "IdUsuarioServicio INTEGER NOT NULL," +
+                    "NombreItinerario TEXT DEFAULT NULL," +
+                    "Orden INTEGER DEFAULT NULL," +
+                    "PRIMARY KEY ([IdRuta],[IdItinerario], [IdUsuarioServicio])" +
+                    ");";
+            db.execSQL(sql);
+
+            sql = "CREATE TABLE [PAGOS_DETALLE_REP] (" +
+                    "id INTEGER NOT NULL," +
+                    "idusuarioservicio INTEGER NOT NULL," +
+                    "nombreusuarioservicio TEXT DEFAULT NULL," +
+                    "nocontador TEXT DEFAULT NULL," +
+                    "nomarchamo TEXT DEFAULT NULL," +
+                    "tiposervicio TEXT DEFAULT NULL," +
+                    "tipotarifa TEXT DEFAULT NULL," +
+                    "nomes INTEGER DEFAULT NULL," +
+                    "año INTEGER DEFAULT NULL," +
+                    "voltios REAL DEFAULT NULL," +
+                    "lectura_anterior REAL DEFAULT NULL," +
+                    "lectura_actual REAL DEFAULT NULL," +
+                    "consumo REAL DEFAULT NULL," +
+                    "fecha_inicio TEXT DEFAULT NULL," +
+                    "fecha_fin TEXT DEFAULT NULL," +
+                    "dias_facturados INTEGER DEFAULT NULL," +
+                    "mes_operacion TEXT DEFAULT NULL," +
+                    "fecha_emision TEXT DEFAULT NULL," +
+                    "cargo_fijo REAL DEFAULT NULL," +
+                    "consumo_energia_ts REAL DEFAULT NULL," +
+                    "importe_ts REAL DEFAULT NULL," +
+                    "consumo_energia_tns REAL DEFAULT NULL," +
+                    "importe_tns REAL DEFAULT NULL," +
+                    "consumo_energia_total REAL DEFAULT NULL," +
+                    "importe_consumo_total REAL DEFAULT NULL," +
+                    "alumbrado_publico REAL DEFAULT NULL," +
+                    "fecha_sistema TEXT DEFAULT NULL," +
+                    "potencia_contratada REAL DEFAULT NULL," +
+                    "potencia_maxima REAL DEFAULT NULL," +
+                    "importe_potencia_maxima REAL DEFAULT NULL," +
+                    "servicio_bajo_demanda INTEGER DEFAULT 0," +
+                    "IdPago INTEGER DEFAULT NULL," +
+                    "servicio_bajo_demandafp INTEGER DEFAULT 0," +
+                    "PRIMARY KEY ([id],[idusuarioservicio])" +
+                    ");";
+            db.execSQL(sql);
+
         } catch (Exception e) {
             return  false;
         }

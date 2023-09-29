@@ -3,12 +3,8 @@ package com.example.cuee_mobile.clases;
 public class clsBeRuta_lectura {
 
     private int IdRuta;
-
     private String Nombre="";
-
     private boolean Activo = false;
-
-
     private int IdTecnicoDef;
 
     public int getIdRuta() {
