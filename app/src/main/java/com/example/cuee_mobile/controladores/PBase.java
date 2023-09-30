@@ -8,11 +8,13 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 
 import com.example.cuee_mobile.api.ClienteConfig;
+import com.example.cuee_mobile.base.CueeHelper;
 import com.example.cuee_mobile.bd.HelperBD;
 
 public class PBase extends Activity {
     protected ClienteConfig retrofit;
     protected HelperBD Con;
+    protected CueeHelper helper;
     protected SQLiteDatabase db;
     protected String sql;
 
@@ -23,6 +25,7 @@ public class PBase extends Activity {
 
     public void SetBase() {
         retrofit = new ClienteConfig(this);
+        helper = new CueeHelper(this);
 
         String pathDataDir = "";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -36,6 +39,7 @@ public class PBase extends Activity {
     public void opendb() {
         try {
             db = Con.getWritableDatabase();
+            //Con.vDatabase = db;
         } catch (Exception e) {
         }
     }

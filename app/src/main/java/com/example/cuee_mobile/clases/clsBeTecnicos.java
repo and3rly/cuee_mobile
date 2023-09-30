@@ -2,13 +2,13 @@ package com.example.cuee_mobile.clases;
 
 public class clsBeTecnicos {
 
-    private int IdTecnico = 0;
-    private String Nombre = "";
-    private String Dpi = "";
-    private String Direccion = "";
-    private boolean Activo = false;
-    private String Codigo = "";
-    private String Clave = "";
+    public int IdTecnico = 0;
+    public String Nombre = "";
+    public String Dpi = "";
+    public String Direccion = "";
+    public boolean Activo = false;
+    public String Codigo = "";
+    public String Clave = "";
 
     public int getIdTecnico() {
         return IdTecnico;

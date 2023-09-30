@@ -2,10 +2,10 @@ package com.example.cuee_mobile.clases;
 
 public class clsBeRuta_lectura {
 
-    private int IdRuta;
-    private String Nombre="";
-    private boolean Activo = false;
-    private int IdTecnicoDef;
+    public int IdRuta;
+    public String Nombre="";
+    public boolean Activo = false;
+    public int IdTecnicoDef;
 
     public int getIdRuta() {
         return IdRuta;

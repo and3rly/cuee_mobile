@@ -2,59 +2,59 @@ package com.example.cuee_mobile.clases;
 
 public class clsBeInstitucion {
 
-    private int IdInstitucion= 0;
-    private String Nombre= "";
-    private byte[] Logo= null;
-    private double Preciots= 0.0;
-    private double Preciotns= 0.0;
-    private double Luz_publica= 0.0;
-    private double Cargo_fijo= 0.0;
-    private double Mora= 0.0;
-    private double Tarifa_demanda= 0.0;
-    private double Precio_kw= 0.0;
-    private double Precio_pc= 0.0;
-    private double Cargo_fijo_btdp= 0.0;
-    private double Multas_varias= 0.0;
-    private double Cobro_instalaciones= 0.0;
-    private double Cobro_reconexiones= 0.0;
-    private double Cobro_multa= 0.0;
-    private double Ultima_solicitud= 0.0;
-    private double Ultimo_usuario= 0.0;
-    private double Ultimo_contrato= 0.0;
-    private int Porcentaje_lectura= 0;
-    private double Cargo_fijo_btdfp= 0.0;
-    private double Tarifa_demandafp= 0.0;
-    private double Precio_kwfp= 0.0;
-    private double Precio_pcfp= 0.0;
-    private String Serie_pf= "";
-    private int Correl_pf= 0;
-    private int Correl_pf_actual= 0;
-    private String Fel_codigo_acceso= "";
-    private String Fel_usuario= "";
-    private String Fel_clave= "";
-    private String NIT_Emisor= "";
-    private String Direccion_emisor= "";
-    private String Correo_emisor= "";
-    private String Nombre_Comercial= "";
-    private String Nombre_Emisor= "";
-    private String Codigo_postal= "";
-    private String Municipio= "";
-    private String Departamento= "";
-    private String Pais= "";
-    private String Afiliacion_IVA= "";
-    private String Fel_token= "";
-    private String Fel_requestor= "";
-    private double Porcentaje_iva= 0.0;
-    private int Fel_codigo_escenario_isr= 0;
-    private int Fel_tipo_frase_isr= 0;
-    private String Fel_texto_isr= "";
-    private int Fel_codigo_escenario_iva= 0;
-    private int Fel_tipo_frase_iva= 0;
-    private String Fel_texto_iva= "";
-    private String Numero_resolucion= "";
-    private String Fecha_resolucion= "";
-    private String Frase_exento= "";
-    private double Monto_permitido_cf= 0.0;
+    public int IdInstitucion= 0;
+    public String Nombre= "";
+    public String Logo= null;
+    public double Preciots= 0.0;
+    public double Preciotns= 0.0;
+    public double Luz_publica= 0.0;
+    public double Cargo_fijo= 0.0;
+    public double Mora= 0.0;
+    public double Tarifa_demanda= 0.0;
+    public double Precio_kw= 0.0;
+    public double Precio_pc= 0.0;
+    public double Cargo_fijo_btdp= 0.0;
+    public double Multas_varias= 0.0;
+    public double Cobro_instalaciones= 0.0;
+    public double Cobro_reconexiones= 0.0;
+    public double Cobro_multa= 0.0;
+    public double Ultima_solicitud= 0.0;
+    public double Ultimo_usuario= 0.0;
+    public double Ultimo_contrato= 0.0;
+    public int Porcentaje_lectura= 0;
+    public double Cargo_fijo_btdfp= 0.0;
+    public double Tarifa_demandafp= 0.0;
+    public double Precio_kwfp= 0.0;
+    public double Precio_pcfp= 0.0;
+    public String Serie_pf= "";
+    public int Correl_pf= 0;
+    public int Correl_pf_actual= 0;
+    public String Fel_codigo_acceso= "";
+    public String Fel_usuario= "";
+    public String Fel_clave= "";
+    public String NIT_Emisor= "";
+    public String Direccion_emisor= "";
+    public String Correo_emisor= "";
+    public String Nombre_Comercial= "";
+    public String Nombre_Emisor= "";
+    public String Codigo_postal= "";
+    public String Municipio= "";
+    public String Departamento= "";
+    public String Pais= "";
+    public String Afiliacion_IVA= "";
+    public String Fel_token= "";
+    public String Fel_requestor= "";
+    public double Porcentaje_iva= 0.0;
+    public int Fel_codigo_escenario_isr= 0;
+    public int Fel_tipo_frase_isr= 0;
+    public String Fel_texto_isr= "";
+    public int Fel_codigo_escenario_iva= 0;
+    public int Fel_tipo_frase_iva= 0;
+    public String Fel_texto_iva= "";
+    public String Numero_resolucion= "";
+    public String Fecha_resolucion= "";
+    public String Frase_exento= "";
+    public double Monto_permitido_cf= 0.0;
 
 
     public int getIdInstitucion() {
@@ -73,11 +73,11 @@ public class clsBeInstitucion {
         Nombre = nombre;
     }
 
-    public byte[] getLogo() {
+    public String getLogo() {
         return Logo;
     }
 
-    public void setLogo(byte[] logo) {
+    public void setLogo(String logo) {
         Logo = logo;
     }
 

@@ -2,14 +2,14 @@ package com.example.cuee_mobile.clases;
 
 public class clsBeRuta_tecnico {
 
-    private int IdRutaTecnico = 0;
-    private int IdTecnico = 0;
-    private int IdRuta = 0;
-    private boolean Activo = false;
-    private String Fecha_Agr = "";
-    private int User_Agr = 0;
-    private String Fecha_Mod = "";
-    private int User_Mod = 0;
+    public int IdRutaTecnico = 0;
+    public int IdTecnico = 0;
+    public int IdRuta = 0;
+    public boolean Activo = false;
+    public String Fecha_Agr = "";
+    public int User_Agr = 0;
+    public String Fecha_Mod = "";
+    public int User_Mod = 0;
 
     public int getIdRutaTecnico() {
         return IdRutaTecnico;

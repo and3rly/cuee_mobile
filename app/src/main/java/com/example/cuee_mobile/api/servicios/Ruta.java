@@ -2,6 +2,7 @@ package com.example.cuee_mobile.api.servicios;
 
 import com.example.cuee_mobile.clases.clsBeRuta_lectura;
 import com.example.cuee_mobile.clases.clsBeRuta_tecnico;
+import com.example.cuee_mobile.clases.clsBeUsuarios_por_ruta;
 
 import java.util.List;
 
@@ -14,4 +15,7 @@ public interface Ruta {
 
     @GET("RutaTecnico")
     Call<List<clsBeRuta_tecnico>> getRutaTecnico();
+
+    @GET("UsuariosRuta")
+    Call<List<clsBeUsuarios_por_ruta>> getUsuariosRuta();
 }
