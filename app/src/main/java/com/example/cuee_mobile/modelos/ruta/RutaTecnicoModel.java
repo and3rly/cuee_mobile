@@ -13,20 +13,22 @@ public class RutaTecnicoModel {
     private SQLiteDatabase db;
     public HelperBD.Insert ins;
     public HelperBD.Update upd;
+    private final String tabla;
 
     public RutaTecnicoModel(Context ct, HelperBD con, SQLiteDatabase dbase) {
         context = ct;
         Con = con;
         db = dbase;
-
         ins = Con.Ins; upd = Con.Upd;
+
+        tabla = "RUTA_TECNICO";
     }
 
 
     public boolean guardar(clsBeRuta_tecnico obj) {
         try {
 
-            ins.init("TECNICOS");
+            ins.init(tabla);
 
             ins.add("IdRutaTecnico", obj.IdRutaTecnico);
             ins.add("IdTecnico", obj.IdTecnico);

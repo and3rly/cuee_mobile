@@ -2,15 +2,15 @@ package com.example.cuee_mobile.clases;
 
 public class clsBeMeses_proforma {
 
-    private int idproformadet = 0;
-    private int idproforma = 0;
-    private int IdUsuarioServicio = 0;
-    private int nomes = 0;
-    private String mes = "";
-    private int idrenglon = 0;
-    private String descripcion = "";
-    private double cantidad = 0;
-    private int anno = 0;
+    public int idproformadet = 0;
+    public int idproforma = 0;
+    public int IdUsuarioServicio = 0;
+    public int nomes = 0;
+    public String mes = "";
+    public int idrenglon = 0;
+    public String descripcion = "";
+    public double cantidad = 0;
+    public int anno = 0;
 
     public int getIdproformadet() {
         return idproformadet;

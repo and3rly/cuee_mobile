@@ -13,25 +13,35 @@ public class MesProformaModel {
     private SQLiteDatabase db;
     public HelperBD.Insert ins;
     public HelperBD.Update upd;
+    private final String tabla;
 
     public MesProformaModel(Context ct, HelperBD con, SQLiteDatabase dbase) {
         context = ct;
         Con = con;
         db = dbase;
-
         ins = Con.Ins; upd = Con.Upd;
+
+        tabla ="MESES_PROFORMA";
     }
 
     public boolean guardar(clsBeMeses_proforma obj) {
         try {
-            ins.init("USUARIOS_POR_RUTA");
+            ins.init(tabla);
 
-
+            ins.add("idproformadet", obj.idproformadet);
+            ins.add("idproforma", obj.idproforma);
+            ins.add("IdUsuarioServicio", obj.IdUsuarioServicio);
+            ins.add("nomes", obj.nomes);
+            ins.add("mes", obj.mes);
+            ins.add("idrenglon", obj.idrenglon);
+            ins.add("descripcion", obj.descripcion);
+            ins.add("cantidad", obj.cantidad);
+            ins.add("anno", obj.anno);
 
             db.execSQL(ins.sql());
 
         } catch (Exception e) {
-            Log.e("UsuariosPorRuta", "guardar: ", e);
+            Log.e("Meses Proforma", "guardar: ", e);
             return false;
         }
         return  true;

@@ -1,15 +1,15 @@
 package com.example.cuee_mobile.clases;
 
 public class clsBeContadores {
-    private String IdContador = "";
-    private int IdMarca = 0;
-    private boolean Activo = false;
-    private String No_marchamo = "";
-    private String Color = "";
-    private int IdUsuarioServicio = 0;
-    private String Fecha_Cambio = "";
-    private String Fecha_Creacion = "";
-    private double Lectura = 0;
+    public String IdContador = "";
+    public int IdMarca = 0;
+    public boolean Activo = false;
+    public String No_marchamo = "";
+    public String Color = "";
+    public int IdUsuarioServicio = 0;
+    public String Fecha_Cambio = "";
+    public String Fecha_Creacion = "";
+    public double Lectura = 0;
 
     public String getIdContador() {
         return IdContador;

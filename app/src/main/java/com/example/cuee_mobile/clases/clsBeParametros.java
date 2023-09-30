@@ -1,9 +1,9 @@
 package com.example.cuee_mobile.clases;
 
 public class clsBeParametros {
-    private int idparametro = 0;
-    private String parametro = "";
-    private double valor = 0;
+    public int idparametro = 0;
+    public String parametro = "";
+    public double valor = 0;
 
     public int getIdparametro() {
         return idparametro;

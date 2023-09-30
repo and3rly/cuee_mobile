@@ -13,20 +13,30 @@ public class ContadoresModel {
     private SQLiteDatabase db;
     public HelperBD.Insert ins;
     public HelperBD.Update upd;
+    private String tabla;
 
     public ContadoresModel(Context ct, HelperBD con, SQLiteDatabase dbase) {
         context = ct;
         Con = con;
         db = dbase;
-
         ins = Con.Ins; upd = Con.Upd;
+
+        tabla = "CONTADORES";
     }
 
     public boolean guardar(clsBeContadores obj) {
         try {
-            ins.init("USUARIOS_POR_RUTA");
+            ins.init(tabla);
 
-
+            ins.add("IdContador", obj.IdContador);
+            ins.add("IdMarca", obj.IdMarca);
+            ins.add("Activo", obj.Activo);
+            ins.add("No_marchamo", obj.No_marchamo);
+            ins.add("Color", obj.Color);
+            ins.add("IdUsuarioServicio", obj.IdUsuarioServicio);
+            ins.add("Fecha_Cambio", obj.Fecha_Cambio);
+            ins.add("Fecha_Creacion", obj.Fecha_Creacion);
+            ins.add("Lectura", obj.Lectura);
 
             db.execSQL(ins.sql());
 

@@ -12,25 +12,29 @@ public class ParametrosModel {
     private SQLiteDatabase db;
     public HelperBD.Insert ins;
     public HelperBD.Update upd;
+    private String tabla;
 
     public ParametrosModel(Context ct, HelperBD con, SQLiteDatabase dbase) {
         context = ct;
         Con = con;
         db = dbase;
-
         ins = Con.Ins; upd = Con.Upd;
+
+        tabla = "PARAMETROS";
     }
 
     public boolean guardar(clsBeParametros obj) {
         try {
-            ins.init("USUARIOS_POR_RUTA");
+            ins.init(tabla);
 
-
+            ins.add("idparametro", obj.idparametro);
+            ins.add("parametro", obj.parametro);
+            ins.add("valor", obj.valor);
 
             db.execSQL(ins.sql());
 
         } catch (Exception e) {
-            Log.e("UsuariosPorRuta", "guardar: ", e);
+            Log.e("Parametros", "guardar: ", e);
             return false;
         }
         return  true;

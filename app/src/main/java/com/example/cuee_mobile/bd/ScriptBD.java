@@ -22,7 +22,8 @@ public class ScriptBD {
     private boolean script(SQLiteDatabase db) {
         try {
             sql = "CREATE TABLE [CONTADORES] (" +
-                    "IdContador INTENGER NOT NULL ," +
+                    "IdContador TEXT NOT NULL ," +
+                    "IdMarca INTERGER DEFAULT NULL," +
                     "Activo INTENGER DEFAULT 0," +
                     "No_marchamo TEXT DEFAULT NULL," +
                     "Color TEXT DEFAULT NULL," +

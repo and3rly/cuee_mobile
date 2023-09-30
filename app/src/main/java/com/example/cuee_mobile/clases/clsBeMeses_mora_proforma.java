@@ -1,11 +1,11 @@
 package com.example.cuee_mobile.clases;
 
 public class clsBeMeses_mora_proforma {
-    private int IdProforma = 0;
-    private int NoMes = 0;
-    private int Anno = 0;
-    private boolean MoraPagada = false;
-    private boolean Anulado = false;
+    public int IdProforma = 0;
+    public int NoMes = 0;
+    public int Anno = 0;
+    public boolean MoraPagada = false;
+    public boolean Anulado = false;
 
     public int getIdProforma() {
         return IdProforma;
