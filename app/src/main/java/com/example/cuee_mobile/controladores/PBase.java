@@ -39,7 +39,7 @@ public class PBase extends Activity {
     public void opendb() {
         try {
             db = Con.getWritableDatabase();
-            //Con.vDatabase = db;
+            Con.vDatabase = db;
         } catch (Exception e) {
         }
     }

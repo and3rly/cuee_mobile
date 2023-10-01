@@ -1,9 +1,10 @@
 package com.example.cuee_mobile.controladores.comunicacion;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -58,7 +59,9 @@ import com.example.cuee_mobile.modelos.ruta.RutaTecnicoModel;
 import com.example.cuee_mobile.modelos.ruta.UsuariosRutaModel;
 import com.example.cuee_mobile.modelos.usuario.UsrServicioModel;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -91,7 +94,6 @@ public class ComApi extends PBase {
     private TransformadorModel transformador;
     private UsrServicioModel usrServicio;
     private ServicioInsModel srInstalado;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +138,7 @@ public class ComApi extends PBase {
 
     private void setHandlers() {
         btnRecibir.setOnClickListener(view -> {
-            recibirDatos();
+            dialogo("Recepción de datos", "¿Está seguro de iniciar la recepción de datos?", 1);
         });
     }
 
@@ -173,7 +175,12 @@ public class ComApi extends PBase {
 
                         if (lista != null && lista.size() > 0) {
                             for (clsBeInstitucion obj : lista) {
-                                institucion.guardar(obj);
+
+                                institucion.getLista("WHERE IdInstitucion = "+obj.getIdInstitucion());
+
+                                if (institucion.lista.size() == 0) {
+                                    institucion.guardar(obj);
+                                }
                             }
                         }
                         getInstitucionDetalle();
@@ -206,7 +213,12 @@ public class ComApi extends PBase {
 
                         if (lista != null && lista.size() > 0) {
                             for (clsBeInstitucion_detalle obj:lista) {
-                                insDetalle.guardar(obj);
+
+                                insDetalle.getLista("WHERE IdInstitucion = "+obj.IdInstitucion+" AND IdPeriodoParametros = "+obj.IdPeriodoParametros);
+
+                                if (insDetalle.lista.size() == 0) {
+                                    insDetalle.guardar(obj);
+                                }
                             }
                         }
                         getRutaLectura();
@@ -239,7 +251,12 @@ public class ComApi extends PBase {
 
                         if (lista != null && lista.size() > 0) {
                             for (clsBeRuta_lectura obj:lista) {
-                                rutaLectura.guardar(obj);
+
+                                rutaLectura.getLista("WHERE IdRuta = "+obj.IdRuta);
+
+                                if (rutaLectura.lista.size() == 0) {
+                                    rutaLectura.guardar(obj);
+                                }
                             }
                         }
                     }
@@ -272,7 +289,11 @@ public class ComApi extends PBase {
 
                         if (lista != null && lista.size() > 0) {
                             for (clsBeTecnicos obj:lista) {
-                                tecnico.guardar(obj);
+                                tecnico.getLista("WHERE IdTecnico = "+obj.IdTecnico);
+
+                                if (tecnico.lista.size() == 0) {
+                                    tecnico.guardar(obj);
+                                }
                             }
                         }
                         getRutaTecnico();
@@ -305,7 +326,11 @@ public class ComApi extends PBase {
 
                         if (lista != null && lista.size() > 0) {
                             for (clsBeRuta_tecnico obj:lista) {
-                                rutaTec.guardar(obj);
+                                rutaTec.getLista("WHERE IdRutaTecnico = "+obj.IdRutaTecnico);
+
+                                if (rutaTec.lista.size() == 0) {
+                                    rutaTec.guardar(obj);
+                                }
                             }
                         }
                         getUsuariosRuta();
@@ -336,7 +361,12 @@ public class ComApi extends PBase {
 
                         if (lista != null && lista.size() > 0) {
                             for (clsBeUsuarios_por_ruta obj:lista) {
-                                rutaUsr.guardar(obj);
+                                rutaUsr.getLista("WHERE IdRuta ="+obj.IdRuta+" AND IdItinerario ="+obj.IdItinerario+" AND IdUsuarioServicio ="+obj.IdUsuarioServicio);
+
+                                if (rutaUsr.lista.size() == 0) {
+                                    rutaUsr.guardar(obj);
+                                }
+
                             }
                         }
                         getParametros();
@@ -369,7 +399,11 @@ public class ComApi extends PBase {
 
                         if (lista != null && lista.size() > 0) {
                             for (clsBeParametros obj:lista) {
-                                parametro.guardar(obj);
+                                parametro.getLista("WHERE idparametro = "+obj.idparametro);
+
+                                if (parametro.lista.size() == 0) {
+                                    parametro.guardar(obj);
+                                }
                             }
                         }
                         getContadores();
@@ -402,12 +436,15 @@ public class ComApi extends PBase {
 
                         if (lista != null && lista.size() > 0) {
                             for (clsBeContadores obj:lista) {
-                                contador.guardar(obj);
+                                contador.getLista("WHERE IdContador = '"+obj.IdContador+"'");
+
+                                if (contador.lista.size() == 0) {
+                                    contador.guardar(obj);
+                                }
                             }
                         }
                     }
-                    //getLectura();
-                    getRenglones();
+                    getLectura();
                 }
                 @Override
                 public void onFailure(Call<List<clsBeContadores>> call, Throwable t) {
@@ -436,7 +473,11 @@ public class ComApi extends PBase {
 
                         if (lista != null && lista.size() > 0) {
                             for (clsBeLectura obj:lista) {
-                                lectura.guardar(obj, true);
+                                lectura.getLista("WHERE IdLectura = "+obj.IdLectura);
+
+                                if (lectura.lista.size() == 0) {
+                                    lectura.guardar(obj, true);
+                                }
                             }
                         }
                         getRenglones();
@@ -469,7 +510,11 @@ public class ComApi extends PBase {
 
                         if (lista != null && lista.size() > 0) {
                             for (clsBeRenglones obj:lista) {
-                                renglon.guardar(obj);
+                                renglon.getLista("WHERE Idrenglon ="+obj.Idrenglon);
+
+                                if (renglon.lista.size() == 0) {
+                                    renglon.guardar(obj);
+                                }
                             }
                         }
                         getTransformadores();
@@ -502,7 +547,11 @@ public class ComApi extends PBase {
 
                         if (lista != null && lista.size() > 0) {
                             for (clsBeTransformadores obj:lista) {
-                                transformador.guardar(obj);
+                                transformador.getLista("WHERE IdTransformador ="+ obj.IdTransformador);
+
+                                if (transformador.lista.size() == 0) {
+                                    transformador.guardar(obj);
+                                }
                             }
                         }
                         getUsuarioServicio();
@@ -535,7 +584,11 @@ public class ComApi extends PBase {
 
                         if (lista != null && lista.size() > 0) {
                             for (clsBeUsuarios_servicio obj:lista) {
-                                usrServicio.guardar(obj);
+                                usrServicio.getLista("WHERE IdUsuarioServicio = "+obj.IdUsuarioServicio);
+
+                                if (usrServicio.lista.size() == 0) {
+                                    usrServicio.guardar(obj);
+                                }
                             }
                         }
                         getServiciosInstalados();
@@ -568,7 +621,11 @@ public class ComApi extends PBase {
 
                         if (lista != null && lista.size() > 0) {
                             for (clsBeServicios_instalado obj:lista) {
-                                srInstalado.guardar(obj);
+                                srInstalado.getLista("WHERE IdInstalacion = "+obj.IdInstalacion);
+
+                                if (srInstalado.lista.size() == 0) {
+                                    srInstalado.guardar(obj);
+                                }
                             }
                         }
                         terminaRecepcion();
@@ -735,6 +792,23 @@ public class ComApi extends PBase {
             helper.msgbox(Objects.requireNonNull(new Object() {
             }.getClass().getEnclosingClass()).getName() +" - "+ e);
         }
+    }
+
+    private void dialogo(String titulo, String msg, int accion) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+
+        dialog.setTitle(titulo);
+        dialog.setMessage(msg);
+        dialog.setPositiveButton("Si", (dialog1, id) -> {
+            if (accion == 1) {
+                recibirDatos();
+            }
+        });
+
+        dialog.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog12, id) -> {
+        });
+
+        dialog.show();
     }
 
     private void terminaRecepcion() {

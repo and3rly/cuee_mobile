@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -35,25 +36,12 @@ public class HelperBD extends SQLiteOpenHelper {
     }
 
     public Cursor OpenDT(String pSQL) {
-
         Cursor vCursor = null;
-        String vError="";
-
         try {
-
-            if (!vDatabase.isOpen()) vDatabase = getWritableDatabase();
-
             vCursor = vDatabase.rawQuery(pSQL, null);
-            if (vCursor != null){
-                vCursor.moveToLast();
-            } else {
-                throw new Exception("No se obtuvo el registro " + pSQL);
-            }
-
-        } catch(Exception ex){
-
+        } catch (Exception ex){
+            Log.e("OpenDT", "OpenDT: ", ex);
         }
-
         return vCursor;
     }
 

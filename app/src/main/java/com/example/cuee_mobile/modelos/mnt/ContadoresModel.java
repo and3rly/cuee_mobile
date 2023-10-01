@@ -1,11 +1,14 @@
 package com.example.cuee_mobile.modelos.mnt;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.cuee_mobile.bd.HelperBD;
 import com.example.cuee_mobile.clases.clsBeContadores;
+
+import java.util.ArrayList;
 
 public class ContadoresModel {
     private Context context;
@@ -13,15 +16,56 @@ public class ContadoresModel {
     private SQLiteDatabase db;
     public HelperBD.Insert ins;
     public HelperBD.Update upd;
-    private String tabla;
-
+    private final String tabla = "CONTADORES";
+    private final String sel =  "SELECT * FROM " + tabla;
+    public ArrayList<clsBeContadores> lista = new ArrayList<>();
     public ContadoresModel(Context ct, HelperBD con, SQLiteDatabase dbase) {
         context = ct;
         Con = con;
         db = dbase;
         ins = Con.Ins; upd = Con.Upd;
+    }
 
-        tabla = "CONTADORES";
+    public void getLista(String sq) {
+        buscar(sel +" "+ sq);
+    }
+
+    public void getLista() {
+        buscar(sel);
+    }
+
+    private void buscar(String sel) {
+        clsBeContadores item;
+        Cursor DT;
+        try {
+            lista.clear();
+            DT = Con.OpenDT(sel);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+
+                while (!DT.isAfterLast()) {
+                    item = new clsBeContadores();
+
+                    item.IdContador = DT.getString(0);
+                    item.IdMarca = DT.getInt(1);
+                    item.Activo = Boolean.parseBoolean(DT.getString(2));
+                    item.No_marchamo = DT.getString(3);
+                    item.Color = DT.getString(4);
+                    item.IdUsuarioServicio = DT.getInt(5);
+                    item.Fecha_Cambio = DT.getString(6);
+                    item.Fecha_Creacion = DT.getString(7);
+                    item.Lectura = DT.getDouble(8);
+
+                    lista.add(item);
+                    DT.moveToNext();
+                }
+            }
+
+            if (DT != null) DT.close();
+        } catch (Exception e) {
+            Log.e("CONTADORES", "buscar: ", e );
+        }
     }
 
     public boolean guardar(clsBeContadores obj) {
@@ -41,7 +85,7 @@ public class ContadoresModel {
             db.execSQL(ins.sql());
 
         } catch (Exception e) {
-            Log.e("UsuariosPorRuta", "guardar: ", e);
+            Log.e("CONTADORES", "guardar: ", e);
             return false;
         }
         return  true;

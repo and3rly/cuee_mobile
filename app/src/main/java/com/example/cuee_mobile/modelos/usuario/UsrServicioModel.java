@@ -1,11 +1,14 @@
 package com.example.cuee_mobile.modelos.usuario;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.cuee_mobile.bd.HelperBD;
 import com.example.cuee_mobile.clases.clsBeUsuarios_servicio;
+
+import java.util.ArrayList;
 
 public class UsrServicioModel {
     private Context context;
@@ -14,12 +17,58 @@ public class UsrServicioModel {
     public HelperBD.Insert ins;
     public HelperBD.Update upd;
     private final String tabla ="USUARIOS_SERVICIO";
+    private final String sel =  "SELECT * FROM " + tabla;
+    public ArrayList<clsBeUsuarios_servicio> lista = new ArrayList<>();
 
     public UsrServicioModel(Context ct, HelperBD con, SQLiteDatabase dbase) {
         context = ct;
         Con = con;
         db = dbase;
         ins = Con.Ins; upd = Con.Upd;
+    }
+
+    public void getLista(String sq) {
+        buscar(sel +" "+ sq);
+    }
+
+    public void getLista() {
+        buscar(sel);
+    }
+
+    private void buscar(String sel) {
+        clsBeUsuarios_servicio item;
+        Cursor DT;
+        try {
+            DT = Con.OpenDT(sel);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+
+                lista.clear();
+                while (!DT.isAfterLast()) {
+                    item = new clsBeUsuarios_servicio();
+
+                    item.IdUsuarioServicio = DT.getInt(0);
+                    item.DPI = DT.getString(1);
+                    item.NIT = DT.getString(2);
+                    item.Nombres = DT.getString(3);
+                    item.Telefono = DT.getString(4);
+                    item.IdUsuario = DT.getInt(5);
+                    item.Fecha_creacion = DT.getString(6);
+                    item.Idusuario_modifica = DT.getInt(7);
+                    item.Fecha_modificacion = DT.getString(8);
+                    item.Activo = Boolean.parseBoolean(String.valueOf(DT.getString(9)));
+                    item.Correo_electronico = DT.getString(10);
+                    item.Exento_IVA = Boolean.parseBoolean(String.valueOf(DT.getInt(11)));
+
+                    lista.add(item);
+                    DT.moveToNext();
+                }
+            }
+            if (DT != null) DT.close();
+        } catch (Exception e) {
+            Log.e("USUARIOS_SERVICIO", "buscar: ", e );
+        }
     }
 
     public boolean guardar(clsBeUsuarios_servicio obj) {

@@ -1,11 +1,14 @@
 package com.example.cuee_mobile.modelos.ruta;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.cuee_mobile.bd.HelperBD;
 import com.example.cuee_mobile.clases.clsBeRuta_lectura;
+
+import java.util.ArrayList;
 
 public class RutaLecturaModel {
 
@@ -14,6 +17,9 @@ public class RutaLecturaModel {
     private SQLiteDatabase db;
     public HelperBD.Insert ins;
     public HelperBD.Update upd;
+    private final String tabla = "RUTA_LECTURA";
+    private final String sel =  "SELECT * FROM " + tabla;
+    public ArrayList<clsBeRuta_lectura> lista = new ArrayList<>();
 
     public RutaLecturaModel(Context ct, HelperBD con, SQLiteDatabase dbase) {
         context = ct;
@@ -23,10 +29,46 @@ public class RutaLecturaModel {
         ins = Con.Ins; upd = Con.Upd;
     }
 
+    public void getLista(String sq) {
+        buscar(sel +" "+ sq);
+    }
+
+    public void getLista() {
+        buscar(sel);
+    }
+
+    private void buscar(String sel) {
+        clsBeRuta_lectura item;
+        Cursor DT;
+        try {
+            DT = Con.OpenDT(sel);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+
+                lista.clear();
+                while (!DT.isAfterLast()) {
+                    item = new clsBeRuta_lectura();
+
+                    item.IdRuta = DT.getInt(0);
+                    item.Nombre = DT.getString(1);
+                    item.Activo = Boolean.parseBoolean(DT.getString(2));
+                    item.IdTecnicoDef = DT.getInt(3);
+
+                    lista.add(item);
+                    DT.moveToNext();
+                }
+            }
+
+            if (DT != null) DT.close();
+        } catch (Exception e) {
+            Log.e("RUTA_LECTURA", "buscar: ", e );
+        }
+    }
+
     public boolean guardar(clsBeRuta_lectura obj) {
         try {
-            ins.init("RUTA_LECTURA");
-
+            ins.init(tabla);
             ins.add("IdRuta", obj.IdRuta);
             ins.add("Nombre", obj.Nombre);
             ins.add("Activo", obj.Activo);
@@ -35,7 +77,7 @@ public class RutaLecturaModel {
             db.execSQL(ins.sql());
 
         } catch (Exception e) {
-            Log.e("RutaLectura", "guardar: ", e);
+            Log.e("RUTA_LECTURA", "guardar: ", e);
             return false;
         }
         return  true;

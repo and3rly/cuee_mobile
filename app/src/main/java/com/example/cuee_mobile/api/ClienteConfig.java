@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ClienteConfig {
     private static Retrofit retrofit = null;
-    private String url = "http://192.168.1.3/cuee_api/";
+    private String url = "http://192.168.1.6/cuee_api/";
 
     public ClienteConfig(Context cont) {
 
