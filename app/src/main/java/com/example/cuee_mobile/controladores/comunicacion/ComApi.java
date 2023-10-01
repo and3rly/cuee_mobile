@@ -124,11 +124,11 @@ public class ComApi extends PBase {
 
             Handler timer = new Handler();
             Runnable runner = this::AsyncCallRec;
-
             timer.postDelayed(runner, 500);
 
         } catch (Exception e) {
-
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
         }
     }
 
@@ -479,7 +479,8 @@ public class ComApi extends PBase {
                                 moraPg.guardar(obj);
                             }
                         }
-                        getPagosDetRep();
+
+                        terminaRecepcion();
                     }
                 }
                 @Override
@@ -513,7 +514,6 @@ public class ComApi extends PBase {
                             }
                         }
                     }
-
                     terminaRecepcion();
                 }
                 @Override

@@ -5,27 +5,27 @@ public class clsBeInstitucion {
     public int IdInstitucion= 0;
     public String Nombre= "";
     public String Logo= null;
-    public double Preciots= 0.0;
-    public double Preciotns= 0.0;
-    public double Luz_publica= 0.0;
-    public double Cargo_fijo= 0.0;
-    public double Mora= 0.0;
-    public double Tarifa_demanda= 0.0;
-    public double Precio_kw= 0.0;
-    public double Precio_pc= 0.0;
-    public double Cargo_fijo_btdp= 0.0;
-    public double Multas_varias= 0.0;
-    public double Cobro_instalaciones= 0.0;
-    public double Cobro_reconexiones= 0.0;
-    public double Cobro_multa= 0.0;
-    public double Ultima_solicitud= 0.0;
-    public double Ultimo_usuario= 0.0;
-    public double Ultimo_contrato= 0.0;
+    public double Preciots= 0;
+    public double Preciotns= 0;
+    public double Luz_publica= 0;
+    public double Cargo_fijo= 0;
+    public double Mora= 0;
+    public double Tarifa_demanda= 0;
+    public double Precio_kw= 0;
+    public double Precio_pc= 0;
+    public double Cargo_fijo_btdp= 0;
+    public double Multas_varias= 0;
+    public double Cobro_instalaciones= 0;
+    public double Cobro_reconexiones= 0;
+    public double Cobro_multa= 0;
+    public double Ultima_solicitud= 0;
+    public double Ultimo_usuario= 0;
+    public double Ultimo_contrato= 0;
     public int Porcentaje_lectura= 0;
-    public double Cargo_fijo_btdfp= 0.0;
-    public double Tarifa_demandafp= 0.0;
-    public double Precio_kwfp= 0.0;
-    public double Precio_pcfp= 0.0;
+    public double Cargo_fijo_btdfp= 0;
+    public double Tarifa_demandafp= 0;
+    public double Precio_kwfp= 0;
+    public double Precio_pcfp= 0;
     public String Serie_pf= "";
     public int Correl_pf= 0;
     public int Correl_pf_actual= 0;
@@ -44,7 +44,7 @@ public class clsBeInstitucion {
     public String Afiliacion_IVA= "";
     public String Fel_token= "";
     public String Fel_requestor= "";
-    public double Porcentaje_iva= 0.0;
+    public double Porcentaje_iva= 0;
     public int Fel_codigo_escenario_isr= 0;
     public int Fel_tipo_frase_isr= 0;
     public String Fel_texto_isr= "";
@@ -54,7 +54,7 @@ public class clsBeInstitucion {
     public String Numero_resolucion= "";
     public String Fecha_resolucion= "";
     public String Frase_exento= "";
-    public double Monto_permitido_cf= 0.0;
+    public double Monto_permitido_cf= 0;
 
 
     public int getIdInstitucion() {

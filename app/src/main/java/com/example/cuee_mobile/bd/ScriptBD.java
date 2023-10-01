@@ -21,6 +21,184 @@ public class ScriptBD {
 
     private boolean script(SQLiteDatabase db) {
         try {
+            sql = "CREATE TABLE [LECTURA](" +
+                    "IdLectura INTEGER NOT NULL," +
+                    "IdUsuarioServicio INTEGER DEFAULT NULL," +
+                    "IdContador TEXT DEFAULT NULL," +
+                    "Fecha TEXT DEFAULT NULL," +
+                    "Lectura REAL DEFAULT NULL," +
+                    "Consumo REAL DEFAULT NULL," +
+                    "IdUsuario INTEGER DEFAULT NULL," +
+                    "Fecha_creacion TEXT DEFAULT NULL," +
+                    "Lectura_kw REAL DEFAULT NULL," +
+                    "IdTecnico INTEGER DEFAULT NULL," +
+                    "con_hh INTEGER DEFAULT NULL," +
+                    "StatCom TEXT DEFAULT NULL," +
+                    "PRIMARY KEY ([IdLectura])" +
+                    ");";
+            db.execSQL(sql);
+
+            sql = "CREATE TABLE [SERVICIOS_INSTALADO] (" +
+                    "IdInstalacion INTEGER NOT NULL," +
+                    "IdUsuarioServicio INTEGER DEFAULT NULL," +
+                    "IdContador TEXT DEFAULT NULL," +
+                    "IdVoltaje INTEGER DEFAULT NULL," +
+                    "IdPotencia INTEGER DEFAULT NULL," +
+                    "IdTransformador INTEGER DEFAULT NULL," +
+                    "IdTipoServicio INTEGER DEFAULT NULL," +
+                    "Fecha TEXT DEFAULT NULL," +
+                    "Hora TEXT DEFAULT NULL," +
+                    "IdTecnico INTEGER DEFAULT NULL," +
+                    "Contador_anterior TEXT DEFAULT NULL," +
+                    "Usuario_anterior TEXT DEFAULT NULL," +
+                    "Contador_siguiente TEXT DEFAULT NULL," +
+                    "Usuario_siguiente TEXT DEFAULT NULL," +
+                    "Modificacion_red INTEGER DEFAULT NULL," +
+                    "Subestacion INTEGER DEFAULT NULL," +
+                    "Id_circuito INTEGER DEFAULT NULL," +
+                    "IdGPS REAL DEFAULT NULL," +
+                    "IdFotografia TEXT DEFAULT NULL," +
+                    "Direccion TEXT DEFAULT NULL," +
+                    "IdMunicipio INTEGER DEFAULT NULL," +
+                    "IdDepartamento INTEGER DEFAULT NULL," +
+                    "Zona TEXT DEFAULT NULL," +
+                    "Colonia TEXT DEFAULT NULL," +
+                    "Avenida TEXT DEFAULT NULL," +
+                    "Calle TEXT DEFAULT NULL," +
+                    "Numero TEXT DEFAULT NULL," +
+                    "Centro INTENGER DEFAULT NULL," +
+                    "Id_poste_inicio TEXT DEFAULT NULL," +
+                    "Tension_nominal_acom TEXT DEFAULT NULL," +
+                    "Fases_de_conexion INTENGER DEFAULT NULL," +
+                    "Acometida_subt_area INTENGER DEFAULT NULL," +
+                    "Long_cable_acom INTENGER DEFAULT NULL," +
+                    "Tipo_de_conductor TEXT DEFAULT NULL," +
+                    "Donacion_acom TEXT DEFAULT NULL," +
+                    "Fecha_puesto_servicio TEXT DEFAULT NULL," +
+                    "Fecha_retiro_acom TEXT DEFAULT NULL," +
+                    "Num_serie_medido TEXT DEFAULT NULL," +
+                    "Tipo_medidor TEXT DEFAULT NULL," +
+                    "Voltaje_medidor INTENGER DEFAULT NULL," +
+                    "Voltaje_suministro INTENGER DEFAULT NULL," +
+                    "Corriente_nominal INTENGER DEFAULT NULL," +
+                    "Corriente_maxima INTENGER DEFAULT NULL," +
+                    "Kh REAL DEFAULT NULL," +
+                    "Rr TEXT DEFAULT NULL," +
+                    "Fecha_puesto_servicio_m TEXT DEFAULT NULL," +
+                    "Fecha_retiro_medidor TEXT DEFAULT NULL," +
+                    "Coor_x REAL DEFAULT NULL," +
+                    "Coor_y REAL DEFAULT NULL," +
+                    "Zona_utm_medidor TEXT DEFAULT NULL," +
+                    "Fecha_ultimo_pago TEXT DEFAULT NULL," +
+                    "Numero_contrato REAL DEFAULT NULL," +
+                    "Fecha_contrato TEXT DEFAULT NULL," +
+                    "Hora_contrato TEXT DEFAULT NULL," +
+                    "Servicio_bajo_demanda INTEGER DEFAULT 0," +
+                    "Kw_contratada REAL DEFAULT NULL," +
+                    "Potencia_contratada REAL DEFAULT NULL," +
+                    "Ruta TEXT DEFAULT NULL," +
+                    "Itinerario INTEGER DEFAULT NULL," +
+                    "IdUsuario INTEGER DEFAULT NULL," +
+                    "Fecha_creacion TEXT DEFAULT NULL," +
+                    "Idusuario_modifica INTEGER DEFAULT NULL," +
+                    "Fecha_modificacion TEXT DEFAULT NULL," +
+                    "Activo INTEGER DEFAULT 0," +
+                    "Estado_servicio INTEGER DEFAULT NULL," +
+                    "IdTipoUsuario INTEGER DEFAULT NULL," +
+                    "Num_tarjeta TEXT DEFAULT NULL," +
+                    "Tipo_registro TEXT DEFAULT NULL," +
+                    "Servicio_bajo_demandafp INTEGER DEFAULT 0," +
+                    "Es_autoproductor INTEGER DEFAULT 0," +
+                    "PRIMARY KEY ([IdInstalacion])" +
+                    ");";
+            db.execSQL(sql);
+                    
+            sql = "CREATE TABLE [USUARIOS_SERVICIO] (" +
+                    "IdUsuarioServicio INTEGER NOT NULL," +
+                    "DPI TEXT DEFAULT NULL," +
+                    "NIT TEXT DEFAULT NULL," +
+                    "Nombres TEXT DEFAULT NULL," +
+                    "Telefono TEXT DEFAULT NULL," +
+                    "IdUsuario INTEGER DEFAULT NULL," +
+                    "Fecha_creacion TEXT DEFAULT NULL," +
+                    "Idusuario_modifica INTEGER DEFAULT NULL," +
+                    "Fecha_modificacion TEXT DEFAULT NULL," +
+                    "Activo INTEGER DEFAULT 0," +
+                    "Correo_electronico TEXT DEFAULT NULL," +
+                    "Exento_IVA INTEGER DEFAULT 0," +
+                    "PRIMARY KEY ([IdUsuarioServicio])" +
+                    ");";
+            db.execSQL(sql);
+
+            sql = "CREATE TABLE [PROFORMA] (" +
+                    "idproforma INTENGER NOT NULL," +
+                    "IdUsuarioServicio INTEGER DEFAULT NULL," +
+                    "fecha_recibo TEXT DEFAULT NULL," +
+                    "num_proforma REAL DEFAULT NULL," +
+                    "serie_proforma TEXT DEFAULT NULL," +
+                    "anulado INTEGER DEFAULT 0," +
+                    "idusuario INTEGER DEFAULT NULL," +
+                    "fecha_creacion TEXT DEFAULT NULL," +
+                    "idusuario_modifica INTEGER DEFAULT NULL," +
+                    "fecha_modifica TEXT DEFAULT NULL," +
+                    "mes_pago INTEGER DEFAULT NULL," +
+                    "año_pago INTEGER DEFAULT NULL," +
+                    "Impresion INTEGER DEFAULT 0," +
+                    "proveedor TEXT DEFAULT NULL," +
+                    "observacion TEXT DEFAULT NULL," +
+                    "IdPeriodoParametros INTEGER DEFAULT NULL," +
+                    "pagol INTEGER DEFAULT 0," +
+                    "fecha_ultimo_pago TEXT DEFAULT NULL," +
+                    "StatCom TEXT DEFAULT NULL," +
+                    "PRIMARY KEY ([idproforma])" +
+                    ");";
+            db.execSQL(sql);
+
+            sql = "CREATE TABLE [PROFORMA_DETALLE] (" +
+                    "idproforma INTEGER NOT NULL," +
+                    "idrenglon INTEGER NOT NULL," +
+                    "descripcion TEXT DEFAULT NULL," +
+                    "cantidad REAL DEFAULT NULL," +
+                    "exonera INTENGER DEFAULT 0," +
+                    "monto_impuesto REAL DEFAULT NULL," +
+                    "exento INTEGER DEFAULT 0," +
+                    "monto_gravable REAL DEFAULT NULL," +
+                    "StatCom TEXT DEFAULT NULL," +
+                    "PRIMARY KEY ([idproforma], [idrenglon])" +
+                    ");";
+            db.execSQL(sql);
+            
+            sql =  "CREATE TABLE [TMP_PROFORMA_USUARIO] (" +
+                    "IdUsuarioServicio INTEGER NOT NULL," +
+                    "nomes INTEGER DEFAULT NULL," +
+                    "mes TEXT DEFAULT NULL," +
+                    "idrenglon INTEGER DEFAULT NULL," +
+                    "descripcion TEXT DEFAULT NULL," +
+                    "cantidad REAL DEFAULT NULL," +
+                    "anno INTEGER DEFAULT NULL," +
+                    "PRIMARY KEY([IdUsuarioServicio],[mes],[idrenglon],[anno])" +
+                    ");";
+            db.execSQL(sql);
+
+            sql = "CREATE TABLE [TRANSFORMADORES] (" +
+                    "IdTransformador INTEGER NOT NULL," +
+                    "Nombre TEXT DEFAULT NULL," +
+                    "Activo INTEGER DEFAULT 0," +
+                    "PRIMARY KEY ([IdTransformador])" +
+                    ");";
+            db.execSQL(sql);
+
+            sql = "CREATE TABLE [RENGLONES] (" +
+                    "Idrenglon INTEGER NOT NULL," +
+                    "renglon TEXT DEFAULT NULL," +
+                    "especifico1 TEXT DEFAULT NULL," +
+                    "especifico2 TEXT DEFAULT NULL," +
+                    "concepto TEXT DEFAULT NULL," +
+                    "exento_IVA INTEGER DEFAULT 0," +
+                    "PRIMARY KEY ([Idrenglon])" +
+                    ");";
+            db.execSQL(sql);
+
             sql = "CREATE TABLE [CONTADORES] (" +
                     "IdContador TEXT NOT NULL ," +
                     "IdMarca INTERGER DEFAULT NULL," +
@@ -132,7 +310,7 @@ public class ScriptBD {
                     "Anno INTEGER DEFAULT NULL," +
                     "MoraPagada INTEGER DEFAULT 0," +
                     "Anulado INTEGER DEFAULT 0," +
-                    "PRIMARY KEY([IdRecibo])" +
+                    "PRIMARY KEY([IdRecibo],[NoMes],[Anno])" +
                     ");";
             db.execSQL(sql);
 
@@ -142,7 +320,7 @@ public class ScriptBD {
                     "Anno INTEGER DEFAULT NULL," +
                     "MoraPagada INTEGER DEFAULT 0," +
                     "Anulado INTEGER DEFAULT 0," +
-                    "PRIMARY KEY([IdProforma])" +
+                    "PRIMARY KEY([IdProforma],[NoMes],[Anno])" +
                     ");";
             db.execSQL(sql);
 
