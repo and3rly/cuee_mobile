@@ -13,15 +13,13 @@ public class ServicioInsModel {
     private SQLiteDatabase db;
     public HelperBD.Insert ins;
     public HelperBD.Update upd;
-    private final String tabla;
+    private final String tabla = "SERVICIOS_INSTALADO";
 
     public ServicioInsModel(Context ct, HelperBD con, SQLiteDatabase dbase) {
         context = ct;
         Con = con;
         db = dbase;
         ins = Con.Ins; upd = Con.Upd;
-
-        tabla ="SERVICIOS_INSTALADO";
     }
 
     public boolean guardar(clsBeServicios_instalado obj) {

@@ -12,36 +12,51 @@ import android.widget.TextView;
 import com.example.cuee_mobile.R;
 import com.example.cuee_mobile.api.servicios.Contador;
 import com.example.cuee_mobile.api.servicios.Institucion;
+import com.example.cuee_mobile.api.servicios.Lectura;
 import com.example.cuee_mobile.api.servicios.MesProforma;
 import com.example.cuee_mobile.api.servicios.Parametro;
+import com.example.cuee_mobile.api.servicios.Renglon;
 import com.example.cuee_mobile.api.servicios.Reporte;
 import com.example.cuee_mobile.api.servicios.Ruta;
+import com.example.cuee_mobile.api.servicios.ServiciosIns;
 import com.example.cuee_mobile.api.servicios.Tecnico;
+import com.example.cuee_mobile.api.servicios.Transformador;
+import com.example.cuee_mobile.api.servicios.UsuarioServicio;
 import com.example.cuee_mobile.clases.clsBeContadores;
 import com.example.cuee_mobile.clases.clsBeInstitucion;
 import com.example.cuee_mobile.clases.clsBeInstitucion_detalle;
+import com.example.cuee_mobile.clases.clsBeLectura;
 import com.example.cuee_mobile.clases.clsBeMeses_mora_pagada;
 import com.example.cuee_mobile.clases.clsBeMeses_mora_proforma;
 import com.example.cuee_mobile.clases.clsBeMeses_proforma;
 import com.example.cuee_mobile.clases.clsBePagos_detalle_rep;
 import com.example.cuee_mobile.clases.clsBeParametros;
+import com.example.cuee_mobile.clases.clsBeRenglones;
 import com.example.cuee_mobile.clases.clsBeRuta_lectura;
 import com.example.cuee_mobile.clases.clsBeRuta_tecnico;
+import com.example.cuee_mobile.clases.clsBeServicios_instalado;
 import com.example.cuee_mobile.clases.clsBeTecnicos;
+import com.example.cuee_mobile.clases.clsBeTransformadores;
 import com.example.cuee_mobile.clases.clsBeUsuarios_por_ruta;
+import com.example.cuee_mobile.clases.clsBeUsuarios_servicio;
 import com.example.cuee_mobile.controladores.PBase;
+import com.example.cuee_mobile.modelos.ServicioInsModel;
 import com.example.cuee_mobile.modelos.institucion.InstitucionDetalleModel;
 import com.example.cuee_mobile.modelos.institucion.InstitucionModel;
+import com.example.cuee_mobile.modelos.lectura.LecturaModel;
 import com.example.cuee_mobile.modelos.meses.MesProformaModel;
 import com.example.cuee_mobile.modelos.meses.MoraPagadaModel;
 import com.example.cuee_mobile.modelos.meses.MoraProformaModel;
 import com.example.cuee_mobile.modelos.mnt.ContadoresModel;
 import com.example.cuee_mobile.modelos.mnt.ParametrosModel;
+import com.example.cuee_mobile.modelos.mnt.RenglonesModel;
 import com.example.cuee_mobile.modelos.mnt.TecnicoModel;
+import com.example.cuee_mobile.modelos.mnt.TransformadorModel;
 import com.example.cuee_mobile.modelos.reporte.PagosDetModel;
 import com.example.cuee_mobile.modelos.ruta.RutaLecturaModel;
 import com.example.cuee_mobile.modelos.ruta.RutaTecnicoModel;
 import com.example.cuee_mobile.modelos.ruta.UsuariosRutaModel;
+import com.example.cuee_mobile.modelos.usuario.UsrServicioModel;
 
 import java.util.List;
 import java.util.Objects;
@@ -71,6 +86,11 @@ public class ComApi extends PBase {
     private MoraPagadaModel moraPg;
     private MoraProformaModel moraProf;
     private PagosDetModel pagoDet;
+    private LecturaModel lectura;
+    private RenglonesModel renglon;
+    private TransformadorModel transformador;
+    private UsrServicioModel usrServicio;
+    private ServicioInsModel srInstalado;
 
 
     @Override
@@ -103,6 +123,11 @@ public class ComApi extends PBase {
             moraPg = new MoraPagadaModel(this, Con, db);
             moraProf = new MoraProformaModel(this, Con, db);
             pagoDet = new PagosDetModel(this, Con, db);
+            lectura = new LecturaModel(this, Con, db);
+            renglon = new RenglonesModel(this, Con, db);
+            transformador = new TransformadorModel(this, Con, db);
+            usrServicio = new UsrServicioModel(this, Con, db);
+            srInstalado = new ServicioInsModel(this, Con, db);
         } catch (Exception e) {
             helper.msgbox(Objects.requireNonNull(new Object() {
             }.getClass().getEnclosingClass()).getName() +" - "+ e);
@@ -380,11 +405,177 @@ public class ComApi extends PBase {
                                 contador.guardar(obj);
                             }
                         }
-                        getMesesProforma();
                     }
+                    //getLectura();
+                    getRenglones();
                 }
                 @Override
                 public void onFailure(Call<List<clsBeContadores>> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    public void getLectura() {
+        msjProg = "Porcesando lecturas...";
+        actualizaProgress();
+
+        try {
+            Lectura cliente = retrofit.CrearServicio(Lectura.class);
+            Call<List<clsBeLectura>> call = cliente.getLectura();
+
+            call.enqueue(new Callback<List<clsBeLectura>>() {
+                @Override
+                public void onResponse(Call<List<clsBeLectura>> call, Response<List<clsBeLectura>> response) {
+                    if (response.isSuccessful()) {
+                        List<clsBeLectura> lista = response.body();
+
+                        if (lista != null && lista.size() > 0) {
+                            for (clsBeLectura obj:lista) {
+                                lectura.guardar(obj, true);
+                            }
+                        }
+                        getRenglones();
+                    }
+                }
+                @Override
+                public void onFailure(Call<List<clsBeLectura>> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    public void getRenglones() {
+        msjProg = "Porcesando renglones...";
+        actualizaProgress();
+
+        try {
+            Renglon cliente = retrofit.CrearServicio(Renglon.class);
+            Call<List<clsBeRenglones>> call = cliente.getRenglones();
+
+            call.enqueue(new Callback<List<clsBeRenglones>>() {
+                @Override
+                public void onResponse(Call<List<clsBeRenglones>> call, Response<List<clsBeRenglones>> response) {
+                    if (response.isSuccessful()) {
+                        List<clsBeRenglones> lista = response.body();
+
+                        if (lista != null && lista.size() > 0) {
+                            for (clsBeRenglones obj:lista) {
+                                renglon.guardar(obj);
+                            }
+                        }
+                        getTransformadores();
+                    }
+                }
+                @Override
+                public void onFailure(Call<List<clsBeRenglones>> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    public void getTransformadores() {
+        msjProg = "Porcesando transformadores...";
+        actualizaProgress();
+
+        try {
+            Transformador cliente = retrofit.CrearServicio(Transformador.class);
+            Call<List<clsBeTransformadores>> call = cliente.getTransformadores();
+
+            call.enqueue(new Callback<List<clsBeTransformadores>>() {
+                @Override
+                public void onResponse(Call<List<clsBeTransformadores>> call, Response<List<clsBeTransformadores>> response) {
+                    if (response.isSuccessful()) {
+                        List<clsBeTransformadores> lista = response.body();
+
+                        if (lista != null && lista.size() > 0) {
+                            for (clsBeTransformadores obj:lista) {
+                                transformador.guardar(obj);
+                            }
+                        }
+                        getUsuarioServicio();
+                    }
+                }
+                @Override
+                public void onFailure(Call<List<clsBeTransformadores>> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    public void getUsuarioServicio() {
+        msjProg = "Porcesando usuario servicio...";
+        actualizaProgress();
+
+        try {
+            UsuarioServicio cliente = retrofit.CrearServicio(UsuarioServicio.class);
+            Call<List<clsBeUsuarios_servicio>> call = cliente.getUsuariosServicio();
+
+            call.enqueue(new Callback<List<clsBeUsuarios_servicio>>() {
+                @Override
+                public void onResponse(Call<List<clsBeUsuarios_servicio>> call, Response<List<clsBeUsuarios_servicio>> response) {
+                    if (response.isSuccessful()) {
+                        List<clsBeUsuarios_servicio> lista = response.body();
+
+                        if (lista != null && lista.size() > 0) {
+                            for (clsBeUsuarios_servicio obj:lista) {
+                                usrServicio.guardar(obj);
+                            }
+                        }
+                        getServiciosInstalados();
+                    }
+                }
+                @Override
+                public void onFailure(Call<List<clsBeUsuarios_servicio>> call, Throwable t) {
+
+                }
+            });
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    public void getServiciosInstalados() {
+        msjProg = "Porcesando servicios instalados...";
+        actualizaProgress();
+
+        try {
+            ServiciosIns cliente = retrofit.CrearServicio(ServiciosIns.class);
+            Call<List<clsBeServicios_instalado>> call = cliente.getServiciosInstalados();
+
+            call.enqueue(new Callback<List<clsBeServicios_instalado>>() {
+                @Override
+                public void onResponse(Call<List<clsBeServicios_instalado>> call, Response<List<clsBeServicios_instalado>> response) {
+                    if (response.isSuccessful()) {
+                        List<clsBeServicios_instalado> lista = response.body();
+
+                        if (lista != null && lista.size() > 0) {
+                            for (clsBeServicios_instalado obj:lista) {
+                                srInstalado.guardar(obj);
+                            }
+                        }
+                        terminaRecepcion();
+                    }
+                }
+                @Override
+                public void onFailure(Call<List<clsBeServicios_instalado>> call, Throwable t) {
 
                 }
             });
@@ -413,7 +604,6 @@ public class ComApi extends PBase {
                                 mesProf.guardar(obj);
                             }
                         }
-                        getMesesMoraProforma();
                     }
                 }
                 @Override
@@ -446,7 +636,6 @@ public class ComApi extends PBase {
                                 moraProf.guardar(obj);
                             }
                         }
-                        getMesesMoraPagada();
                     }
                 }
                 @Override
@@ -479,8 +668,6 @@ public class ComApi extends PBase {
                                 moraPg.guardar(obj);
                             }
                         }
-
-                        terminaRecepcion();
                     }
                 }
                 @Override
