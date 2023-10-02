@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.example.cuee_mobile.R;
 import com.example.cuee_mobile.api.servicios.Contador;
@@ -109,6 +112,8 @@ public class ComApi extends PBase {
 
         setModels();
         setHandlers();
+
+        helper.msgbox(String.valueOf(gl.IdRuta));
     }
 
     private void setModels() {
@@ -188,7 +193,7 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<List<clsBeInstitucion>> call, Throwable t) {
-
+                    cancelarPeticion(call);
                 }
             });
         } catch (Exception e) {
@@ -226,7 +231,7 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<List<clsBeInstitucion_detalle>> call, Throwable t) {
-
+                    cancelarPeticion(call);
                 }
             });
         } catch (Exception e) {
@@ -264,7 +269,7 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<List<clsBeRuta_lectura>> call, Throwable t) {
-
+                    cancelarPeticion(call);
                 }
             });
         } catch (Exception e) {
@@ -301,7 +306,7 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<List<clsBeTecnicos>> call, Throwable t) {
-
+                    cancelarPeticion(call);
                 }
             });
         } catch (Exception e) {
@@ -337,7 +342,7 @@ public class ComApi extends PBase {
                     }
                 }
                 @Override
-                public void onFailure(Call<List<clsBeRuta_tecnico>> call, Throwable t) {}
+                public void onFailure(Call<List<clsBeRuta_tecnico>> call, Throwable t) {cancelarPeticion(call);}
             });
         } catch (Exception e) {
             helper.msgbox(Objects.requireNonNull(new Object() {
@@ -374,7 +379,7 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<List<clsBeUsuarios_por_ruta>> call, Throwable t) {
-
+                    cancelarPeticion(call);
                 }
             });
         } catch (Exception e) {
@@ -411,7 +416,7 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<List<clsBeParametros>> call, Throwable t) {
-
+                    cancelarPeticion(call);
                 }
             });
         } catch (Exception e) {
@@ -448,7 +453,7 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<List<clsBeContadores>> call, Throwable t) {
-
+                    cancelarPeticion(call);
                 }
             });
         } catch (Exception e) {
@@ -485,7 +490,7 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<List<clsBeLectura>> call, Throwable t) {
-
+                    cancelarPeticion(call);
                 }
             });
         } catch (Exception e) {
@@ -522,7 +527,7 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<List<clsBeRenglones>> call, Throwable t) {
-
+                    cancelarPeticion(call);
                 }
             });
         } catch (Exception e) {
@@ -559,7 +564,7 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<List<clsBeTransformadores>> call, Throwable t) {
-
+                    cancelarPeticion(call);
                 }
             });
         } catch (Exception e) {
@@ -596,7 +601,7 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<List<clsBeUsuarios_servicio>> call, Throwable t) {
-
+                    cancelarPeticion(call);
                 }
             });
         } catch (Exception e) {
@@ -633,7 +638,7 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<List<clsBeServicios_instalado>> call, Throwable t) {
-
+                    cancelarPeticion(call);
                 }
             });
         } catch (Exception e) {
@@ -816,6 +821,12 @@ public class ComApi extends PBase {
         relPrg.setVisibility(View.GONE);
         btnRecibir.setVisibility(View.VISIBLE);
         btnEnviar.setEnabled(true);
+    }
+
+    private void cancelarPeticion(@NonNull Call call) {
+        call.cancel();
+        Toast.makeText(ComApi.this, "Problemas de conexión, intentelo de nuevo", Toast.LENGTH_LONG).show();
+        terminaRecepcion();
     }
 
     private void actualizaProgress() {

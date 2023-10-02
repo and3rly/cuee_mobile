@@ -8,6 +8,7 @@ public class CueeHelper {
     private Context context;
 
     public CueeHelper(Context ct) {
+        context = ct;
     }
 
     public void msgbox(String msg) {

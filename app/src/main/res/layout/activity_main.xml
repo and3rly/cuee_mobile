@@ -30,15 +30,29 @@
                 android:layout_marginTop="45dp"
                 android:src="@drawable/logo" />
 
+            <TextView
+                android:id="@+id/lblEmpresa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imageView2"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:paddingStart="50dp"
+                android:paddingEnd="50dp"
+                android:text="Nombre empresa"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
             <RelativeLayout
                 android:id="@+id/relFrm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/imageView2"
+                android:layout_below="@+id/lblEmpresa"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="50dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginEnd="50dp">
 
                 <TextView
@@ -76,11 +90,12 @@
 
                         <EditText
                             android:id="@+id/txtRuta"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:ems="10"
-                            android:inputType="text"
-                            android:textColor="#000000" />
+                            android:enabled="false"
+                            android:inputType="text" />
+
                     </TableRow>
 
                     <TableRow
@@ -124,7 +139,7 @@
                             android:layout_height="wrap_content"
                             android:ems="10"
                             android:inputType="textPassword"
-                            android:textColor="#000000"/>
+                            android:textColor="#000000" />
 
                     </TableRow>
 

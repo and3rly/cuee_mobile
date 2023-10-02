@@ -19,6 +19,7 @@ public class LecturaModel {
     private final String tabla = "LECTURA";
     private final String sel =  "SELECT * FROM " + tabla;
     public ArrayList<clsBeLectura> lista = new ArrayList<>();
+    public clsBeLectura objLectura = null;
 
     public LecturaModel(Context ct, HelperBD con, SQLiteDatabase dbase) {
         context = ct;
@@ -28,14 +29,18 @@ public class LecturaModel {
     }
 
     public void getLista(String sq) {
-        buscar(sel +" "+ sq);
+        buscar(sel +" "+ sq, false);
     }
 
     public void getLista() {
-        buscar(sel);
+        buscar(sel, false);
     }
 
-    private void buscar(String sel) {
+    public void getLinea() {
+        buscar(sel, true);
+    }
+
+    private void buscar(String sel, boolean uno) {
         clsBeLectura item;
         Cursor DT;
         try {
@@ -44,24 +49,14 @@ public class LecturaModel {
             if (DT.getCount() > 0) {
                 DT.moveToFirst();
 
-                lista.clear();
-                while (!DT.isAfterLast()) {
-                    item = new clsBeLectura();
-
-                    item.IdLectura = DT.getInt(0);
-                    item.IdUsuarioServicio = DT.getInt(1);
-                    item.IdContador = DT.getString(2);
-                    item.Fecha = DT.getString(3);
-                    item.Lectura = DT.getDouble(4);
-                    item.Consumo = DT.getDouble(5);
-                    item.IdUsuario = DT.getInt(6);
-                    item.Fecha_creacion = DT.getString(7);
-                    item.Lectura_kw = DT.getDouble(8);
-                    item.IdTecnico = DT.getInt(9);
-                    item.StatCom = DT.getString(10);
-
-                    lista.add(item);
-                    DT.moveToNext();
+                if (!uno) {
+                    lista.clear();
+                    while (!DT.isAfterLast()) {
+                        lista.add(setLinea(DT));
+                        DT.moveToNext();
+                    }
+                } else {
+                    objLectura = setLinea(DT);
                 }
             }
 
@@ -69,6 +64,30 @@ public class LecturaModel {
         } catch (Exception e) {
             Log.e("LECTURA", "buscar: ", e );
         }
+    }
+
+    private clsBeLectura setLinea(Cursor DT) {
+        clsBeLectura item = null;
+        try {
+            item = new clsBeLectura();
+
+            item.IdLectura = DT.getInt(0);
+            item.IdUsuarioServicio = DT.getInt(1);
+            item.IdContador = DT.getString(2);
+            item.Fecha = DT.getString(3);
+            item.Lectura = DT.getDouble(4);
+            item.Consumo = DT.getDouble(5);
+            item.IdUsuario = DT.getInt(6);
+            item.Fecha_creacion = DT.getString(7);
+            item.Lectura_kw = DT.getDouble(8);
+            item.IdTecnico = DT.getInt(9);
+            item.StatCom = DT.getString(10);
+
+        } catch (Exception e) {
+            Log.e("LECTURA", "setLinea: ", e );
+        }
+
+        return item;
     }
 
     public boolean guardar(clsBeLectura obj, boolean rec) {

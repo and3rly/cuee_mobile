@@ -20,6 +20,7 @@ public class RutaLecturaModel {
     private final String tabla = "RUTA_LECTURA";
     private final String sel =  "SELECT * FROM " + tabla;
     public ArrayList<clsBeRuta_lectura> lista = new ArrayList<>();
+    public clsBeRuta_lectura objRutaLec = null;
 
     public RutaLecturaModel(Context ct, HelperBD con, SQLiteDatabase dbase) {
         context = ct;
@@ -30,14 +31,18 @@ public class RutaLecturaModel {
     }
 
     public void getLista(String sq) {
-        buscar(sel +" "+ sq);
+        buscar(sel +" "+ sq, false);
     }
 
     public void getLista() {
-        buscar(sel);
+        buscar(sel, false);
     }
 
-    private void buscar(String sel) {
+    public void getLinea() {
+        buscar(sel , true);
+    }
+
+    private void buscar(String sel, boolean uno) {
         clsBeRuta_lectura item;
         Cursor DT;
         try {
@@ -46,17 +51,15 @@ public class RutaLecturaModel {
             if (DT.getCount() > 0) {
                 DT.moveToFirst();
 
-                lista.clear();
-                while (!DT.isAfterLast()) {
-                    item = new clsBeRuta_lectura();
+                if (!uno) {
+                    lista.clear();
+                    while (!DT.isAfterLast()) {
 
-                    item.IdRuta = DT.getInt(0);
-                    item.Nombre = DT.getString(1);
-                    item.Activo = Boolean.parseBoolean(DT.getString(2));
-                    item.IdTecnicoDef = DT.getInt(3);
-
-                    lista.add(item);
-                    DT.moveToNext();
+                        lista.add(setLinea(DT));
+                        DT.moveToNext();
+                    }
+                } else {
+                    objRutaLec = setLinea(DT);
                 }
             }
 
@@ -64,6 +67,21 @@ public class RutaLecturaModel {
         } catch (Exception e) {
             Log.e("RUTA_LECTURA", "buscar: ", e );
         }
+    }
+
+    private clsBeRuta_lectura setLinea(Cursor DT) {
+        clsBeRuta_lectura item = null;
+        try {
+            item = new clsBeRuta_lectura();
+            item.IdRuta = DT.getInt(0);
+            item.Nombre = DT.getString(1);
+            item.Activo = Boolean.parseBoolean(DT.getString(2));
+            item.IdTecnicoDef = DT.getInt(3);
+        } catch (Exception e) {
+            Log.e("Institucion", "buscar: ", e );
+        }
+
+        return item;
     }
 
     public boolean guardar(clsBeRuta_lectura obj) {
