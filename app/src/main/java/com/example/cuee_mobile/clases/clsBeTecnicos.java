@@ -1,5 +1,7 @@
 package com.example.cuee_mobile.clases;
 
+import java.util.List;
+
 public class clsBeTecnicos {
 
     public int IdTecnico = 0;
@@ -9,6 +11,8 @@ public class clsBeTecnicos {
     public boolean Activo = false;
     public String Codigo = "";
     public String Clave = "";
+
+    public List<clsBeTecnicos> listaTec;
 
     public int getIdTecnico() {
         return IdTecnico;

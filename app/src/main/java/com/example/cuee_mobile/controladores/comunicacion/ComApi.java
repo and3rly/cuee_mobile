@@ -2,6 +2,7 @@ package com.example.cuee_mobile.controladores.comunicacion;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -43,6 +44,7 @@ import com.example.cuee_mobile.clases.clsBeTecnicos;
 import com.example.cuee_mobile.clases.clsBeTransformadores;
 import com.example.cuee_mobile.clases.clsBeUsuarios_por_ruta;
 import com.example.cuee_mobile.clases.clsBeUsuarios_servicio;
+import com.example.cuee_mobile.controladores.MainActivity;
 import com.example.cuee_mobile.controladores.PBase;
 import com.example.cuee_mobile.modelos.ServicioInsModel;
 import com.example.cuee_mobile.modelos.institucion.InstitucionDetalleModel;
@@ -112,8 +114,6 @@ public class ComApi extends PBase {
 
         setModels();
         setHandlers();
-
-        helper.msgbox(String.valueOf(gl.IdRuta));
     }
 
     private void setModels() {
@@ -165,7 +165,7 @@ public class ComApi extends PBase {
     }
 
     public void getInstitucion() {
-        msjProg = "Porcesando institución...";
+        msjProg = "Procesando institución...";
         actualizaProgress();
 
         try {
@@ -203,7 +203,7 @@ public class ComApi extends PBase {
     }
 
     public void getInstitucionDetalle() {
-        msjProg = "Porcesando detalle institución...";
+        msjProg = "Procesando detalle institución...";
         actualizaProgress();
 
         try {
@@ -241,7 +241,7 @@ public class ComApi extends PBase {
     }
 
     public void getRutaLectura() {
-        msjProg = "Porcesando rutas lectura...";
+        msjProg = "Procesando rutas lectura...";
         actualizaProgress();
 
         try {
@@ -279,7 +279,7 @@ public class ComApi extends PBase {
     }
 
     public void getTecnicos() {
-        msjProg = "Porcesando tecnicos...";
+        msjProg = "Procesando tecnicos...";
         actualizaProgress();
 
         try {
@@ -316,7 +316,7 @@ public class ComApi extends PBase {
     }
 
     public void getRutaTecnico() {
-        msjProg = "Porcesando tecnicos por ruta...";
+        msjProg = "Procesando tecnicos por ruta...";
         actualizaProgress();
 
         try {
@@ -351,7 +351,7 @@ public class ComApi extends PBase {
     }
 
     public void getUsuariosRuta() {
-        msjProg = "Porcesando usuarios por ruta...";
+        msjProg = "Procesando usuarios por ruta...";
         actualizaProgress();
 
         try {
@@ -389,7 +389,7 @@ public class ComApi extends PBase {
     }
 
     public void getParametros() {
-        msjProg = "Porcesando parametros...";
+        msjProg = "Procesando parametros...";
         actualizaProgress();
 
         try {
@@ -426,7 +426,7 @@ public class ComApi extends PBase {
     }
 
     public void getContadores() {
-        msjProg = "Porcesando contadores...";
+        msjProg = "Procesando contadores...";
         actualizaProgress();
 
         try {
@@ -463,7 +463,7 @@ public class ComApi extends PBase {
     }
 
     public void getLectura() {
-        msjProg = "Porcesando lecturas...";
+        msjProg = "Procesando lecturas...";
         actualizaProgress();
 
         try {
@@ -500,7 +500,7 @@ public class ComApi extends PBase {
     }
 
     public void getRenglones() {
-        msjProg = "Porcesando renglones...";
+        msjProg = "Procesando renglones...";
         actualizaProgress();
 
         try {
@@ -537,7 +537,7 @@ public class ComApi extends PBase {
     }
 
     public void getTransformadores() {
-        msjProg = "Porcesando transformadores...";
+        msjProg = "Procesando transformadores...";
         actualizaProgress();
 
         try {
@@ -574,7 +574,7 @@ public class ComApi extends PBase {
     }
 
     public void getUsuarioServicio() {
-        msjProg = "Porcesando usuario servicio...";
+        msjProg = "Procesando usuario servicio...";
         actualizaProgress();
 
         try {
@@ -611,7 +611,7 @@ public class ComApi extends PBase {
     }
 
     public void getServiciosInstalados() {
-        msjProg = "Porcesando servicios instalados...";
+        msjProg = "Procesando servicios instalados...";
         actualizaProgress();
 
         try {
@@ -634,6 +634,8 @@ public class ComApi extends PBase {
                             }
                         }
                         terminaRecepcion();
+                        startActivity(new Intent(ComApi.this, MainActivity.class));
+                        finish();
                     }
                 }
                 @Override
@@ -648,7 +650,7 @@ public class ComApi extends PBase {
     }
 
     public void getMesesProforma() {
-        msjProg = "Porcesando meses proforma...";
+        msjProg = "Procesando meses proforma...";
         actualizaProgress();
 
         try {
@@ -680,7 +682,7 @@ public class ComApi extends PBase {
     }
 
     public void getMesesMoraProforma() {
-        msjProg = "Porcesando meses mora proforma...";
+        msjProg = "Procesando meses mora proforma...";
         actualizaProgress();
 
         try {
@@ -712,7 +714,7 @@ public class ComApi extends PBase {
     }
 
     public void getMesesMoraPagada() {
-        msjProg = "Porcesando meses mora pagada...";
+        msjProg = "Procesando meses mora pagada...";
         actualizaProgress();
 
         try {
@@ -744,7 +746,7 @@ public class ComApi extends PBase {
     }
 
     public void getPagosDetRep() {
-        msjProg = "Porcesando detalle de pagos...";
+        msjProg = "Procesando detalle de pagos...";
         actualizaProgress();
 
         try {

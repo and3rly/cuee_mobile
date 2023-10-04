@@ -5,11 +5,18 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.core.app.ActivityCompat;
@@ -17,19 +24,27 @@ import androidx.core.app.ActivityCompat;
 import com.example.cuee_mobile.R;
 import com.example.cuee_mobile.clases.clsBeInstitucion;
 import com.example.cuee_mobile.clases.clsBeRuta_lectura;
+import com.example.cuee_mobile.clases.clsBeTecnicos;
 import com.example.cuee_mobile.controladores.comunicacion.ComApi;
 import com.example.cuee_mobile.modelos.institucion.InstitucionModel;
+import com.example.cuee_mobile.modelos.mnt.TecnicoModel;
 import com.example.cuee_mobile.modelos.ruta.RutaLecturaModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends PBase {
 
     private Button btnLogin;
-    private EditText txtUsuario, txtClave, txtRuta;
-    private TextView lblEmpresa;
+    private EditText txtUsuario, txtClave;
+    private Spinner cmbTecnicos;
+    private TextView lblEmpresa, lblRuta;
     private InstitucionModel institucion;
     private RutaLecturaModel rutaLectura;
+    private TecnicoModel tecnico;
     private clsBeInstitucion objInstitucion = null;
     private clsBeRuta_lectura objRutaLec = null;
+    private ArrayList<clsBeTecnicos> listaTec = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +54,9 @@ public class MainActivity extends PBase {
         getPermissionGrant();
         super.SetBase();
 
-        txtUsuario = findViewById(R.id.txtUsuario);
+        cmbTecnicos = findViewById(R.id.cmbTecnicos);
         txtClave = findViewById(R.id.txtClave);
-        txtRuta = findViewById(R.id.txtRuta);
+        lblRuta = findViewById(R.id.lblRuta);
         lblEmpresa = findViewById(R.id.lblEmpresa);
         btnLogin = findViewById(R.id.btnLogin);
 
@@ -55,6 +70,7 @@ public class MainActivity extends PBase {
             setModels();
             getInstitucion();
             getRutaLectura();
+            getTecnicos();
         } catch (Exception e) {
             helper.msgbox(new Object() {}.getClass().getEnclosingClass().getName() +" - "+ e);
         }
@@ -63,7 +79,42 @@ public class MainActivity extends PBase {
     private void setHandlers() {
         try {
             btnLogin.setOnClickListener(view -> {
-                startActivity(new Intent(this, ComApi.class));
+                login();
+            });
+
+            txtClave.setOnKeyListener((v, keyCode, event) -> {
+                try {
+                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                        switch (keyCode) {
+                            case KeyEvent.KEYCODE_ENTER:
+                                login();
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return false;
+            });
+
+            cmbTecnicos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                    TextView spinlabel = (TextView) parent.getChildAt(0);
+
+                    if (spinlabel != null){
+                        spinlabel.setTextColor(Color.BLACK);
+                        spinlabel.setPadding(5,0,0,0);spinlabel.setTextSize(18);
+                        spinlabel.setTypeface(spinlabel.getTypeface(), Typeface.BOLD);
+                    }
+
+                    gl.tecnico  = listaTec.get(position);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
             });
         } catch (Exception e) {
             helper.msgbox(new Object() {}.getClass().getEnclosingClass().getName() +" - "+ e);
@@ -74,6 +125,7 @@ public class MainActivity extends PBase {
         try {
             institucion = new InstitucionModel(this, Con, db);
             rutaLectura = new RutaLecturaModel(this, Con, db);
+            tecnico = new TecnicoModel(this, Con,db);
         } catch (Exception e) {
             helper.msgbox(new Object() {}.getClass().getEnclosingClass().getName() +" - "+ e);
         }
@@ -101,11 +153,58 @@ public class MainActivity extends PBase {
             objRutaLec = rutaLectura.objRutaLec;
 
             if (objRutaLec != null) {
-                txtRuta.setText(objRutaLec.Nombre);
+                lblRuta.setText("No. " +objRutaLec.Nombre);
                 gl.IdRuta = objRutaLec.IdRuta;
             } else {
                 startActivity(new Intent(this, ComApi.class));
                 super.finish();
+            }
+        } catch (Exception e) {
+            helper.msgbox(new Object() {}.getClass().getEnclosingClass().getName() +" - "+ e);
+        }
+    }
+
+    private void getTecnicos() {
+        ArrayList<String> lTec = new ArrayList<>();
+        try {
+            tecnico.getLista();
+
+            if (tecnico.lista.size() > 0) {
+                listaTec = tecnico.lista;
+
+                lTec.clear();
+                for (clsBeTecnicos obj: listaTec) {
+                    lTec.add(obj.Nombre);
+                }
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, lTec);
+                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                cmbTecnicos.setAdapter(dataAdapter);
+
+                if (listaTec.size()>0) {
+                    cmbTecnicos.setSelection(0);
+                    txtClave.requestFocus();
+                }
+            } else {
+                helper.msgbox("No existen tecnicos registrados.");
+            }
+        } catch (Exception e) {
+            helper.msgbox(new Object() {}.getClass().getEnclosingClass().getName() +" - "+ e);
+        }
+    }
+
+    private void login() {
+        try {
+            if (!txtClave.getText().toString().isEmpty()) {
+                if (txtClave.getText().toString().equals(gl.tecnico.Clave))  {
+                    startActivity(new Intent(this, Menu.class));
+                    super.finish();
+                } else {
+                    helper.msgbox("Clave incorrecta.");
+                    txtClave.requestFocus();
+                    txtClave.selectAll();
+                }
+            } else {
+                helper.msgbox("Ingrese clave.");
             }
         } catch (Exception e) {
             helper.msgbox(new Object() {}.getClass().getEnclosingClass().getName() +" - "+ e);
