@@ -2,8 +2,12 @@ package com.example.cuee_mobile.controladores;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -13,6 +17,7 @@ import com.example.cuee_mobile.clases.clsBeMenu;
 import com.example.cuee_mobile.controladores.comunicacion.ComApi;
 import com.example.cuee_mobile.controladores.consulta_contadores.ConsultaContadores;
 import com.example.cuee_mobile.controladores.lectura.Lectura;
+import com.example.cuee_mobile.controladores.utilerias.Tablas;
 
 import java.util.ArrayList;
 
@@ -69,7 +74,7 @@ public class Menu extends PBase {
 
             item = new clsBeMenu();
             item.id  = 4;
-            item.titulo = "Utileria";
+            item.titulo = "Utilerias";
             item.icono = 4;
             lista.add(item);
 
@@ -100,6 +105,7 @@ public class Menu extends PBase {
                     startActivity(new Intent(this, ComApi.class));
                     break;
                 case 4:
+                    menuUtilerias();
                     break;
                 case 5:
                     gl.tecnico = null;
@@ -111,6 +117,42 @@ public class Menu extends PBase {
             helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName() +" - "+ e);
         }
     }
+
+    public void menuUtilerias() {
+        try {
+            String[] items = {"Tablas","Versión CUEE"};
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setIcon(R.drawable.config);
+            builder.setTitle("Utilerias");
+
+            builder.setItems(items, (dialog, item) -> {
+                switch (item) {
+                    case 0:
+                        startActivity(new Intent(this, Tablas.class));
+                        break;
+                    case 1:
+                        helper.toast("Versión 1.0");
+                        break;
+                }
+            });
+
+            builder.setNegativeButton("Salir", (dialog, which) -> {
+                dialog.cancel();
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+            Button nbutton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+            nbutton.setBackgroundColor(Color.parseColor("#880E4F"));
+            nbutton.setTextColor(Color.WHITE);
+
+        } catch (Exception e) {
+            helper.msgbox(new Object(){}.getClass().getEnclosingMethod().getName() +"-"+ e) ;
+        }
+    }
+
     @Override
     public void onBackPressed() {
         if (gl.tecnico == null) super.onBackPressed();

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".controladores.utilerias.Tablas">
+
+    <RelativeLayout
+        android:id="@+id/relTop"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/blue_gray"
+        android:gravity="top">
+
+        <TextView
+            android:id="@+id/lblTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/imgTop"
+            android:layout_alignBottom="@+id/imgTop"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="-1dp"
+            android:layout_marginBottom="1dp"
+            android:layout_toEndOf="@+id/imgTop"
+            android:gravity="center_vertical"
+            android:text="Tablas"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imgTop"
+            android:layout_width="50dp"
+            android:layout_height="35dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/tabla" />
+    </RelativeLayout>
+
+    <Spinner
+        android:id="@+id/cmbTablas"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_below="@+id/relTop"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/frame"
+        android:padding="4dp" />
+
+    <RelativeLayout
+        android:id="@+id/relWhere"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cmbTablas"
+        android:layout_alignStart="@+id/cmbTablas"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp">
+
+        <TextView
+            android:id="@+id/lblWhere"
+            android:layout_width="60dp"
+            android:layout_height="42dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="0dp"
+            android:gravity="center_vertical"
+            android:text="WHERE:"
+            android:textColor="#000000"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/txtWhere"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_toStartOf="@+id/imgLimpiar"
+            android:layout_toEndOf="@+id/lblWhere"
+            android:ems="10"
+            android:inputType="text"
+            android:textColor="#000000" />
+
+        <ImageView
+            android:id="@+id/imgLimpiar"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="0dp"
+            android:padding="4dp"
+            android:src="@drawable/limpiar" />
+    </RelativeLayout>
+
+    <HorizontalScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="462dp"
+        android:layout_below="@+id/relWhere"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="10dp"
+        android:fillViewport="true"
+        android:scrollbarStyle="insideInset"
+        android:scrollbars="vertical">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:stretchColumns="1">
+
+            <GridView
+                android:id="@+id/grdEnc"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true">
+
+            </GridView>
+
+            <GridView
+                android:id="@+id/grdDet"
+                android:layout_width="match_parent"
+                android:layout_height="420dp"
+                android:layout_below="@+id/grdEnc"
+                android:layout_alignParentTop="false"
+                android:layout_alignParentBottom="true">
+
+            </GridView>
+        </RelativeLayout>
+
+    </HorizontalScrollView>
+
+    <ProgressBar
+        android:id="@+id/pgrTablas"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="67dp"
+        android:layout_height="59dp"
+        android:layout_centerInParent="true"
+        android:visibility="invisible" />
+
+</RelativeLayout>

@@ -36,7 +36,7 @@ import java.util.List;
 public class MainActivity extends PBase {
 
     private Button btnLogin;
-    private EditText txtUsuario, txtClave;
+    private EditText txtClave;
     private Spinner cmbTecnicos;
     private TextView lblEmpresa, lblRuta;
     private InstitucionModel institucion;

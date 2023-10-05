@@ -8,6 +8,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 public interface Ruta {
     @GET("RutaLectura")
@@ -16,6 +17,6 @@ public interface Ruta {
     @GET("RutaTecnico")
     Call<List<clsBeRuta_tecnico>> getRutaTecnico();
 
-    @GET("UsuariosRuta")
-    Call<List<clsBeUsuarios_por_ruta>> getUsuariosRuta();
+    @GET("UsuariosRuta/{IdRuta}/{IdItinerario}")
+    Call<List<clsBeUsuarios_por_ruta>> getUsuariosRuta(@Path("IdRuta") int IdRuta, @Path("IdItinerario")  int IdItinerario);
 }

@@ -186,7 +186,7 @@
 
             <EditText
                 android:id="@+id/txtRuta"
-                android:layout_width="match_parent"
+                android:layout_width="110dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
                 android:layout_toEndOf="@+id/lblRuta"
@@ -204,6 +204,32 @@
                 android:text="Ruta:"
                 android:textColor="#000000"
                 android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/lblItinerario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/lblRuta"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:layout_toEndOf="@+id/txtRuta"
+                android:gravity="center_vertical"
+                android:text="Itinerario:"
+                android:textColor="#000000"
+                android:textSize="17sp" />
+
+            <EditText
+                android:id="@+id/txtItinerario"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_toEndOf="@+id/lblItinerario"
+                android:ems="10"
+                android:inputType="text" />
         </RelativeLayout>
 
     </RelativeLayout>

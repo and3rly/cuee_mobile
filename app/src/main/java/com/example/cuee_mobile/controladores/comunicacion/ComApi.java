@@ -76,11 +76,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ComApi extends PBase {
-
-    private String msjProg = "";
-    private boolean ocupado = false;
     private RelativeLayout btnRecibir, btnEnviar, relPrg;
-    private EditText txtRuta;
+    private EditText txtRuta, txtItinerario;
     private TextView lblPgr;
     private InstitucionModel institucion;
     private InstitucionDetalleModel insDetalle;
@@ -99,6 +96,9 @@ public class ComApi extends PBase {
     private TransformadorModel transformador;
     private UsrServicioModel usrServicio;
     private ServicioInsModel srInstalado;
+    private String msjProg = "";
+    private boolean ocupado = false;
+    private int IdRuta, IdItinerario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +111,7 @@ public class ComApi extends PBase {
         relPrg = findViewById(R.id.relPrg);
         lblPgr = findViewById(R.id.lblPgr);
         txtRuta = findViewById(R.id.txtRuta);
+        txtItinerario = findViewById(R.id.txtItinerario);
 
         setModels();
         setHandlers();
@@ -143,6 +144,21 @@ public class ComApi extends PBase {
 
     private void setHandlers() {
         btnRecibir.setOnClickListener(view -> {
+
+            if (txtRuta.getText().toString().isEmpty()) {
+                helper.toast("Ingrese ruta.");
+                return;
+            } else {
+                IdRuta = Integer.parseInt(txtRuta.getText().toString());
+            }
+
+            if (txtItinerario.getText().toString().isEmpty()) {
+                helper.toast("Ingrese itinerario.");
+                return;
+            } else {
+                IdItinerario = Integer.parseInt(txtItinerario.getText().toString());
+            }
+
             dialogo("Recepción de datos", "¿Está seguro de iniciar la recepción de datos?", 1);
         });
     }
@@ -356,7 +372,7 @@ public class ComApi extends PBase {
 
         try {
             Ruta cliente = retrofit.CrearServicio(Ruta.class);
-            Call<List<clsBeUsuarios_por_ruta>> call = cliente.getUsuariosRuta();
+            Call<List<clsBeUsuarios_por_ruta>> call = cliente.getUsuariosRuta(IdRuta, IdItinerario);
 
             call.enqueue(new Callback<List<clsBeUsuarios_por_ruta>>() {
                 @Override
@@ -468,7 +484,7 @@ public class ComApi extends PBase {
 
         try {
             Lectura cliente = retrofit.CrearServicio(Lectura.class);
-            Call<List<clsBeLectura>> call = cliente.getLectura();
+            Call<List<clsBeLectura>> call = cliente.getLectura(IdRuta, IdItinerario);
 
             call.enqueue(new Callback<List<clsBeLectura>>() {
                 @Override
@@ -634,8 +650,11 @@ public class ComApi extends PBase {
                             }
                         }
                         terminaRecepcion();
-                        startActivity(new Intent(ComApi.this, MainActivity.class));
-                        finish();
+
+                        if (gl.tecnico == null) {
+                            startActivity(new Intent(ComApi.this, MainActivity.class));
+                            finish();
+                        }
                     }
                 }
                 @Override
