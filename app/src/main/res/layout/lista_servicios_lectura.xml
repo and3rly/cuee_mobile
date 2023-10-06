@@ -7,15 +7,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:addStatesFromChildren="true"
-        android:clipChildren="true"
+        android:clipChildren="false"
         android:clipToPadding="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:transitionGroup="true">
+
+        <TextView
+            android:id="@+id/lblInstalacion"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal|center_vertical"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="123123"
+            android:textColor="#000000"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/lblContador"
             android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal|center_vertical"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
@@ -26,8 +37,7 @@
         <TextView
             android:id="@+id/lblUsuario"
             android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal|center_vertical"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
@@ -38,8 +48,7 @@
         <TextView
             android:id="@+id/lblItinerario"
             android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal|center_vertical"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
@@ -50,8 +59,7 @@
         <TextView
             android:id="@+id/lblLecRealizada"
             android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal|center_vertical"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
@@ -62,8 +70,7 @@
         <TextView
             android:id="@+id/lblLecCorrecta"
             android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal|center_vertical"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"

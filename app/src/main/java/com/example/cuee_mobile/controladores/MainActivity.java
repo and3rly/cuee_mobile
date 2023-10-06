@@ -154,7 +154,7 @@ public class MainActivity extends PBase {
 
             if (objRutaLec != null) {
                 lblRuta.setText("No. " +objRutaLec.Nombre);
-                gl.IdRuta = objRutaLec.IdRuta;
+                gl.ruta = objRutaLec;
             } else {
                 startActivity(new Intent(this, ComApi.class));
                 super.finish();

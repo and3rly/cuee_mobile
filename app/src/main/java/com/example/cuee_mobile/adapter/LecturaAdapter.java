@@ -56,6 +56,7 @@ public class LecturaAdapter extends BaseAdapter {
             convertView = l_Inflater.inflate(R.layout.lista_servicios_lectura, null);
             holder = new ViewHolder();
 
+            holder.lblInstalacion = convertView.findViewById(R.id.lblInstalacion);
             holder.lblContador = convertView.findViewById(R.id.lblContador);
             holder.lblUsuario = convertView.findViewById(R.id.lblUsuario);
             holder.lblItinerario = convertView.findViewById(R.id.lblItinerario);
@@ -66,6 +67,7 @@ public class LecturaAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
+        holder.lblInstalacion.setText(items.get(position).IdInstalacion+"");
         holder.lblContador.setText(items.get(position).IdContador+"");
         holder.lblUsuario.setText(items.get(position).Usuario);
         holder.lblItinerario.setText(items.get(position).IdItinerario+"");
@@ -88,8 +90,8 @@ public class LecturaAdapter extends BaseAdapter {
             convertView.setBackgroundColor(Color.parseColor("#EF5350"));
         }
 
-        if(selectedIndex!= -1 && position == selectedIndex) {
-            convertView.setBackgroundColor(Color.rgb(0, 128, 0));
+        if(selectedIndex!= -1 && position == selectedIndex && lrealizada == 0 && lcorrecta == 0) {
+            convertView.setBackgroundColor(Color.parseColor("#FCE4EC"));
         } else {
             convertView.setBackgroundColor(Color.TRANSPARENT);
         }
@@ -98,6 +100,6 @@ public class LecturaAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-        TextView lblContador, lblUsuario, lblItinerario, lblLecRealizada, lblLecCorrecta;
+        TextView lblInstalacion, lblContador, lblUsuario, lblItinerario, lblLecRealizada, lblLecCorrecta;
     }
 }

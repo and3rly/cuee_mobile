@@ -2,6 +2,7 @@ package com.example.cuee_mobile.clases;
 
 public class auxLecturaServicio {
 
+    public int IdInstalacion;
     public int IdUsuarioServicio;
     public String IdContador;
     public int Lectura_correcta;

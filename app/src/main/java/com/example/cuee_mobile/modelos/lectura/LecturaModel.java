@@ -74,7 +74,7 @@ public class LecturaModel {
         auxLecturaServicio item;
         try {
             serLectura.clear();
-            sql = "SELECT A.IdUsuarioServicio, A.IdContador, A.Lectura_realizada, A.Lectura_correcta, B.Nombres, C.IdItinerario" +
+            sql = "SELECT A.IdInstalacion, A.IdUsuarioServicio, A.IdContador, A.Lectura_realizada, A.Lectura_correcta, B.Nombres, C.IdItinerario" +
                     " FROM SERVICIOS_INSTALADO A" +
                     " INNER JOIN USUARIOS_SERVICIO B ON A.IdUsuarioServicio = B.IdUsuarioServicio" +
                     " INNER JOIN USUARIOS_POR_RUTA C ON A.IdUsuarioServicio = C.IdUsuarioServicio";
@@ -87,12 +87,13 @@ public class LecturaModel {
                 while (!DT.isAfterLast()) {
                     item = new auxLecturaServicio();
 
-                    item.IdUsuarioServicio = DT.getInt(0);
-                    item.IdContador = DT.getString(1);
-                    item.Lectura_correcta = DT.getInt(2);
-                    item.Lectura_realizada = DT.getInt(3);
-                    item.Usuario = DT.getString(4);
-                    item.IdItinerario = DT.getInt(5);
+                    item.IdInstalacion = DT.getInt(0);
+                    item.IdUsuarioServicio = DT.getInt(1);
+                    item.IdContador = DT.getString(2);
+                    item.Lectura_correcta = DT.getInt(3);
+                    item.Lectura_realizada = DT.getInt(4);
+                    item.Usuario = DT.getString(5);
+                    item.IdItinerario = DT.getInt(6);
 
                     serLectura.add(item);
                     DT.moveToNext();
