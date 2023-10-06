@@ -823,6 +823,7 @@ public class ComApi extends PBase {
     private void dialogo(String titulo, String msg, int accion) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 
+        dialog.setIcon(R.drawable.logo);
         dialog.setTitle(titulo);
         dialog.setMessage(msg);
         dialog.setPositiveButton("Si", (dialog1, id) -> {

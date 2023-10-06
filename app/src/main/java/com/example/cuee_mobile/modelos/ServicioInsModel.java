@@ -213,4 +213,19 @@ public class ServicioInsModel {
         }
         return  true;
     }
+
+    public void actualizarServicio(clsBeServicios_instalado obj) {
+        try {
+            upd.init(tabla);
+
+            upd.add("Lectura_realizada", obj.Lectura_realizada);
+            upd.add("Lectura_correcta", obj.Lectura_correcta);
+            upd.Where("IdInstalacion = " + obj.IdInstalacion);
+
+            db.execSQL(upd.sql());
+
+        } catch (Exception e) {
+            Log.e("SERVICIOS_INSTALADO", "actualizar: ", e);
+        }
+    }
 }

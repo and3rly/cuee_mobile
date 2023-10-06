@@ -283,6 +283,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="3dp"
+                android:layout_marginBottom="25dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -327,7 +328,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:headerBackground="@color/pink"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
 
 </RelativeLayout>

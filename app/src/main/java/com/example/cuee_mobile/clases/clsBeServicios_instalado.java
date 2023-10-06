@@ -72,6 +72,8 @@ public class clsBeServicios_instalado {
     public String Tipo_registro = "";
     public boolean Servicio_bajo_demandafp = false;
     public boolean Es_autoproductor = false;
+    public int Lectura_realizada = 0;
+    public int Lectura_correcta = 0;
 
     public Integer getIdInstalacion() {
         return IdInstalacion;

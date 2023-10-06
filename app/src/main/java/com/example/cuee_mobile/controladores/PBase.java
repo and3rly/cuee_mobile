@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import com.example.cuee_mobile.R;
 import com.example.cuee_mobile.api.ClienteConfig;
 import com.example.cuee_mobile.base.CueeHelper;
+import com.example.cuee_mobile.base.FechaHelper;
 import com.example.cuee_mobile.base.VarGlobal;
 import com.example.cuee_mobile.bd.HelperBD;
 
@@ -17,6 +18,7 @@ public class PBase extends Activity {
     protected ClienteConfig retrofit;
     protected HelperBD Con;
     protected CueeHelper helper;
+    protected FechaHelper du;
     protected SQLiteDatabase db;
     protected String sql;
     protected VarGlobal gl;
@@ -30,6 +32,8 @@ public class PBase extends Activity {
     public void SetBase() {
         retrofit = new ClienteConfig(this);
         helper = new CueeHelper(this);
+        du = new FechaHelper(this);
+
         gl=((VarGlobal) this.getApplication());
 
         String pathDataDir = "";

@@ -92,8 +92,6 @@ public class LecturaAdapter extends BaseAdapter {
 
         if(selectedIndex!= -1 && position == selectedIndex && lrealizada == 0 && lcorrecta == 0) {
             convertView.setBackgroundColor(Color.parseColor("#FCE4EC"));
-        } else {
-            convertView.setBackgroundColor(Color.TRANSPARENT);
         }
 
         return convertView;

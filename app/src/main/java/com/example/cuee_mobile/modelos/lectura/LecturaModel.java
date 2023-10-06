@@ -153,6 +153,7 @@ public class LecturaModel {
             ins.add("Fecha_creacion", obj.Fecha_creacion);
             ins.add("Lectura_kw", obj.Lectura_kw);
             ins.add("IdTecnico", obj.IdTecnico);
+            ins.add("con_hh", obj.Con_hh);
             ins.add("StatCom", obj.StatCom);
 
             db.execSQL(ins.sql());

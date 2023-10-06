@@ -12,6 +12,7 @@ public class clsBeLectura {
     public String Fecha_creacion = "";
     public double Lectura_kw = 0.0;
     public int IdTecnico = 0;
+    public boolean Con_hh = false;
     public String StatCom="N";
 
     public int getIdLectura() {
