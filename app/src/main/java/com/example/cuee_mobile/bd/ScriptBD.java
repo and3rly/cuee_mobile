@@ -109,6 +109,8 @@ public class ScriptBD {
                     "Tipo_registro TEXT DEFAULT NULL," +
                     "Servicio_bajo_demandafp INTEGER DEFAULT 0," +
                     "Es_autoproductor INTEGER DEFAULT 0," +
+                    "Lectura_realizada INTEGER DEFAULT 0," +
+                    "Lectura_correcta INTEGER DEFAULT 0," +
                     "PRIMARY KEY ([IdInstalacion])" +
                     ");";
             db.execSQL(sql);

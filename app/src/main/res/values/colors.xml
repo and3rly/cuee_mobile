@@ -5,4 +5,7 @@
     <color name="blue_gray">#263238</color>
     <color name="pink">#880E4F</color>
     <color name="cyan">#006064</color>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#5C0101</color>
 </resources>

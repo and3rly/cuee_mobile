@@ -45,19 +45,7 @@ public class ContadoresModel {
                 DT.moveToFirst();
 
                 while (!DT.isAfterLast()) {
-                    item = new clsBeContadores();
-
-                    item.IdContador = DT.getString(0);
-                    item.IdMarca = DT.getInt(1);
-                    item.Activo = Boolean.parseBoolean(DT.getString(2));
-                    item.No_marchamo = DT.getString(3);
-                    item.Color = DT.getString(4);
-                    item.IdUsuarioServicio = DT.getInt(5);
-                    item.Fecha_Cambio = DT.getString(6);
-                    item.Fecha_Creacion = DT.getString(7);
-                    item.Lectura = DT.getDouble(8);
-
-                    lista.add(item);
+                    lista.add(setDatos(DT));
                     DT.moveToNext();
                 }
             }
@@ -68,6 +56,26 @@ public class ContadoresModel {
         }
     }
 
+    private clsBeContadores setDatos(Cursor DT) {
+        clsBeContadores item = null;
+        try {
+            item = new clsBeContadores();
+
+            item.IdContador = DT.getString(0);
+            item.IdMarca = DT.getInt(1);
+            item.Activo = Boolean.parseBoolean(DT.getString(2));
+            item.No_marchamo = DT.getString(3);
+            item.Color = DT.getString(4);
+            item.IdUsuarioServicio = DT.getInt(5);
+            item.Fecha_Cambio = DT.getString(6);
+            item.Fecha_Creacion = DT.getString(7);
+            item.Lectura = DT.getDouble(8);
+        } catch (Exception e) {
+            Log.e("CONTADORES", "guardar: ", e);
+        }
+
+        return item;
+    }
     public boolean guardar(clsBeContadores obj) {
         try {
             ins.init(tabla);

@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.cuee_mobile.bd.HelperBD;
+import com.example.cuee_mobile.clases.auxLecturaServicio;
 import com.example.cuee_mobile.clases.clsBeLectura;
 
 import java.util.ArrayList;
@@ -17,8 +18,10 @@ public class LecturaModel {
     public HelperBD.Insert ins;
     public HelperBD.Update upd;
     private final String tabla = "LECTURA";
+    private String sql;
     private final String sel =  "SELECT * FROM " + tabla;
     public ArrayList<clsBeLectura> lista = new ArrayList<>();
+    public ArrayList<auxLecturaServicio> serLectura = new ArrayList<>();
     public clsBeLectura objLectura = null;
 
     public LecturaModel(Context ct, HelperBD con, SQLiteDatabase dbase) {
@@ -64,6 +67,42 @@ public class LecturaModel {
         } catch (Exception e) {
             Log.e("LECTURA", "buscar: ", e );
         }
+    }
+
+    public ArrayList<auxLecturaServicio> getServiciosLectura() {
+        Cursor DT;
+        auxLecturaServicio item;
+        try {
+            serLectura.clear();
+            sql = "SELECT A.IdUsuarioServicio, A.IdContador, A.Lectura_realizada, A.Lectura_correcta, B.Nombres, C.IdItinerario" +
+                    " FROM SERVICIOS_INSTALADO A" +
+                    " INNER JOIN USUARIOS_SERVICIO B ON A.IdUsuarioServicio = B.IdUsuarioServicio" +
+                    " INNER JOIN USUARIOS_POR_RUTA C ON A.IdUsuarioServicio = C.IdUsuarioServicio";
+
+            DT = Con.OpenDT(sql);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+
+                while (!DT.isAfterLast()) {
+                    item = new auxLecturaServicio();
+
+                    item.IdUsuarioServicio = DT.getInt(0);
+                    item.IdContador = DT.getString(1);
+                    item.Lectura_correcta = DT.getInt(2);
+                    item.Lectura_realizada = DT.getInt(3);
+                    item.Usuario = DT.getString(4);
+                    item.IdItinerario = DT.getInt(5);
+
+                    serLectura.add(item);
+                    DT.moveToNext();
+                }
+            }
+        } catch (Exception e) {
+            Log.e("LECTURA", "buscar: ", e );
+        }
+
+        return serLectura;
     }
 
     private clsBeLectura setLinea(Cursor DT) {

@@ -40,7 +40,7 @@
             android:layout_marginStart="2dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:src="@drawable/com" />
+            android:src="@drawable/comunicacion" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -178,8 +178,13 @@
             android:id="@+id/relRuta"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="0dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/frame"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             android:paddingBottom="10dp">
