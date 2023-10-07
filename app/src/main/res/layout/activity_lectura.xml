@@ -232,9 +232,10 @@
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="15dp"
         android:backgroundTint="@color/pink"
-        app:fabCustomSize="60dp"
         android:clickable="true"
         android:src="@drawable/search"
+        android:visibility="gone"
+        app:fabCustomSize="60dp"
         app:maxImageSize="35dp" />
 
 </RelativeLayout>
