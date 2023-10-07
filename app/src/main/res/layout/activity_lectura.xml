@@ -35,7 +35,7 @@
             android:layout_below="@+id/lblTop"
             android:layout_marginTop="0dp"
             android:gravity="center_horizontal|center_vertical"
-            android:text="TextView"
+            android:text="Técnico"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -94,7 +94,7 @@
             android:layout_marginTop="0dp"
             android:gravity="center_vertical"
             android:paddingStart="5dp"
-            android:text="Contador:"
+            android:text="Filtro:"
             android:textColor="#000000"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -108,6 +108,7 @@
             android:layout_toStartOf="@+id/btnLimpiar"
             android:layout_toEndOf="@+id/lblContador"
             android:ems="10"
+            android:hint="Contador"
             android:inputType="text" />
 
         <ImageView
@@ -128,16 +129,11 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/relBot"
         android:layout_below="@+id/relFiltro"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <LinearLayout
@@ -221,7 +217,8 @@
             <ListView
                 android:id="@+id/lista_servicios"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:scrollbars="horizontal|vertical" />
         </LinearLayout>
     </HorizontalScrollView>
 

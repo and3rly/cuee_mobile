@@ -23,6 +23,7 @@ public class LecturaModel {
     public ArrayList<clsBeLectura> lista = new ArrayList<>();
     public ArrayList<auxLecturaServicio> serLectura = new ArrayList<>();
     public clsBeLectura objLectura = null;
+    public int IdActualLectura;
 
     public LecturaModel(Context ct, HelperBD con, SQLiteDatabase dbase) {
         context = ct;
@@ -41,6 +42,10 @@ public class LecturaModel {
 
     public void getLinea() {
         buscar(sel, true);
+    }
+
+    public void getLinea(String sq) {
+        buscar(sel +" "+ sq, true);
     }
 
     private void buscar(String sel, boolean uno) {
@@ -90,8 +95,8 @@ public class LecturaModel {
                     item.IdInstalacion = DT.getInt(0);
                     item.IdUsuarioServicio = DT.getInt(1);
                     item.IdContador = DT.getString(2);
-                    item.Lectura_correcta = DT.getInt(3);
-                    item.Lectura_realizada = DT.getInt(4);
+                    item.Lectura_realizada =  DT.getInt(3);
+                    item.Lectura_correcta = DT.getInt(4) == 1 ? true:false;
                     item.Usuario = DT.getString(5);
                     item.IdItinerario = DT.getInt(6);
 
@@ -141,6 +146,7 @@ public class LecturaModel {
                 DT.moveToFirst();
 
                 obj.IdLectura = DT.getInt(0) + 1;
+                IdActualLectura = obj.IdLectura;
             }
 
             ins.add("IdLectura", obj.IdLectura);
@@ -160,6 +166,28 @@ public class LecturaModel {
 
         } catch (Exception e) {
             Log.e("LECTURA", "guardar: ", e);
+            return false;
+        }
+        return  true;
+    }
+
+    public boolean actualizar(clsBeLectura obj) {
+        try {
+            upd.init(tabla);
+            upd.add("IdUsuarioServicio", obj.IdUsuarioServicio);
+            upd.add("IdContador", obj.IdContador);
+            upd.add("Fecha", obj.Fecha);
+            upd.add("Lectura", obj.Lectura);
+            upd.add("Consumo", obj.Consumo);
+            upd.add("IdUsuario", obj.IdUsuario);
+            upd.add("Fecha_creacion", obj.Fecha_creacion);
+            upd.add("Lectura_kw", obj.Lectura_kw);
+            upd.add("IdTecnico", obj.IdTecnico);
+            upd.add("con_hh", obj.Con_hh);
+            upd.Where("IdLectura = "+obj.IdLectura);
+            db.execSQL(upd.sql());
+        } catch (Exception e) {
+            Log.e("LECTURA", "actualizar: ", e);
             return false;
         }
         return  true;

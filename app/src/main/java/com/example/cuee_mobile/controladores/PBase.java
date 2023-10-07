@@ -21,6 +21,7 @@ public class PBase extends Activity {
     protected FechaHelper du;
     protected SQLiteDatabase db;
     protected String sql;
+    protected int browse;
     protected VarGlobal gl;
 
     @Override

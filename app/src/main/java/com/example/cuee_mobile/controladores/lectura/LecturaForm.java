@@ -33,6 +33,7 @@ public class LecturaForm extends PBase {
     private LecturaModel lecturaModel;
     private ServicioInsModel serviciosModel;
     private int dia, mes, anio;
+    private boolean editando = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +69,25 @@ public class LecturaForm extends PBase {
             txtContador.setText(auxLectura.IdContador);
             txtUsuario.setText(auxLectura.IdUsuarioServicio + " - " + auxLectura.Usuario);
 
-            setFechaActual();
+            if (auxLectura.Lectura_realizada == 0) {
+                setFechaActual();
+            } else {
+                lecturaModel.getLinea("WHERE IdLectura = "+auxLectura.Lectura_realizada);
+
+                if (lecturaModel.objLectura != null) {
+                    editando = true;
+                    objLectura = lecturaModel.objLectura;
+
+                    if (objLectura.Fecha.contains("T")) {
+                        txtFecha.setText(du.strFecha(objLectura.Fecha));
+                    }
+
+                    txtLectura.setText(objLectura.Lectura+"");
+                    txtConsumo.setText(objLectura.Consumo+"");
+                    txtLecKW.setText(objLectura.Lectura_kw+"");
+                }
+            }
+
             txtLectura.requestFocus();
             txtLectura.selectAll();
         } catch (Exception e) {
@@ -120,22 +139,37 @@ public class LecturaForm extends PBase {
 
             objLectura.IdUsuarioServicio = auxLectura.IdUsuarioServicio;
             objLectura.IdContador = auxLectura.IdContador;
-            objLectura.Fecha = txtFecha.getText().toString();
+            objLectura.Fecha = du.convertirFecha(txtFecha.getText().toString());
+            objLectura.Lectura = Double.valueOf(txtLectura.getText().toString());
             objLectura.Consumo = Double.valueOf(txtConsumo.getText().toString());
             objLectura.Fecha_creacion = du.getFechaCompleta();
             objLectura.Lectura_kw = Double.valueOf(txtLecKW.getText().toString());
             objLectura.IdTecnico = gl.tecnico.IdTecnico;
-            objLectura.Con_hh = true;
+            objLectura.Con_hh = 1;
 
-            if (lecturaModel.guardar(objLectura, false)) {
-
-                item = new clsBeServicios_instalado();
-                item.IdInstalacion = auxLectura.IdInstalacion;
-                item.Lectura_realizada = 1;
-                item.Lectura_correcta = 1;
-
-                serviciosModel.actualizarServicio(item);
+            if (!editando) {
+                if (lecturaModel.guardar(objLectura, false)) {
+                    helper.toast("Lectura guardad con éxito");
+                } else {
+                    helper.toast("Hubo problemas al guardar la lectura.");
+                    return;
+                }
+            } else {
+                objLectura.IdLectura = auxLectura.Lectura_realizada;
+                if (lecturaModel.actualizar(objLectura)) {
+                    helper.toast("Lectura actualizada con éxito");
+                } else {
+                    helper.toast("Hubo problemas al actualizar la lectura.");
+                    return;
+                }
             }
+
+            item = new clsBeServicios_instalado();
+            item.IdInstalacion = auxLectura.IdInstalacion;
+            item.Lectura_realizada = !editando ? lecturaModel.IdActualLectura : auxLectura.Lectura_realizada;
+            item.Lectura_correcta = 1;
+
+            serviciosModel.actualizarServicio(item);
 
         } catch (Exception e) {
             helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);

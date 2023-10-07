@@ -5,8 +5,8 @@ public class auxLecturaServicio {
     public int IdInstalacion;
     public int IdUsuarioServicio;
     public String IdContador;
-    public int Lectura_correcta;
-    public int Lectura_realizada;
+    public boolean Lectura_correcta = false;
+    public int Lectura_realizada = 0;
     public String Usuario;
     public int IdItinerario;
 
@@ -26,11 +26,11 @@ public class auxLecturaServicio {
         IdContador = idContador;
     }
 
-    public int getLectura_correcta() {
+    public boolean getLectura_correcta() {
         return Lectura_correcta;
     }
 
-    public void setLectura_correcta(int lectura_correcta) {
+    public void setLectura_correcta(boolean lectura_correcta) {
         Lectura_correcta = lectura_correcta;
     }
 
