@@ -46,20 +46,32 @@
     <RelativeLayout
         android:id="@+id/relBot"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="55dp"
+        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
         android:background="@color/blue_gray"
-        android:gravity="center_horizontal|center_vertical">
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/btnRegresar"
+            android:layout_width="45dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/regresar" />
 
         <TextView
-            android:id="@+id/lblVersion"
-            android:layout_width="match_parent"
+            android:id="@+id/lblRegistros"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:paddingStart="10dp"
-            android:text="Versión 1.0"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="REGISTROS: 0"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textSize="17sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 
     <RelativeLayout

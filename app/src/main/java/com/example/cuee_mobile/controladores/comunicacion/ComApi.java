@@ -168,6 +168,8 @@ public class ComApi extends PBase {
             relPrg.setVisibility(View.VISIBLE);
             btnRecibir.setVisibility(View.GONE);
             btnEnviar.setEnabled(false);
+            txtRuta.setEnabled(false);
+            txtItinerario.setEnabled(false);
             lblPgr.setText("Procesando...");
 
             Handler timer = new Handler();
@@ -262,7 +264,7 @@ public class ComApi extends PBase {
 
         try {
             Ruta cliente = retrofit.CrearServicio(Ruta.class);
-            Call<List<clsBeRuta_lectura>> call = cliente.getRutaLectura();
+            Call<List<clsBeRuta_lectura>> call = cliente.getRutaLectura(IdRuta);
 
             call.enqueue(new Callback<List<clsBeRuta_lectura>>() {
                 @Override
@@ -300,7 +302,7 @@ public class ComApi extends PBase {
 
         try {
             Tecnico cliente = retrofit.CrearServicio(Tecnico.class);
-            Call<List<clsBeTecnicos>> call = cliente.getTecnicos();
+            Call<List<clsBeTecnicos>> call = cliente.getTecnicos(IdRuta);
 
             call.enqueue(new Callback<List<clsBeTecnicos>>() {
                 @Override
@@ -337,7 +339,7 @@ public class ComApi extends PBase {
 
         try {
             Ruta cliente = retrofit.CrearServicio(Ruta.class);
-            Call<List<clsBeRuta_tecnico>> call = cliente.getRutaTecnico();
+            Call<List<clsBeRuta_tecnico>> call = cliente.getRutaTecnico(IdRuta);
 
             call.enqueue(new Callback<List<clsBeRuta_tecnico>>() {
                 @Override
@@ -595,7 +597,7 @@ public class ComApi extends PBase {
 
         try {
             UsuarioServicio cliente = retrofit.CrearServicio(UsuarioServicio.class);
-            Call<List<clsBeUsuarios_servicio>> call = cliente.getUsuariosServicio();
+            Call<List<clsBeUsuarios_servicio>> call = cliente.getUsuariosServicio(IdRuta, IdItinerario);
 
             call.enqueue(new Callback<List<clsBeUsuarios_servicio>>() {
                 @Override
@@ -632,7 +634,7 @@ public class ComApi extends PBase {
 
         try {
             ServiciosIns cliente = retrofit.CrearServicio(ServiciosIns.class);
-            Call<List<clsBeServicios_instalado>> call = cliente.getServiciosInstalados();
+            Call<List<clsBeServicios_instalado>> call = cliente.getServiciosInstalados(IdRuta, IdItinerario);
 
             call.enqueue(new Callback<List<clsBeServicios_instalado>>() {
                 @Override
@@ -842,6 +844,8 @@ public class ComApi extends PBase {
         ocupado = false;
         relPrg.setVisibility(View.GONE);
         btnRecibir.setVisibility(View.VISIBLE);
+        txtRuta.setEnabled(true);
+        txtItinerario.setEnabled(true);
         btnEnviar.setEnabled(true);
     }
 

@@ -46,7 +46,6 @@ public class FechaHelper {
         String rsltfecha="";
 
         try{
-
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
             Date date = dateFormat.parse(fecha);
             dateFormat = new SimpleDateFormat("dd/MM/yyyy");

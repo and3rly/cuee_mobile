@@ -11,11 +11,11 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 
 public interface Ruta {
-    @GET("RutaLectura")
-    Call<List<clsBeRuta_lectura>> getRutaLectura();
+    @GET("RutaLectura/{IdRuta}")
+    Call<List<clsBeRuta_lectura>> getRutaLectura(@Path("IdRuta") int IdRuta);
 
-    @GET("RutaTecnico")
-    Call<List<clsBeRuta_tecnico>> getRutaTecnico();
+    @GET("RutaTecnico/{IdRuta}")
+    Call<List<clsBeRuta_tecnico>> getRutaTecnico(@Path("IdRuta") int IdRuta);
 
     @GET("UsuariosRuta/{IdRuta}/{IdItinerario}")
     Call<List<clsBeUsuarios_por_ruta>> getUsuariosRuta(@Path("IdRuta") int IdRuta, @Path("IdItinerario")  int IdItinerario);
