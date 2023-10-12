@@ -6,11 +6,32 @@ import android.widget.Toast;
 
 import com.example.cuee_mobile.R;
 
+import java.text.DecimalFormat;
+
 public class CueeHelper {
     private Context context;
 
     public CueeHelper(Context ct) {
         context = ct;
+    }
+
+    public String formatDosDecimales(double valor){
+        DecimalFormat format = new DecimalFormat("0.00");
+        format.setMaximumFractionDigits(2);
+        return format.format(valor);
+    }
+
+    public double round2dec(double val){
+        double dval;
+        long ival;
+
+        val=val+0.000001;
+        dval=val*100;
+        ival=Math.round(dval);
+        dval=(double) ival;
+        val=dval*0.01;
+
+        return val;
     }
 
     public void toast(String mensaje) {

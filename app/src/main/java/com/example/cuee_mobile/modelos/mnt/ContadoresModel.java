@@ -19,6 +19,7 @@ public class ContadoresModel {
     private final String tabla = "CONTADORES";
     private final String sel =  "SELECT * FROM " + tabla;
     public ArrayList<clsBeContadores> lista = new ArrayList<>();
+    private String sql;
     public ContadoresModel(Context ct, HelperBD con, SQLiteDatabase dbase) {
         context = ct;
         Con = con;
@@ -97,6 +98,23 @@ public class ContadoresModel {
             return false;
         }
         return  true;
+    }
+
+    public clsBeContadores getContador(String IdContador) {
+        clsBeContadores contador = null;
+        Cursor DT;
+        try {
+            sql = "SELECT * FROM CONTADORES WHERE IdContador = '"+IdContador+"' AND ACTIVO = 1";
+            DT = Con.OpenDT(sql);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+                contador = setDatos(DT);
+            }
+        } catch (Exception e) {
+            Log.e("LECTURA", "getLecturaAnterior: ", e);
+        }
+        return contador;
     }
 }
 

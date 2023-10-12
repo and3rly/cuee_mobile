@@ -137,6 +137,7 @@ public class MainActivity extends PBase {
             objInstitucion = institucion.objInstitucion;
 
             if (objInstitucion != null) {
+                gl.institucion = objInstitucion;
                 lblEmpresa.setText(objInstitucion.Nombre_Comercial);
             } else {
                 startActivity(new Intent(this, ComApi.class));

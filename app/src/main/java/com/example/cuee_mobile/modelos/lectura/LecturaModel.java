@@ -79,10 +79,18 @@ public class LecturaModel {
         auxLecturaServicio item;
         try {
             serLectura.clear();
-            sql = "SELECT A.IdInstalacion, A.IdUsuarioServicio, A.IdContador, A.Lectura_realizada, A.Lectura_correcta, B.Nombres, C.IdItinerario" +
+            sql = "SELECT A.IdInstalacion, " +
+                    "A.IdUsuarioServicio, " +
+                    "A.IdContador, " +
+                    "A.Lectura_realizada, " +
+                    "A.Lectura_correcta, " +
+                    "A.Servicio_bajo_demandafp, " +
+                    "A.Servicio_bajo_demanda, " +
+                    "B.Nombres, " +
+                    "C.IdItinerario" +
                     " FROM SERVICIOS_INSTALADO A" +
                     " INNER JOIN USUARIOS_SERVICIO B ON A.IdUsuarioServicio = B.IdUsuarioServicio" +
-                    " INNER JOIN USUARIOS_POR_RUTA C ON A.IdUsuarioServicio = C.IdUsuarioServicio";
+                    " INNER JOIN USUARIOS_POR_RUTA C ON A.IdUsuarioServicio = C.IdUsuarioServicio WHERE A.Estado_servicio NOT IN (1,3)";
 
             DT = Con.OpenDT(sql);
 
@@ -97,13 +105,17 @@ public class LecturaModel {
                     item.IdContador = DT.getString(2);
                     item.Lectura_realizada =  DT.getInt(3);
                     item.Lectura_correcta = DT.getInt(4) == 1 ? true:false;
-                    item.Usuario = DT.getString(5);
-                    item.IdItinerario = DT.getInt(6);
+                    item.Servicio_bajo_demandafp = DT.getInt(5) == 1 ? true:false;
+                    item.Servicio_bajo_demanda = DT.getInt(6) == 1 ? true:false;
+                    item.Usuario = DT.getString(7);
+                    item.IdItinerario = DT.getInt(8);
 
                     serLectura.add(item);
                     DT.moveToNext();
                 }
             }
+
+            if (DT != null) DT.close();
         } catch (Exception e) {
             Log.e("LECTURA", "buscar: ", e );
         }
@@ -126,7 +138,7 @@ public class LecturaModel {
             item.Fecha_creacion = DT.getString(7);
             item.Lectura_kw = DT.getDouble(8);
             item.IdTecnico = DT.getInt(9);
-            item.StatCom = DT.getString(10);
+            item.StatCom = DT.getInt(10);
 
         } catch (Exception e) {
             Log.e("LECTURA", "setLinea: ", e );
@@ -191,6 +203,40 @@ public class LecturaModel {
             return false;
         }
         return  true;
+    }
+
+    public clsBeLectura getLecturaAnterior(int usuario) {
+        clsBeLectura lectura = null;
+        Cursor DT;
+        try {
+            sql = "SELECT * FROM LECTURA WHERE IdUsuarioServicio = "+usuario+" AND StatCom = 1 ORDER BY DATE(Fecha) DESC LIMIT 1";
+            DT = Con.OpenDT(sql);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+                lectura = setLinea(DT);
+            }
+        } catch (Exception e) {
+            Log.e("LECTURA", "getLecturaAnterior: ", e);
+        }
+        return lectura;
+    }
+
+    public double getPromedio(int usuario) {
+        double promedio = 0;
+        Cursor DT;
+        try {
+            sql = "SELECT IFNULL(avg(consumo),0) as promedio FROM LECTURA WHERE idUsuarioServicio =" +usuario;
+            DT = Con.OpenDT(sql);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+                promedio = DT.getDouble(0);
+            }
+        } catch (Exception e) {
+            Log.e("LECTURA", "getLecturaAnterior: ", e);
+        }
+        return promedio;
     }
 }
 

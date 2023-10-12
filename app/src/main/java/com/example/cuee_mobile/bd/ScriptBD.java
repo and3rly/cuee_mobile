@@ -33,7 +33,7 @@ public class ScriptBD {
                     "Lectura_kw REAL DEFAULT NULL," +
                     "IdTecnico INTEGER DEFAULT NULL," +
                     "con_hh INTEGER DEFAULT NULL," +
-                    "StatCom TEXT DEFAULT NULL," +
+                    "StatCom INTEGER DEFAULT 1," +
                     "PRIMARY KEY ([IdLectura])" +
                     ");";
             db.execSQL(sql);

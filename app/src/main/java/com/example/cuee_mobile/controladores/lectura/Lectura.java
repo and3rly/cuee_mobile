@@ -51,13 +51,10 @@ public class Lectura extends PBase {
     }
 
     private void setHandlers() {
-        lista_servicios.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                auxLectura = new auxLecturaServicio();
-                auxLectura = (auxLecturaServicio) lista_servicios.getItemAtPosition(position);
-                procesaLectura();
-            }
+        lista_servicios.setOnItemClickListener((parent, view, position, id) -> {
+            auxLectura = new auxLecturaServicio();
+            auxLectura = (auxLecturaServicio) lista_servicios.getItemAtPosition(position);
+            procesaLectura();
         });
 
         btnRegresar.setOnClickListener(view -> regresar());
@@ -97,7 +94,7 @@ public class Lectura extends PBase {
             auxLista.clear();
             for (auxLecturaServicio obj : lista) {
 
-                if (obj.IdContador.toLowerCase().contains(termino.toLowerCase())) {
+                if (obj.IdContador.toLowerCase().equals(termino.toLowerCase())) {
                     auxLista.add(obj);
                 }
             }

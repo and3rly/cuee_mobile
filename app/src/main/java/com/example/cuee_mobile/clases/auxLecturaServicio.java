@@ -9,6 +9,8 @@ public class auxLecturaServicio {
     public int Lectura_realizada = 0;
     public String Usuario;
     public int IdItinerario;
+    public boolean Servicio_bajo_demandafp = false;
+    public boolean Servicio_bajo_demanda = false;
 
     public int getIdUsuarioServicio() {
         return IdUsuarioServicio;

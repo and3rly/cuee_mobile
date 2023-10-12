@@ -68,7 +68,7 @@ public class LecturaAdapter extends BaseAdapter {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            holder.lblInstalacion.setText(items.get(position).IdInstalacion + "");
+            holder.lblInstalacion.setText(items.get(position).IdUsuarioServicio + "");
             holder.lblContador.setText(items.get(position).IdContador + "");
             holder.lblUsuario.setText(items.get(position).Usuario);
             holder.lblItinerario.setText(items.get(position).IdItinerario + "");

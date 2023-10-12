@@ -13,7 +13,7 @@ public class clsBeLectura {
     public double Lectura_kw = 0.0;
     public int IdTecnico = 0;
     public int Con_hh = 0;
-    public String StatCom="N";
+    public int StatCom= 1;
 
     public int getIdLectura() {
         return IdLectura;
@@ -95,11 +95,11 @@ public class clsBeLectura {
         IdTecnico = idTecnico;
     }
 
-    public String getStatCom() {
+    public int getStatCom() {
         return StatCom;
     }
 
-    public void setStatCom(String statCom) {
+    public void setStatCom(int statCom) {
         StatCom = statCom;
     }
 }

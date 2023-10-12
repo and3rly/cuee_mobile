@@ -67,7 +67,8 @@
             android:paddingBottom="5dp"
             android:text="Si"
             android:textColor="#000000"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/lblLecCorrecta"
