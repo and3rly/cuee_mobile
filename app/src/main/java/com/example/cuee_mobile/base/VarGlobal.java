@@ -10,4 +10,6 @@ public class VarGlobal extends Application {
     public clsBeTecnicos tecnico = new clsBeTecnicos();
     public clsBeInstitucion institucion = new clsBeInstitucion();
     public String termino ="";
+    public String path= "";
+    public String urlApi;
 }

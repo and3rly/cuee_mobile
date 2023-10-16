@@ -68,9 +68,17 @@ public class MainActivity extends PBase {
     private void setDatos() {
         try {
             setModels();
-            getInstitucion();
-            getRutaLectura();
-            getTecnicos();
+            if (getInstitucion()) {
+                if (getRutaLectura()) {
+                    getTecnicos();
+                } else {
+                    startActivity(new Intent(this, ComApi.class));
+                    super.finish();
+                }
+            } else {
+                startActivity(new Intent(this, ComApi.class));
+                super.finish();
+            }
         } catch (Exception e) {
             helper.msgbox(new Object() {}.getClass().getEnclosingClass().getName() +" - "+ e);
         }
@@ -131,7 +139,7 @@ public class MainActivity extends PBase {
         }
     }
 
-    private void getInstitucion() {
+    private boolean getInstitucion() {
         try {
             institucion.getLinea();
             objInstitucion = institucion.objInstitucion;
@@ -140,15 +148,17 @@ public class MainActivity extends PBase {
                 gl.institucion = objInstitucion;
                 lblEmpresa.setText(objInstitucion.Nombre_Comercial);
             } else {
-                startActivity(new Intent(this, ComApi.class));
-                super.finish();
+                return false;
             }
+
         } catch (Exception e) {
             helper.msgbox(new Object() {}.getClass().getEnclosingClass().getName() +" - "+ e);
         }
+
+        return true;
     }
 
-    private void getRutaLectura() {
+    private boolean getRutaLectura() {
         try {
             rutaLectura.getLinea();
             objRutaLec = rutaLectura.objRutaLec;
@@ -157,12 +167,13 @@ public class MainActivity extends PBase {
                 lblRuta.setText("No. " +objRutaLec.Nombre);
                 gl.ruta = objRutaLec;
             } else {
-                startActivity(new Intent(this, ComApi.class));
-                super.finish();
+                return false;
             }
         } catch (Exception e) {
             helper.msgbox(new Object() {}.getClass().getEnclosingClass().getName() +" - "+ e);
         }
+
+        return true;
     }
 
     private void getTecnicos() {

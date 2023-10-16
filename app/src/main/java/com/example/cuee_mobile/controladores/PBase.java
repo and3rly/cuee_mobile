@@ -40,6 +40,7 @@ public class PBase extends Activity {
         String pathDataDir = "";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             pathDataDir = this.getApplicationContext().getDataDir().getPath()+"/database";
+            gl.path = this.getApplicationContext().getDataDir().getPath();
         }
 
         String nombre = pathDataDir + "/db_cuee.db";

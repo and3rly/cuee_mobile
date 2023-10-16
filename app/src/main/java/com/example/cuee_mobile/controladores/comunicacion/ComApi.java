@@ -64,6 +64,12 @@ import com.example.cuee_mobile.modelos.ruta.RutaTecnicoModel;
 import com.example.cuee_mobile.modelos.ruta.UsuariosRutaModel;
 import com.example.cuee_mobile.modelos.usuario.UsrServicioModel;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +83,7 @@ import retrofit2.Response;
 
 public class ComApi extends PBase {
     private RelativeLayout btnRecibir, btnEnviar, relPrg;
-    private EditText txtRuta, txtItinerario;
+    private EditText txtRuta, txtItinerario, txtUrl;
     private TextView lblPgr;
     private InstitucionModel institucion;
     private InstitucionDetalleModel insDetalle;
@@ -112,7 +118,9 @@ public class ComApi extends PBase {
         lblPgr = findViewById(R.id.lblPgr);
         txtRuta = findViewById(R.id.txtRuta);
         txtItinerario = findViewById(R.id.txtItinerario);
+        txtUrl = findViewById(R.id.txtUrl);
 
+        getUrlApi();
         setModels();
         setHandlers();
     }
@@ -136,6 +144,8 @@ public class ComApi extends PBase {
             transformador = new TransformadorModel(this, Con, db);
             usrServicio = new UsrServicioModel(this, Con, db);
             srInstalado = new ServicioInsModel(this, Con, db);
+
+            txtRuta.requestFocus();
         } catch (Exception e) {
             helper.msgbox(Objects.requireNonNull(new Object() {
             }.getClass().getEnclosingClass()).getName() +" - "+ e);
@@ -159,12 +169,24 @@ public class ComApi extends PBase {
                 IdItinerario = Integer.parseInt(txtItinerario.getText().toString());
             }
 
+            if (txtUrl.getText().toString().isEmpty()) {
+                helper.toast("Ingrese url api.");
+                return;
+            } else {
+                //gl.urlApi = txtUrl.getText().toString();
+            }
+
             dialogo("Recepción de datos", "¿Está seguro de iniciar la recepción de datos?", 1);
         });
     }
 
     private void recibirDatos() {
         try {
+
+            if (gl.urlApi.isEmpty()) {
+                setUrlApi();
+            }
+
             relPrg.setVisibility(View.VISIBLE);
             btnRecibir.setVisibility(View.GONE);
             btnEnviar.setEnabled(false);
@@ -179,6 +201,52 @@ public class ComApi extends PBase {
         } catch (Exception e) {
             helper.msgbox(Objects.requireNonNull(new Object() {
             }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    private void setUrlApi() {
+        BufferedWriter writer = null;
+        FileWriter wfile;
+
+        try {
+            String fname = gl.path+"/cuee_api.txt";
+            File archivo= new File(fname);
+
+            if (archivo.exists()){
+                archivo.delete();
+            }
+            gl.urlApi = txtUrl.getText().toString();
+
+            wfile=new FileWriter(fname,true);
+            writer = new BufferedWriter(wfile);
+            writer.write(gl.urlApi + "\n");
+            writer.close();
+
+        } catch (Exception e) {
+            helper.msgbox("Error guardarUrlApi: " + e.getMessage());
+        }
+    }
+
+    private void getUrlApi() {
+        gl.urlApi="";
+
+        try {
+
+            String pathText = gl.path + "/cuee_api.txt";
+            File file1 = new File(pathText);
+
+            if (file1.exists()) {
+                FileInputStream fIn = new FileInputStream(file1);
+                BufferedReader myReader = new BufferedReader(new InputStreamReader(fIn));
+                gl.urlApi = myReader.readLine();
+                myReader.close();
+
+                txtUrl.setText(gl.urlApi);
+            }
+
+        } catch (Exception e) {
+            gl.urlApi ="";
+            helper.msgbox("Error getUrlApi: " + e.getMessage());
         }
     }
 
@@ -504,6 +572,8 @@ public class ComApi extends PBase {
                             }
                         }
                         getRenglones();
+                    } else {
+                        helper.msgbox("");
                     }
                 }
                 @Override
