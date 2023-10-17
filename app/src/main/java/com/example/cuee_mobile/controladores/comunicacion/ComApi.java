@@ -2,15 +2,16 @@ package com.example.cuee_mobile.controladores.comunicacion;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+import org.apache.commons.io.FileUtils;
 
 import androidx.annotation.NonNull;
 
@@ -37,6 +38,7 @@ import com.example.cuee_mobile.clases.clsBeMeses_proforma;
 import com.example.cuee_mobile.clases.clsBePagos_detalle_rep;
 import com.example.cuee_mobile.clases.clsBeParametros;
 import com.example.cuee_mobile.clases.clsBeRenglones;
+import com.example.cuee_mobile.clases.clsBeRutaSincronizacion;
 import com.example.cuee_mobile.clases.clsBeRuta_lectura;
 import com.example.cuee_mobile.clases.clsBeRuta_tecnico;
 import com.example.cuee_mobile.clases.clsBeServicios_instalado;
@@ -44,8 +46,8 @@ import com.example.cuee_mobile.clases.clsBeTecnicos;
 import com.example.cuee_mobile.clases.clsBeTransformadores;
 import com.example.cuee_mobile.clases.clsBeUsuarios_por_ruta;
 import com.example.cuee_mobile.clases.clsBeUsuarios_servicio;
-import com.example.cuee_mobile.controladores.MainActivity;
 import com.example.cuee_mobile.controladores.PBase;
+import com.example.cuee_mobile.modelos.RutaSincModel;
 import com.example.cuee_mobile.modelos.ServicioInsModel;
 import com.example.cuee_mobile.modelos.institucion.InstitucionDetalleModel;
 import com.example.cuee_mobile.modelos.institucion.InstitucionModel;
@@ -70,13 +72,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -102,9 +103,9 @@ public class ComApi extends PBase {
     private TransformadorModel transformador;
     private UsrServicioModel usrServicio;
     private ServicioInsModel srInstalado;
+    private RutaSincModel runtaSinc;
     private String msjProg = "";
-    private boolean ocupado = false;
-    private int IdRuta, IdItinerario;
+    private int IdRuta, IdItinerario, idx, cant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,9 +121,12 @@ public class ComApi extends PBase {
         txtItinerario = findViewById(R.id.txtItinerario);
         txtUrl = findViewById(R.id.txtUrl);
 
+
         getUrlApi();
         setModels();
         setHandlers();
+
+        existeDatosEnvio();
     }
 
     private void setModels() {
@@ -144,6 +148,7 @@ public class ComApi extends PBase {
             transformador = new TransformadorModel(this, Con, db);
             usrServicio = new UsrServicioModel(this, Con, db);
             srInstalado = new ServicioInsModel(this, Con, db);
+            runtaSinc = new RutaSincModel(this, Con, db);
 
             txtRuta.requestFocus();
         } catch (Exception e) {
@@ -172,12 +177,44 @@ public class ComApi extends PBase {
             if (txtUrl.getText().toString().isEmpty()) {
                 helper.toast("Ingrese url api.");
                 return;
-            } else {
-                //gl.urlApi = txtUrl.getText().toString();
             }
 
             dialogo("Recepción de datos", "¿Está seguro de iniciar la recepción de datos?", 1);
         });
+
+        btnEnviar.setOnClickListener(view -> {
+            dialogo("Envio de datos", "¿Está seguro de iniciar el envio de datos?", 2);
+        });
+    }
+
+    private void existeDatosEnvio() {
+        try {
+            if (pendientesEnvio()) {
+                btnEnviar.setVisibility(View.VISIBLE);
+                btnRecibir.setVisibility(View.GONE);
+            } else {
+                btnRecibir.setVisibility(View.VISIBLE);
+                btnEnviar.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+    private boolean pendientesEnvio() {
+        boolean pendiente = false;
+        try {
+            lectura.getLista("WHERE StatCom = 0");
+            if (lectura.filas > 0)  {
+                helper.toast("Tiene lecturas pendientes de enviar.");
+                pendiente = true;
+            }
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+
+        return pendiente;
     }
 
     private void recibirDatos() {
@@ -194,6 +231,10 @@ public class ComApi extends PBase {
             txtItinerario.setEnabled(false);
             lblPgr.setText("Procesando...");
 
+            if (!pendientesEnvio()) {
+                institucion.eliminarDatosTalbas();
+            }
+
             Handler timer = new Handler();
             Runnable runner = this::AsyncCallRec;
             timer.postDelayed(runner, 500);
@@ -204,8 +245,40 @@ public class ComApi extends PBase {
         }
     }
 
+    private void enviarDatos() {
+        String fecha = du.getFecha();
+        try {
+
+            relPrg.setVisibility(View.VISIBLE);
+            btnEnviar.setEnabled(false);
+            txtRuta.setEnabled(false);
+            txtItinerario.setEnabled(false);
+            lblPgr.setText("Enviando...");
+
+            try {
+                File f1 = new File(gl.path + "/database/db_cuee.db");
+                File f2 = new File(gl.path + "/database/db_cuee_" + fecha + ".db");
+                FileUtils.copyFile(f1, f2);
+            } catch (Exception e) {
+                helper.msgbox("No se puede generar respaldo : " + e.getMessage());
+            }
+
+            if (pendientesEnvio()) {
+                Handler timer = new Handler();
+                Runnable runner = this::AsyncCallSend;
+                timer.postDelayed(runner, 500);
+            } else {
+                helper.toast("No tiene datos pendientes para enviar.");
+            }
+
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
     private void setUrlApi() {
-        BufferedWriter writer = null;
+        BufferedWriter writer;
         FileWriter wfile;
 
         try {
@@ -247,6 +320,47 @@ public class ComApi extends PBase {
         } catch (Exception e) {
             gl.urlApi ="";
             helper.msgbox("Error getUrlApi: " + e.getMessage());
+        }
+    }
+
+    private void getFechaServidor() {
+        msjProg = "Comprobando fecha servidor...";
+        actualizaProgress();
+
+        try {
+            Ruta cliente = retrofit.CrearServicio(Ruta.class);
+            Call<String> call = cliente.getFechaServidor();
+
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (response.isSuccessful()) {
+                        String fechaRes = response.body();
+                        String[] fechaServidor = fechaRes.split("T", 2);
+                        String fechaHH = du.getFecha();
+
+                        if (fechaHH.equals(fechaServidor[0])) {
+
+                            clsBeRutaSincronizacion item = new clsBeRutaSincronizacion();
+                            item.Ruta = Integer.parseInt(txtRuta.getText().toString());
+                            item.Fecha_carga_datos = du.getFechaCompleta();
+                            item.Fecha_servidor = fechaServidor[0];
+                            runtaSinc.guardar(item);
+
+                            getInstitucion();
+                        } else {
+                            cancelarPeticion(call);
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    cancelarPeticion(call);
+                }
+            });
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
         }
     }
 
@@ -722,11 +836,7 @@ public class ComApi extends PBase {
                             }
                         }
                         terminaRecepcion();
-
-                        if (gl.tecnico == null) {
-                            startActivity(new Intent(ComApi.this, MainActivity.class));
-                            finish();
-                        }
+                        finish();
                     }
                 }
                 @Override
@@ -875,7 +985,7 @@ public class ComApi extends PBase {
             Handler handler = new Handler(Looper.getMainLooper());
 
             executor.execute(() -> {
-                getInstitucion();
+                getFechaServidor();
 
                 try {
                     handler.post(() -> {
@@ -892,6 +1002,86 @@ public class ComApi extends PBase {
         }
     }
 
+    private void AsyncCallSend() {
+        try {
+            Executor executor2 = Executors.newSingleThreadExecutor();
+            Handler handler2 = new Handler(Looper.getMainLooper());
+
+            executor2.execute(() -> {
+                enviar();
+                try {
+                    handler2.post(() -> {
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    handler2.post(() -> {
+                    });
+                }
+            });
+
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    public void enviar() {
+        try {
+            idx = 0;
+            cant = 1;
+
+            enviarLecturas(lectura.lista.get(idx));
+
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    private void enviarLecturas(clsBeLectura obj) {
+        msjProg = "Enviando lecturas "+cant+"/"+lectura.lista.size()+" ...";
+        actualizaProgress();
+        try {
+
+            Lectura cliente = retrofit.CrearServicio(Lectura.class);
+            Call call = cliente.guardarLectura(obj);
+
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if(response.isSuccessful()){
+                        lectura.actualizaEstado(obj.IdLectura);
+                        envioCompletoLecutura();
+                    } else {
+                    }
+                }
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                }
+            });
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    private void envioCompletoLecutura() {
+        try {
+            if (cant == lectura.lista.size()) {
+                helper.toast("Completo");
+                lectura.lista.clear();
+            } else {
+                idx++;
+                cant++;
+                enviarLecturas(lectura.lista.get(idx));
+
+            }
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
     private void dialogo(String titulo, String msg, int accion) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 
@@ -901,6 +1091,8 @@ public class ComApi extends PBase {
         dialog.setPositiveButton("Si", (dialog1, id) -> {
             if (accion == 1) {
                 recibirDatos();
+            } else if (accion == 2) {
+                enviarDatos();
             }
         });
 
@@ -911,7 +1103,6 @@ public class ComApi extends PBase {
     }
 
     private void terminaRecepcion() {
-        ocupado = false;
         relPrg.setVisibility(View.GONE);
         btnRecibir.setVisibility(View.VISIBLE);
         txtRuta.setEnabled(true);
@@ -919,9 +1110,14 @@ public class ComApi extends PBase {
         btnEnviar.setEnabled(true);
     }
 
+    private void terminaEnvio() {
+        relPrg.setVisibility(View.GONE);
+        existeDatosEnvio();
+    }
+
     private void cancelarPeticion(@NonNull Call call) {
         call.cancel();
-        Toast.makeText(ComApi.this, "Problemas de conexión, intentelo de nuevo", Toast.LENGTH_LONG).show();
+        //Toast.makeText(ComApi.this, "Problemas de conexión, intentelo de nuevo", Toast.LENGTH_LONG).show();
         terminaRecepcion();
     }
 

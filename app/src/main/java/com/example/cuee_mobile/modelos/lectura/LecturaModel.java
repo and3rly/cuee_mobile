@@ -24,6 +24,7 @@ public class LecturaModel {
     public ArrayList<auxLecturaServicio> serLectura = new ArrayList<>();
     public clsBeLectura objLectura = null;
     public int IdActualLectura;
+    public int filas = 0;
 
     public LecturaModel(Context ct, HelperBD con, SQLiteDatabase dbase) {
         context = ct;
@@ -54,6 +55,7 @@ public class LecturaModel {
         try {
             DT = Con.OpenDT(sel);
 
+            filas = DT.getCount();
             if (DT.getCount() > 0) {
                 DT.moveToFirst();
 
@@ -138,7 +140,8 @@ public class LecturaModel {
             item.Fecha_creacion = DT.getString(7);
             item.Lectura_kw = DT.getDouble(8);
             item.IdTecnico = DT.getInt(9);
-            item.StatCom = DT.getInt(10);
+            item.Con_hh = DT.getInt(10);
+            item.StatCom = DT.getInt(11);
 
         } catch (Exception e) {
             Log.e("LECTURA", "setLinea: ", e );
@@ -237,6 +240,16 @@ public class LecturaModel {
             Log.e("LECTURA", "getLecturaAnterior: ", e);
         }
         return promedio;
+    }
+
+    public void actualizaEstado(int lectura) {
+        try {
+            sql = "UPDATE LECTURA SET StatCom = 1 WHERE IdLectura = " + lectura;
+            db.execSQL(sql);
+
+        } catch (Exception e) {
+            Log.e("LECTURA", "getLecturaAnterior: ", e);
+        }
     }
 }
 

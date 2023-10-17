@@ -12,4 +12,6 @@ public class VarGlobal extends Application {
     public String termino ="";
     public String path= "";
     public String urlApi;
+
+    public boolean envioPendiente = false;
 }

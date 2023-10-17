@@ -430,6 +430,14 @@ public class ScriptBD {
                     ");";
             db.execSQL(sql);
 
+            sql = "CREATE TABLE [RUTA_SINCRONIZACION] (" +
+                    "Id INTEGER PRIMARY KEY AUTOINCREMENT ," +
+                    "Ruta INTEGER," +
+                    "Fecha_carga_datos TEXT NOT NULL," +
+                    "Fecha_envio_datos TEXT DEFAULT NULL," +
+                    "Fecha_servidor TEXT DEFAULT NULL" +
+                    ");";
+            db.execSQL(sql);
         } catch (Exception e) {
             return  false;
         }

@@ -20,6 +20,14 @@ public class FechaHelper {
         return strDate;
     }
 
+    public String getFecha() {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String strDate = sdf.format(c.getTime());
+
+        return strDate;
+    }
+
     public String convertirFecha(String fecha) {
         String vFecha = "";
         try {

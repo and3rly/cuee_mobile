@@ -1,17 +1,41 @@
 package com.example.cuee_mobile.clases;
 
-public class clsBeLectura {
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
+public class clsBeLectura {
+    @SerializedName("idLectura")
+    @Expose
     public int IdLectura = 0;
+    @SerializedName("idUsuarioServicio")
+    @Expose
     public int IdUsuarioServicio = 0;
+    @SerializedName("idContador")
+    @Expose
     public String IdContador = "";
+    @SerializedName("fecha")
+    @Expose
     public String Fecha = "";
+    @SerializedName("lectura")
+    @Expose
     public double Lectura = 0.0;
+    @SerializedName("consumo")
+    @Expose
     public double Consumo = 0.0;
+    @SerializedName("idUsuario")
+    @Expose
     public int IdUsuario = 0;
+    @SerializedName("fecha_creacion")
+    @Expose
     public String Fecha_creacion = "";
+    @SerializedName("lectura_kw")
+    @Expose
     public double Lectura_kw = 0.0;
+    @SerializedName("idTecnico")
+    @Expose
     public int IdTecnico = 0;
+    @SerializedName("con_hh")
+    @Expose
     public int Con_hh = 0;
     public int StatCom= 1;
 
@@ -102,4 +126,5 @@ public class clsBeLectura {
     public void setStatCom(int statCom) {
         StatCom = statCom;
     }
+
 }

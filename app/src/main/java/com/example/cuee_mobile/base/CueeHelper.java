@@ -44,6 +44,7 @@ public class CueeHelper {
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
 
         dialog.setTitle(R.string.app_name);
+        dialog.setIcon(R.drawable.info);
         dialog.setMessage(msg);
 
         dialog.setNeutralButton("OK", (dialog1, which) -> {

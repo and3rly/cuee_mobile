@@ -14,6 +14,9 @@ public interface Ruta {
     @GET("RutaLectura/{IdRuta}")
     Call<List<clsBeRuta_lectura>> getRutaLectura(@Path("IdRuta") int IdRuta);
 
+    @GET("RutaLectura/get_fecha_servidor")
+    Call<String> getFechaServidor();
+
     @GET("RutaTecnico/{IdRuta}")
     Call<List<clsBeRuta_tecnico>> getRutaTecnico(@Path("IdRuta") int IdRuta);
 

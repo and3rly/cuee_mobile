@@ -122,7 +122,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="100dp">
+                    android:layout_marginStart="100dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/lblRecibir"
@@ -152,7 +153,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="100dp">
+                    android:layout_marginEnd="100dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/lblEnviar"
