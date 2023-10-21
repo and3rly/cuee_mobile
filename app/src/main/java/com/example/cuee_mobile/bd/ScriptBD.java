@@ -438,6 +438,20 @@ public class ScriptBD {
                     "Fecha_servidor TEXT DEFAULT NULL" +
                     ");";
             db.execSQL(sql);
+
+            sql = "CREATE TABLE [COLOR] (" +
+                    "Idcolor INTEGER NOT NULL ," +
+                    "Nombre TEXT DEFAULT NULL" +
+                    ");";
+            db.execSQL(sql);
+
+            sql = "CREATE TABLE [MARCAS] (" +
+                    "IdMarca INTEGER NOT NULL ," +
+                    "Nombre TEXT DEFAULT NULL," +
+                    "Activo INTEGER DEFAULT 0" +
+                    ");";
+            db.execSQL(sql);
+
         } catch (Exception e) {
             return  false;
         }

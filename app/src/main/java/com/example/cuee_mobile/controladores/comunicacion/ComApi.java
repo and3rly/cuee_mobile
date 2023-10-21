@@ -16,9 +16,11 @@ import org.apache.commons.io.FileUtils;
 import androidx.annotation.NonNull;
 
 import com.example.cuee_mobile.R;
+import com.example.cuee_mobile.api.servicios.Color;
 import com.example.cuee_mobile.api.servicios.Contador;
 import com.example.cuee_mobile.api.servicios.Institucion;
 import com.example.cuee_mobile.api.servicios.Lectura;
+import com.example.cuee_mobile.api.servicios.Marca;
 import com.example.cuee_mobile.api.servicios.MesProforma;
 import com.example.cuee_mobile.api.servicios.Parametro;
 import com.example.cuee_mobile.api.servicios.Renglon;
@@ -28,10 +30,12 @@ import com.example.cuee_mobile.api.servicios.ServiciosIns;
 import com.example.cuee_mobile.api.servicios.Tecnico;
 import com.example.cuee_mobile.api.servicios.Transformador;
 import com.example.cuee_mobile.api.servicios.UsuarioServicio;
+import com.example.cuee_mobile.clases.clsBeColor;
 import com.example.cuee_mobile.clases.clsBeContadores;
 import com.example.cuee_mobile.clases.clsBeInstitucion;
 import com.example.cuee_mobile.clases.clsBeInstitucion_detalle;
 import com.example.cuee_mobile.clases.clsBeLectura;
+import com.example.cuee_mobile.clases.clsBeMarcas;
 import com.example.cuee_mobile.clases.clsBeMeses_mora_pagada;
 import com.example.cuee_mobile.clases.clsBeMeses_mora_proforma;
 import com.example.cuee_mobile.clases.clsBeMeses_proforma;
@@ -55,7 +59,9 @@ import com.example.cuee_mobile.modelos.lectura.LecturaModel;
 import com.example.cuee_mobile.modelos.meses.MesProformaModel;
 import com.example.cuee_mobile.modelos.meses.MoraPagadaModel;
 import com.example.cuee_mobile.modelos.meses.MoraProformaModel;
+import com.example.cuee_mobile.modelos.mnt.ColorModel;
 import com.example.cuee_mobile.modelos.mnt.ContadoresModel;
+import com.example.cuee_mobile.modelos.mnt.MarcaModel;
 import com.example.cuee_mobile.modelos.mnt.ParametrosModel;
 import com.example.cuee_mobile.modelos.mnt.RenglonesModel;
 import com.example.cuee_mobile.modelos.mnt.TecnicoModel;
@@ -104,6 +110,8 @@ public class ComApi extends PBase {
     private UsrServicioModel usrServicio;
     private ServicioInsModel srInstalado;
     private RutaSincModel runtaSinc;
+    private ColorModel color;
+    private MarcaModel marca;
     private String msjProg = "";
     private int IdRuta, IdItinerario, idx, cant;
 
@@ -149,6 +157,8 @@ public class ComApi extends PBase {
             usrServicio = new UsrServicioModel(this, Con, db);
             srInstalado = new ServicioInsModel(this, Con, db);
             runtaSinc = new RutaSincModel(this, Con, db);
+            color = new ColorModel(this, Con, db);
+            marca = new MarcaModel(this, Con, db);
 
             txtRuta.requestFocus();
         } catch (Exception e) {
@@ -192,15 +202,20 @@ public class ComApi extends PBase {
             if (pendientesEnvio()) {
                 btnEnviar.setVisibility(View.VISIBLE);
                 btnRecibir.setVisibility(View.GONE);
+                txtRuta.setEnabled(false);
+                txtItinerario.setEnabled(false);
             } else {
                 btnRecibir.setVisibility(View.VISIBLE);
                 btnEnviar.setVisibility(View.GONE);
+                txtRuta.setEnabled(true);
+                txtItinerario.setEnabled(true);
             }
         } catch (Exception e) {
             helper.msgbox(Objects.requireNonNull(new Object() {
             }.getClass().getEnclosingClass()).getName() +" - "+ e);
         }
     }
+
     private boolean pendientesEnvio() {
         boolean pendiente = false;
         try {
@@ -347,14 +362,92 @@ public class ComApi extends PBase {
                             item.Fecha_servidor = fechaServidor[0];
                             runtaSinc.guardar(item);
 
-                            getInstitucion();
+                            getColor();
                         } else {
                             cancelarPeticion(call);
+                            helper.toast("Fecha del dispositivo no coincide con fecha servidor.");
                         }
                     }
                 }
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
+                    cancelarPeticion(call);
+                }
+            });
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    private void getColor() {
+        msjProg = "Procesando colores...";
+        actualizaProgress();
+
+        try {
+            Color cliente = retrofit.CrearServicio(Color.class);
+            Call<List<clsBeColor>> call = cliente.getColores();
+
+            call.enqueue(new Callback<List<clsBeColor>>() {
+                @Override
+                public void onResponse(Call<List<clsBeColor>> call, Response<List<clsBeColor>> response) {
+                    if (response.isSuccessful()) {
+                        List<clsBeColor> lista = response.body();
+
+                        if (lista != null && lista.size() > 0) {
+                            for (clsBeColor obj : lista) {
+
+                                color.getLista("WHERE Idcolor = "+obj.Idcolor);
+
+                                if (color.lista.size() == 0) {
+                                    color.guardar(obj);
+                                }
+                            }
+                        }
+
+                        getMarca();
+                    }
+                }
+                @Override
+                public void onFailure(Call<List<clsBeColor>> call, Throwable t) {
+                    cancelarPeticion(call);
+                }
+            });
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    private void getMarca() {
+        msjProg = "Procesando  marcas...";
+        actualizaProgress();
+
+        try {
+            Marca cliente = retrofit.CrearServicio(Marca.class);
+            Call<List<clsBeMarcas>> call = cliente.getMarcas();
+
+            call.enqueue(new Callback<List<clsBeMarcas>>() {
+                @Override
+                public void onResponse(Call<List<clsBeMarcas>> call, Response<List<clsBeMarcas>> response) {
+                    if (response.isSuccessful()) {
+                        List<clsBeMarcas> lista = response.body();
+
+                        if (lista != null && lista.size() > 0) {
+                            for (clsBeMarcas obj : lista) {
+
+                                marca.getLista("WHERE IdMarca = "+obj.IdMarca);
+
+                                if (marca.lista.size() == 0) {
+                                    marca.guardar(obj);
+                                }
+                            }
+                        }
+                        getInstitucion();
+                    }
+                }
+                @Override
+                public void onFailure(Call<List<clsBeMarcas>> call, Throwable t) {
                     cancelarPeticion(call);
                 }
             });
@@ -688,6 +781,7 @@ public class ComApi extends PBase {
                         getRenglones();
                     } else {
                         helper.msgbox("");
+                        terminaRecepcion();
                     }
                 }
                 @Override
@@ -1004,17 +1098,17 @@ public class ComApi extends PBase {
 
     private void AsyncCallSend() {
         try {
-            Executor executor2 = Executors.newSingleThreadExecutor();
-            Handler handler2 = new Handler(Looper.getMainLooper());
+            Executor executor = Executors.newSingleThreadExecutor();
+            Handler handler = new Handler(Looper.getMainLooper());
 
-            executor2.execute(() -> {
+            executor.execute(() -> {
                 enviar();
                 try {
-                    handler2.post(() -> {
+                    handler.post(() -> {
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
-                    handler2.post(() -> {
+                    handler.post(() -> {
                     });
                 }
             });
@@ -1029,9 +1123,7 @@ public class ComApi extends PBase {
         try {
             idx = 0;
             cant = 1;
-
             enviarLecturas(lectura.lista.get(idx));
-
         } catch (Exception e) {
             helper.msgbox(Objects.requireNonNull(new Object() {
             }.getClass().getEnclosingClass()).getName() +" - "+ e);
@@ -1070,11 +1162,11 @@ public class ComApi extends PBase {
             if (cant == lectura.lista.size()) {
                 helper.toast("Completo");
                 lectura.lista.clear();
+                terminaEnvio();
             } else {
                 idx++;
                 cant++;
                 enviarLecturas(lectura.lista.get(idx));
-
             }
         } catch (Exception e) {
             helper.msgbox(Objects.requireNonNull(new Object() {

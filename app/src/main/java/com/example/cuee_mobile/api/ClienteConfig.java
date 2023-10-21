@@ -26,7 +26,7 @@ public class ClienteConfig {
     }
 
     public void getCliente() {
-
+        //gl.urlApi = "http://192.168.1.3/cuee_api/";
         OkHttpClient cliente = new OkHttpClient.Builder()
                 .connectTimeout(1, TimeUnit.MINUTES)
                 .writeTimeout(1, TimeUnit.MINUTES)

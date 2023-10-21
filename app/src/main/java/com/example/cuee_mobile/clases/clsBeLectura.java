@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class clsBeLectura {
-    @SerializedName("idLectura")
+   /* @SerializedName("idLectura")
     @Expose
     public int IdLectura = 0;
     @SerializedName("idUsuarioServicio")
@@ -36,6 +36,19 @@ public class clsBeLectura {
     public int IdTecnico = 0;
     @SerializedName("con_hh")
     @Expose
+    public int Con_hh = 0;
+    public int StatCom= 1;*/
+
+    public int IdLectura = 0;
+    public int IdUsuarioServicio = 0;
+    public String IdContador = "";
+    public String Fecha = "";
+    public double Lectura = 0.0;
+    public double Consumo = 0.0;
+    public int IdUsuario = 0;
+    public String Fecha_creacion = "";
+    public double Lectura_kw = 0.0;
+    public int IdTecnico = 0;
     public int Con_hh = 0;
     public int StatCom= 1;
 

@@ -46,6 +46,7 @@ public class Lectura extends PBase {
 
         lectura = new LecturaModel(this, Con, db);
         lblTecnico.setText("Técnico: " + gl.tecnico.Nombre);
+        gl.termino = "";
         setServiciosLectura();
         setHandlers();
     }

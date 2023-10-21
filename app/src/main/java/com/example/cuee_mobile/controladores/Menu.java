@@ -80,8 +80,14 @@ public class Menu extends PBase {
 
             item = new clsBeMenu();
             item.id  = 5;
-            item.titulo = "Cerrar sesión";
+            item.titulo = "Cierre ruta";
             item.icono = 5;
+            lista.add(item);
+
+            item = new clsBeMenu();
+            item.id  = 6;
+            item.titulo = "Cerrar sesión";
+            item.icono = 6;
             lista.add(item);
 
             adapter = new MenuAdapter(this, lista);
@@ -108,6 +114,9 @@ public class Menu extends PBase {
                     menuUtilerias();
                     break;
                 case 5:
+                    menuUtilerias();
+                    break;
+                case 6:
                     gl.tecnico = null;
                     startActivity(new Intent(this, MainActivity.class));
                     super.finish();
@@ -117,6 +126,38 @@ public class Menu extends PBase {
             helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName() +" - "+ e);
         }
     }
+
+   /* private void dialogo(String titulo, String msg) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+
+        dialog.setIcon(R.drawable.logo);
+        dialog.setTitle(titulo);
+        dialog.setMessage(msg);
+        dialog.setPositiveButton("Si", (dialog1, id) -> {
+            guardar();
+        });
+
+        dialog.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog12, id) -> {
+        });
+
+        dialog.show();
+    }
+
+    private void dialogo(String titulo, String msg) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+
+        dialog.setIcon(R.drawable.logo);
+        dialog.setTitle(titulo);
+        dialog.setMessage(msg);
+        dialog.setPositiveButton("Si", (dialog1, id) -> {
+            guardar();
+        });
+
+        dialog.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog12, id) -> {
+        });
+
+        dialog.show();
+    }*/
 
     public void menuUtilerias() {
         try {

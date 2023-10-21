@@ -35,7 +35,7 @@ public class CueeHelper {
     }
 
     public void toast(String mensaje) {
-        Toast.makeText(context, mensaje, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show();
     }
 
     public void msgbox(String msg) {

@@ -71,7 +71,8 @@ public class MenuAdapter extends BaseAdapter {
         if (items.get(position).icono==2) holder.imgIcono.setImageResource(R.drawable.consulta);
         if (items.get(position).icono==3) holder.imgIcono.setImageResource(R.drawable.comunicacion);
         if (items.get(position).icono==4) holder.imgIcono.setImageResource(R.drawable.config);
-        if (items.get(position).icono==5) holder.imgIcono.setImageResource(R.drawable.logout);
+        if (items.get(position).icono==5) holder.imgIcono.setImageResource(R.drawable.cierre);
+        if (items.get(position).icono==6) holder.imgIcono.setImageResource(R.drawable.logout);
 
         if(selectedIndex!= -1 && position == selectedIndex) {
             convertView.setBackgroundColor(Color.rgb(0, 128, 0));

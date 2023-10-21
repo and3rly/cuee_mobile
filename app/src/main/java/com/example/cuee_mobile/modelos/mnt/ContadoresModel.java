@@ -36,7 +36,6 @@ public class ContadoresModel {
     }
 
     private void buscar(String sel) {
-        clsBeContadores item;
         Cursor DT;
         try {
             lista.clear();

@@ -10,6 +10,8 @@ public class clsBeContadores {
     public String Fecha_Cambio = "";
     public String Fecha_Creacion = "";
     public double Lectura = 0;
+    public String Ncolor = "";
+
 
     public String getIdContador() {
         return IdContador;
