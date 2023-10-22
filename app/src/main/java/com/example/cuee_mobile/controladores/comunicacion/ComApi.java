@@ -2,6 +2,7 @@ package com.example.cuee_mobile.controladores.comunicacion;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -50,6 +51,7 @@ import com.example.cuee_mobile.clases.clsBeTecnicos;
 import com.example.cuee_mobile.clases.clsBeTransformadores;
 import com.example.cuee_mobile.clases.clsBeUsuarios_por_ruta;
 import com.example.cuee_mobile.clases.clsBeUsuarios_servicio;
+import com.example.cuee_mobile.controladores.MainActivity;
 import com.example.cuee_mobile.controladores.PBase;
 import com.example.cuee_mobile.modelos.RutaSincModel;
 import com.example.cuee_mobile.modelos.ServicioInsModel;
@@ -114,6 +116,7 @@ public class ComApi extends PBase {
     private MarcaModel marca;
     private String msjProg = "";
     private int IdRuta, IdItinerario, idx, cant;
+    private clsBeRuta_lectura objRutaLectura = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,8 +197,11 @@ public class ComApi extends PBase {
 
     private void cargar() {
         try {
-            getUrlApi();
             setModels();
+            rutaLectura.getLinea();
+            objRutaLectura = rutaLectura.objRutaLec;
+
+            getUrlApi();
             setHandlers();
             existeDatosEnvio();
 
@@ -213,6 +219,7 @@ public class ComApi extends PBase {
             }.getClass().getEnclosingClass()).getName() +" - "+ e);
         }
     }
+
     private void existeDatosEnvio() {
         try {
             if (pendientesEnvio()) {
@@ -221,10 +228,14 @@ public class ComApi extends PBase {
                 txtRuta.setEnabled(false);
                 txtItinerario.setEnabled(false);
             } else {
-                btnRecibir.setVisibility(View.VISIBLE);
+
+                if (objRutaLectura == null) {
+                    btnRecibir.setVisibility(View.VISIBLE);
+                    txtRuta.setEnabled(true);
+                    txtItinerario.setEnabled(true);
+                }
+
                 btnEnviar.setVisibility(View.GONE);
-                txtRuta.setEnabled(true);
-                txtItinerario.setEnabled(true);
             }
         } catch (Exception e) {
             helper.msgbox(Objects.requireNonNull(new Object() {
@@ -946,7 +957,13 @@ public class ComApi extends PBase {
                             }
                         }
                         terminaRecepcion();
-                        finish();
+
+                        if (gl.ruta == null || gl.ruta.IdRuta == 0) {
+                            finish();
+                            startActivity(new Intent(ComApi.this, MainActivity.class));
+                        } else {
+                            finish();
+                        }
                     }
                 }
                 @Override

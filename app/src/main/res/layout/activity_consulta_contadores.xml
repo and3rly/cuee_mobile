@@ -110,6 +110,7 @@
             android:layout_toStartOf="@+id/btnLimpiar"
             android:layout_toEndOf="@+id/textView"
             android:ems="10"
+            android:hint="Contador, marca y color"
             android:inputType="text" />
 
         <ImageView

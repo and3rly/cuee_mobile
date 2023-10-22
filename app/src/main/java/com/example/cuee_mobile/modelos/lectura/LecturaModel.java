@@ -76,6 +76,32 @@ public class LecturaModel {
         }
     }
 
+    public void getConsultaLectura(String termino) {
+        clsBeLectura item;
+        Cursor DT;
+        try {
+            sql = sel;
+            if (!termino.isEmpty()) {
+                sql += " WHERE IdLectura LIKE '%"+Integer.parseInt(termino)+"%' OR IdContador LIKE '%"+termino+"%' OR IdUsuarioServicio LIKE '%"+Integer.parseInt(termino)+"%' ";
+            }
+            DT = Con.OpenDT(sql);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+
+                lista.clear();
+                while (!DT.isAfterLast()) {
+                    lista.add(setLinea(DT));
+                    DT.moveToNext();
+                }
+            }
+
+            if (DT != null) DT.close();
+        } catch (Exception e) {
+            Log.e("LECTURA", "getConsultaLectura: ", e );
+        }
+    }
+
     public ArrayList<auxLecturaServicio> getServiciosLectura(boolean pendientes) {
         Cursor DT;
         auxLecturaServicio item;

@@ -59,7 +59,7 @@ public class ContadoresModel {
     public void getReporteContadores() {
         Cursor DT;
         try {
-            sql = "SELECT A.*, B.Nombre AS NColor, C.Nombre AS NMarca " +
+            sql = "SELECT A.*, B.Nombre AS NColor, C.Nombre AS NMarca, STRFTIME('%d/%m/%Y', A.Fecha_cambio) AS FechaCambio, STRFTIME('%d/%m/%Y', A.Fecha_creacion) AS FechaCreacion  " +
                     "FROM CONTADORES A " +
                     "INNER JOIN COLOR B ON B.Idcolor = A.Color " +
                     "INNER JOIN MARCAS C ON C.IdMarca = A.IdMarca";
@@ -69,7 +69,6 @@ public class ContadoresModel {
 
             if (DT.getCount() > 0) {
                 DT.moveToFirst();
-
                 while (!DT.isAfterLast()) {
                     lista.add(setDatos(DT));
                     DT.moveToNext();
@@ -93,8 +92,8 @@ public class ContadoresModel {
             item.No_marchamo = DT.getString(3);
             item.Color = DT.getString(4);
             item.IdUsuarioServicio = DT.getInt(5);
-            item.Fecha_Cambio = DT.getString(6);
-            item.Fecha_Creacion = DT.getString(7);
+            item.Fecha_Cambio = DT.getString(11);
+            item.Fecha_Creacion = DT.getString(12);
             item.Lectura = DT.getDouble(8);
             item.Ncolor = DT.getString(9);
             item.Nmarca = DT.getString(10);

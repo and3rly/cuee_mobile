@@ -169,6 +169,11 @@ public class Menu extends PBase {
                 FileUtils.copyFile(f1, f2);
 
                 catalogo.eliminarDatosTalbas();
+                gl.ruta = null;
+                gl.itinerario = 0;
+
+                startActivity(new Intent(this, ComApi.class));
+                super.finish();
 
             } catch (Exception e) {
                 helper.msgbox("No se puede generar respaldo : " + e.getMessage());

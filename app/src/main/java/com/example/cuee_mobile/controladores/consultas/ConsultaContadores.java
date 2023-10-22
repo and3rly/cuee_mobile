@@ -3,6 +3,8 @@ package com.example.cuee_mobile.controladores.consultas;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -10,6 +12,8 @@ import android.widget.TextView;
 
 import com.example.cuee_mobile.R;
 import com.example.cuee_mobile.adapter.ContadoresAdapter;
+import com.example.cuee_mobile.adapter.LecturaAdapter;
+import com.example.cuee_mobile.clases.auxLecturaServicio;
 import com.example.cuee_mobile.clases.clsBeContadores;
 import com.example.cuee_mobile.controladores.PBase;
 import com.example.cuee_mobile.modelos.mnt.ContadoresModel;
@@ -26,6 +30,7 @@ public class ConsultaContadores extends PBase {
     private ArrayList<clsBeContadores> clista =  new ArrayList<>();
     private ContadoresAdapter ContadoresAdapter;
     private ProgressDialog progress;
+    private ArrayList<clsBeContadores> auxLista = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +47,7 @@ public class ConsultaContadores extends PBase {
         contadores = new ContadoresModel(this, Con, db);
         setHandlers();
 
-        Handler timer = new Handler();
-        Runnable runner = this::getContadores;
-        timer.postDelayed(runner, 500);
+        getContadores();
     }
 
     private void setHandlers() {
@@ -52,25 +55,62 @@ public class ConsultaContadores extends PBase {
         btnLimpiar.setOnClickListener(view -> txtFiltro.setText(""));
 
         btnRegresar.setOnClickListener(v -> regresar());
+
+        txtFiltro.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!txtFiltro.getText().toString().isEmpty()) {
+                    gl.termino = txtFiltro.getText().toString();
+                    Filtro();
+                } else {
+                    gl.termino = "";
+                    getContadores();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+    }
+
+    private void Filtro() {
+        String termino  = gl.termino;
+
+        try {
+
+            auxLista.clear();
+            for (clsBeContadores obj : clista) {
+
+                if (obj.IdContador.toLowerCase().contains(termino.toLowerCase()) ||
+                        obj.Nmarca.toLowerCase().contains(termino.toLowerCase()) ||
+                        obj.Ncolor.toLowerCase().contains(termino.toLowerCase())) {
+                    auxLista.add(obj);
+                }
+            }
+
+            ContadoresAdapter = new ContadoresAdapter(this, auxLista);
+            lcontadores.setAdapter(ContadoresAdapter);
+            lblRegistros.setText("REGISTROS: " + auxLista.size());
+
+        } catch (Exception e) {
+            helper.msgbox(new Object() {}.getClass().getEnclosingMethod().getName() +" - "+ e.getMessage());
+        }
     }
 
     private void getContadores() {
         try {
+            clista.clear();
             contadores.getReporteContadores();
 
-            clista.clear();
             if (contadores.lista.size() > 0) {
                 clista = contadores.lista;
-
-                for (clsBeContadores obj: clista) {
-                    if (obj.Fecha_Creacion.contains("T")) {
-                        obj.Fecha_Creacion = du.strFecha(obj.Fecha_Creacion);
-                    }
-
-                    if (obj.Fecha_Cambio.contains("T")) {
-                        obj.Fecha_Cambio = du.strFecha(obj.Fecha_Cambio);
-                    }
-                }
 
                 ContadoresAdapter  = new ContadoresAdapter(this, clista);
                 lcontadores.setAdapter(ContadoresAdapter);
