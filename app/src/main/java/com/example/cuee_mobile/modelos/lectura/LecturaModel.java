@@ -76,7 +76,7 @@ public class LecturaModel {
         }
     }
 
-    public ArrayList<auxLecturaServicio> getServiciosLectura() {
+    public ArrayList<auxLecturaServicio> getServiciosLectura(boolean pendientes) {
         Cursor DT;
         auxLecturaServicio item;
         try {
@@ -93,6 +93,10 @@ public class LecturaModel {
                     " FROM SERVICIOS_INSTALADO A" +
                     " INNER JOIN USUARIOS_SERVICIO B ON A.IdUsuarioServicio = B.IdUsuarioServicio" +
                     " INNER JOIN USUARIOS_POR_RUTA C ON A.IdUsuarioServicio = C.IdUsuarioServicio WHERE A.Estado_servicio NOT IN (1,3)";
+
+            if (pendientes) {
+                sql += " AND A.Lectura_realizada = 0 AND A.Lectura_correcta = 0";
+            }
 
             DT = Con.OpenDT(sql);
 

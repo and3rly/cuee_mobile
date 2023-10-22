@@ -70,8 +70,8 @@ public class ContadoresAdapter extends BaseAdapter {
         }
 
         holder.lblContador.setText(items.get(position).IdContador);
-        holder.lblMarca.setText(items.get(position).IdMarca+"");
-        holder.lblColor.setText(items.get(position).Color);
+        holder.lblMarca.setText(items.get(position).Nmarca);
+        holder.lblColor.setText(items.get(position).Ncolor);
         holder.lblMarchamo.setText(items.get(position).No_marchamo);
         holder.lblFechaCambio.setText(items.get(position).Fecha_Cambio);
         holder.lblFechaCreacion.setText(items.get(position).Fecha_Creacion);

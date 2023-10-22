@@ -56,6 +56,32 @@ public class ContadoresModel {
         }
     }
 
+    public void getReporteContadores() {
+        Cursor DT;
+        try {
+            sql = "SELECT A.*, B.Nombre AS NColor, C.Nombre AS NMarca " +
+                    "FROM CONTADORES A " +
+                    "INNER JOIN COLOR B ON B.Idcolor = A.Color " +
+                    "INNER JOIN MARCAS C ON C.IdMarca = A.IdMarca";
+
+            lista.clear();
+            DT = Con.OpenDT(sql);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+
+                while (!DT.isAfterLast()) {
+                    lista.add(setDatos(DT));
+                    DT.moveToNext();
+                }
+            }
+
+            if (DT != null) DT.close();
+        } catch (Exception e) {
+            Log.e("CONTADORES", "buscar: ", e );
+        }
+    }
+
     private clsBeContadores setDatos(Cursor DT) {
         clsBeContadores item = null;
         try {
@@ -70,6 +96,8 @@ public class ContadoresModel {
             item.Fecha_Cambio = DT.getString(6);
             item.Fecha_Creacion = DT.getString(7);
             item.Lectura = DT.getDouble(8);
+            item.Ncolor = DT.getString(9);
+            item.Nmarca = DT.getString(10);
         } catch (Exception e) {
             Log.e("CONTADORES", "guardar: ", e);
         }

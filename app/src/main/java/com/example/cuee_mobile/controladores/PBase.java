@@ -13,6 +13,7 @@ import com.example.cuee_mobile.base.CueeHelper;
 import com.example.cuee_mobile.base.FechaHelper;
 import com.example.cuee_mobile.base.VarGlobal;
 import com.example.cuee_mobile.bd.HelperBD;
+import com.example.cuee_mobile.modelos.CatalogoModel;
 
 public class PBase extends Activity {
     protected ClienteConfig retrofit;
@@ -23,6 +24,7 @@ public class PBase extends Activity {
     protected String sql;
     protected int browse;
     protected VarGlobal gl;
+    protected CatalogoModel catalogo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class PBase extends Activity {
         String nombre = pathDataDir + "/db_cuee.db";
         Con = new HelperBD(this, nombre);
         opendb();
+        catalogo = new CatalogoModel(this, Con ,db);
     }
     public void opendb() {
         try {

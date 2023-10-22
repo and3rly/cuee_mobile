@@ -6,6 +6,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".controladores.lectura.Lectura">
 
+    <CheckBox
+        android:id="@+id/chkPendientes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relFiltro"
+        android:layout_alignEnd="@+id/relFiltro"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:gravity="right|center_vertical"
+        android:text="Mostrar pendientes" />
+
     <RelativeLayout
         android:id="@+id/relTop"
         android:layout_width="match_parent"
@@ -74,7 +85,7 @@
     <RelativeLayout
         android:id="@+id/relFiltro"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_below="@+id/relTop"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
@@ -128,7 +139,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/relBot"
-        android:layout_below="@+id/relFiltro"
+        android:layout_below="@+id/chkPendientes"
+        android:layout_marginTop="0dp"
         android:layout_marginBottom="0dp">
 
         <LinearLayout

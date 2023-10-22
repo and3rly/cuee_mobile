@@ -441,14 +441,16 @@ public class ScriptBD {
 
             sql = "CREATE TABLE [COLOR] (" +
                     "Idcolor INTEGER NOT NULL ," +
-                    "Nombre TEXT DEFAULT NULL" +
+                    "Nombre TEXT DEFAULT NULL," +
+                    "PRIMARY KEY ([Idcolor])" +
                     ");";
             db.execSQL(sql);
 
             sql = "CREATE TABLE [MARCAS] (" +
                     "IdMarca INTEGER NOT NULL ," +
                     "Nombre TEXT DEFAULT NULL," +
-                    "Activo INTEGER DEFAULT 0" +
+                    "Activo INTEGER DEFAULT 0," +
+                    "PRIMARY KEY ([IdMarca])" +
                     ");";
             db.execSQL(sql);
 

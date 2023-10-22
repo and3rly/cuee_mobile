@@ -11,6 +11,7 @@ public class clsBeContadores {
     public String Fecha_Creacion = "";
     public double Lectura = 0;
     public String Ncolor = "";
+    public String Nmarca = "";
 
 
     public String getIdContador() {

@@ -13,12 +13,17 @@ import android.widget.TextView;
 
 import com.example.cuee_mobile.R;
 import com.example.cuee_mobile.adapter.MenuAdapter;
+import com.example.cuee_mobile.clases.auxLecturaServicio;
 import com.example.cuee_mobile.clases.clsBeMenu;
 import com.example.cuee_mobile.controladores.comunicacion.ComApi;
 import com.example.cuee_mobile.controladores.consulta_contadores.ConsultaContadores;
 import com.example.cuee_mobile.controladores.lectura.Lectura;
 import com.example.cuee_mobile.controladores.utilerias.Tablas;
+import com.example.cuee_mobile.modelos.lectura.LecturaModel;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
 import java.util.ArrayList;
 
 public class Menu extends PBase {
@@ -27,6 +32,7 @@ public class Menu extends PBase {
     private GridView grdMenu;
     private ArrayList<clsBeMenu> lista = new ArrayList<>();
     private MenuAdapter adapter;
+    private LecturaModel lectura;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +43,7 @@ public class Menu extends PBase {
         lblUsuario = findViewById(R.id.lblUsuario);
         grdMenu = findViewById(R.id.grdMenu);
 
+        lectura = new LecturaModel(this, Con, db);
         setMenu();
         setHandlers();
         lblUsuario.setText(gl.tecnico.Nombre);
@@ -108,13 +115,18 @@ public class Menu extends PBase {
                     startActivity(new Intent(this, ConsultaContadores.class));
                     break;
                 case 3:
-                    startActivity(new Intent(this, ComApi.class));
+                    lectura.getLista("WHERE StatCom = 0");
+                    if (lectura.filas > 0) {
+                        startActivity(new Intent(this, ComApi.class));
+                    } else {
+                        helper.toast("No hay datos pendientes para enviar.");
+                    }
                     break;
                 case 4:
                     menuUtilerias();
                     break;
                 case 5:
-                    menuUtilerias();
+                    cierreRuta();
                     break;
                 case 6:
                     gl.tecnico = null;
@@ -127,14 +139,55 @@ public class Menu extends PBase {
         }
     }
 
-   /* private void dialogo(String titulo, String msg) {
+    private void cierreRuta() {
+        ArrayList<auxLecturaServicio> pendientes;
+        try {
+
+            lectura.getLista("WHERE StatCom = 0");
+            if (lectura.filas > 0)  {
+                helper.toast("Tiene lecturas pendientes de enviar.");
+                return;
+            }
+
+            pendientes = lectura.getServiciosLectura(true);
+            if (pendientes.size() > 0) {
+                dialogoPendientes("Confirmar cierre", "Existen "+pendientes.size()+" usuarios de lectura pendiente, ¿Está seguro de continuar?");
+            } else {
+                dialogoPendientes("Confirmar cierre", "¿Está seguro de continuar?");
+            }
+
+        } catch (Exception e) {
+            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName() +" - "+ e);
+        }
+    }
+
+    private void completaCierre() {
+        long dia = du.dayofweek(du.getActDate());
+        try {
+            try {
+                File f1 = new File(gl.path + "/database/db_cuee.db");
+                File f2 = new File(gl.path + "/database/db_cuee_" + dia + ".db");
+                FileUtils.copyFile(f1, f2);
+
+                catalogo.eliminarDatosTalbas();
+
+            } catch (Exception e) {
+                helper.msgbox("No se puede generar respaldo : " + e.getMessage());
+            }
+
+
+        } catch (Exception e) {
+            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName() +" - "+ e);
+        }
+    }
+   private void dialogoPendientes(String titulo, String msg) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 
         dialog.setIcon(R.drawable.logo);
         dialog.setTitle(titulo);
         dialog.setMessage(msg);
         dialog.setPositiveButton("Si", (dialog1, id) -> {
-            guardar();
+            dialogoConfirmar("Confirmar cierre", "¿Está seguro?");
         });
 
         dialog.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog12, id) -> {
@@ -142,22 +195,21 @@ public class Menu extends PBase {
 
         dialog.show();
     }
-
-    private void dialogo(String titulo, String msg) {
+    private void dialogoConfirmar(String titulo, String msg) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 
         dialog.setIcon(R.drawable.logo);
         dialog.setTitle(titulo);
         dialog.setMessage(msg);
         dialog.setPositiveButton("Si", (dialog1, id) -> {
-            guardar();
+            completaCierre();
         });
 
         dialog.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog12, id) -> {
         });
 
         dialog.show();
-    }*/
+    }
 
     public void menuUtilerias() {
         try {

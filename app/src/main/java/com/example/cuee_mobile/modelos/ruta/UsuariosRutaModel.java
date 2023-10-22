@@ -19,6 +19,7 @@ public class UsuariosRutaModel {
     public HelperBD.Update upd;
     private final String tabla = "USUARIOS_POR_RUTA";
     private final String sel =  "SELECT * FROM " + tabla;
+    private String sql;
     public ArrayList<clsBeUsuarios_por_ruta> lista = new ArrayList<>();
 
     public UsuariosRutaModel(Context ct, HelperBD con, SQLiteDatabase dbase) {
@@ -84,5 +85,4 @@ public class UsuariosRutaModel {
         }
         return  true;
     }
-
 }

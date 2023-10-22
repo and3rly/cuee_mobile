@@ -56,7 +56,7 @@ public class ConsultaContadores extends PBase {
 
     private void getContadores() {
         try {
-            contadores.getLista();
+            contadores.getReporteContadores();
 
             clista.clear();
             if (contadores.lista.size() > 0) {

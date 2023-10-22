@@ -163,8 +163,10 @@ public class MainActivity extends PBase {
             rutaLectura.getLinea();
             objRutaLec = rutaLectura.objRutaLec;
 
+            gl.itinerario = catalogo.getItinerario();
+
             if (objRutaLec != null) {
-                lblRuta.setText("No. " +objRutaLec.Nombre);
+                lblRuta.setText("No. " +objRutaLec.Nombre+ " - "+"Itinerario No. "+gl.itinerario);
                 gl.ruta = objRutaLec;
             } else {
                 return false;

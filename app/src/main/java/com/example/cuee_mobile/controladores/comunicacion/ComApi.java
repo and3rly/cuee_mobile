@@ -129,12 +129,7 @@ public class ComApi extends PBase {
         txtItinerario = findViewById(R.id.txtItinerario);
         txtUrl = findViewById(R.id.txtUrl);
 
-
-        getUrlApi();
-        setModels();
-        setHandlers();
-
-        existeDatosEnvio();
+        cargar();
     }
 
     private void setModels() {
@@ -197,6 +192,27 @@ public class ComApi extends PBase {
         });
     }
 
+    private void cargar() {
+        try {
+            getUrlApi();
+            setModels();
+            setHandlers();
+            existeDatosEnvio();
+
+            if (gl.ruta != null) {
+                if (gl.ruta.IdRuta != 0) {
+                    txtRuta.setText("" + gl.ruta.IdRuta);
+                }
+
+                if (gl.itinerario != 0) {
+                    txtItinerario.setText("" + gl.itinerario);
+                }
+            }
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
     private void existeDatosEnvio() {
         try {
             if (pendientesEnvio()) {
@@ -247,7 +263,7 @@ public class ComApi extends PBase {
             lblPgr.setText("Procesando...");
 
             if (!pendientesEnvio()) {
-                institucion.eliminarDatosTalbas();
+                catalogo.eliminarDatosTalbas();
             }
 
             Handler timer = new Handler();

@@ -68,7 +68,7 @@ public class MarcaModel {
         try {
             ins.init(tabla);
 
-            ins.add("Idcolor", obj.IdMarca);
+            ins.add("IdMarca", obj.IdMarca);
             ins.add("Nombre", obj.Nombre);
             ins.add("Activo", obj.Activo);
 

@@ -6,6 +6,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -25,11 +27,13 @@ public class Lectura extends PBase {
     private TextView lblRegistros, lblTecnico;
     private ImageView btnRegresar, btnLimpiar;
     private ListView lista_servicios;
+    private CheckBox chkPendientes;
     private LecturaAdapter adapter;
     private ArrayList<auxLecturaServicio> lista = new ArrayList<>();
     private ArrayList<auxLecturaServicio> auxLista = new ArrayList<>();
     public static auxLecturaServicio auxLectura = new auxLecturaServicio();
     private LecturaModel lectura;
+    private boolean pendientes = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,7 @@ public class Lectura extends PBase {
         btnLimpiar = findViewById(R.id.btnLimpiar);
         lblRegistros = findViewById(R.id.lblRegistros);
         lblTecnico = findViewById(R.id.lblTecnico);
+        chkPendientes = findViewById(R.id.chkPendientes);
 
         lectura = new LecturaModel(this, Con, db);
         lblTecnico.setText("Técnico: " + gl.tecnico.Nombre);
@@ -52,6 +57,15 @@ public class Lectura extends PBase {
     }
 
     private void setHandlers() {
+        chkPendientes.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                pendientes = true;
+            } else {
+                pendientes = false;
+            }
+            setServiciosLectura();
+        });
+
         lista_servicios.setOnItemClickListener((parent, view, position, id) -> {
             auxLectura = new auxLecturaServicio();
             auxLectura = (auxLecturaServicio) lista_servicios.getItemAtPosition(position);
@@ -117,7 +131,7 @@ public class Lectura extends PBase {
     private void setServiciosLectura() {
         try {
             lista.clear();
-            lista = lectura.getServiciosLectura();
+            lista = lectura.getServiciosLectura(pendientes);
 
             if (lista.size() > 0) {
                 adapter  = new LecturaAdapter(this, lista);
