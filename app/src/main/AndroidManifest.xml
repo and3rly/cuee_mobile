@@ -19,13 +19,16 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".controladores.consultas.ConsultaLectura"
+            android:exported="false" />
+        <activity
             android:name=".controladores.lectura.LecturaForm"
             android:exported="false" />
         <activity
             android:name=".controladores.utilerias.Tablas"
             android:exported="false" />
         <activity
-            android:name=".controladores.consulta_contadores.ConsultaContadores"
+            android:name=".controladores.consultas.ConsultaContadores"
             android:exported="false" />
         <activity
             android:name=".controladores.lectura.Lectura"

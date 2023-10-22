@@ -1,7 +1,5 @@
 package com.example.cuee_mobile.controladores;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,7 +14,8 @@ import com.example.cuee_mobile.adapter.MenuAdapter;
 import com.example.cuee_mobile.clases.auxLecturaServicio;
 import com.example.cuee_mobile.clases.clsBeMenu;
 import com.example.cuee_mobile.controladores.comunicacion.ComApi;
-import com.example.cuee_mobile.controladores.consulta_contadores.ConsultaContadores;
+import com.example.cuee_mobile.controladores.consultas.ConsultaContadores;
+import com.example.cuee_mobile.controladores.consultas.ConsultaLectura;
 import com.example.cuee_mobile.controladores.lectura.Lectura;
 import com.example.cuee_mobile.controladores.utilerias.Tablas;
 import com.example.cuee_mobile.modelos.lectura.LecturaModel;
@@ -69,7 +68,7 @@ public class Menu extends PBase {
 
             item = new clsBeMenu();
             item.id  = 2;
-            item.titulo = "Consulta de contadores";
+            item.titulo = "Consultas";
             item.icono = 2;
             lista.add(item);
 
@@ -112,7 +111,7 @@ public class Menu extends PBase {
                     startActivity(new Intent(this, Lectura.class));
                     break;
                 case 2:
-                    startActivity(new Intent(this, ConsultaContadores.class));
+                    menuConsultas();
                     break;
                 case 3:
                     lectura.getLista("WHERE StatCom = 0");
@@ -226,6 +225,41 @@ public class Menu extends PBase {
                         break;
                     case 1:
                         helper.toast("Versión 1.0");
+                        break;
+                }
+            });
+
+            builder.setNegativeButton("Salir", (dialog, which) -> {
+                dialog.cancel();
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+            Button nbutton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+            nbutton.setBackgroundColor(Color.parseColor("#880E4F"));
+            nbutton.setTextColor(Color.WHITE);
+
+        } catch (Exception e) {
+            helper.msgbox(new Object(){}.getClass().getEnclosingMethod().getName() +"-"+ e) ;
+        }
+    }
+
+    public void menuConsultas() {
+        try {
+            String[] items = {"Contadores","Lecturas"};
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setIcon(R.drawable.config);
+            builder.setTitle("Consultas");
+
+            builder.setItems(items, (dialog, item) -> {
+                switch (item) {
+                    case 0:
+                        startActivity(new Intent(this, ConsultaContadores.class));
+                        break;
+                    case 1:
+                        startActivity(new Intent(this, ConsultaLectura.class));
                         break;
                 }
             });

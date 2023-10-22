@@ -1,4 +1,4 @@
-package com.example.cuee_mobile.controladores.consulta_contadores;
+package com.example.cuee_mobile.controladores.consultas;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
