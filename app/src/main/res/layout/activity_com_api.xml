@@ -46,16 +46,25 @@
     <RelativeLayout
         android:id="@+id/relBot"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="55dp"
         android:layout_alignParentBottom="true"
         android:background="@color/blue_gray"
         android:gravity="center_horizontal|center_vertical">
+
+        <ImageView
+            android:id="@+id/btnRegresar"
+            android:layout_width="45dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/regresar" />
 
         <TextView
             android:id="@+id/lblVersion"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_horizontal|center_vertical"
+            android:gravity="right|center_vertical"
+            android:paddingRight="10dp"
             android:text="Versión 1.0"
             android:textColor="#FFFFFF"
             android:textSize="16sp" />

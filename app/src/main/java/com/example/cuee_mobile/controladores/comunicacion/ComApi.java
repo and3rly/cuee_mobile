@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -97,6 +98,7 @@ public class ComApi extends PBase {
     private RelativeLayout btnRecibir, btnEnviar, relPrg;
     private EditText txtRuta, txtItinerario, txtUrl;
     private TextView lblPgr;
+    private ImageView btnRegresar;
     private InstitucionModel institucion;
     private InstitucionDetalleModel insDetalle;
     private RutaLecturaModel rutaLectura;
@@ -134,6 +136,7 @@ public class ComApi extends PBase {
         txtRuta = findViewById(R.id.txtRuta);
         txtItinerario = findViewById(R.id.txtItinerario);
         txtUrl = findViewById(R.id.txtUrl);
+        btnRegresar = findViewById(R.id.btnRegresar);
 
         cargar();
     }
@@ -196,6 +199,8 @@ public class ComApi extends PBase {
         btnEnviar.setOnClickListener(view -> {
             dialogo("Envio de datos", "¿Está seguro de iniciar el envio de datos?", 2);
         });
+
+        btnRegresar.setOnClickListener(v -> regresar());
     }
 
     private void cargar() {
@@ -1334,6 +1339,8 @@ public class ComApi extends PBase {
         txtRuta.setEnabled(true);
         txtItinerario.setEnabled(true);
         btnEnviar.setEnabled(true);
+
+        helper.toast("Recepción completa");
     }
 
     private void terminaEnvio() {
@@ -1371,5 +1378,21 @@ public class ComApi extends PBase {
             helper.msgbox(Objects.requireNonNull(new Object() {
             }.getClass().getEnclosingClass()).getName() +" - "+ e);
         }
+    }
+
+    private void regresar() {
+        if (gl.cierreRuta) {
+            if (objRutaLectura != null) {
+                startActivity(new Intent(this, Menu.class));
+                super.finish();
+            }
+        } else {
+            super.finish();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        regresar();
     }
 }
