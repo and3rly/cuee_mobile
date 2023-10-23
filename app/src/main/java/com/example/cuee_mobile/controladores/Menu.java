@@ -141,12 +141,7 @@ public class Menu extends PBase {
     private void cierreRuta() {
         ArrayList<auxLecturaServicio> pendientes;
         try {
-
-            lectura.getLista("WHERE StatCom = 0");
-            if (lectura.filas > 0)  {
-                helper.toast("Tiene lecturas pendientes de enviar.");
-                return;
-            }
+            gl.cierreRuta = false;
 
             pendientes = lectura.getServiciosLectura(true);
             if (pendientes.size() > 0) {
@@ -162,19 +157,25 @@ public class Menu extends PBase {
 
     private void completaCierre() {
         long dia = du.dayofweek(du.getActDate());
+        gl.cierreRuta = true;
         try {
             try {
                 File f1 = new File(gl.path + "/database/db_cuee.db");
                 File f2 = new File(gl.path + "/database/db_cuee_" + dia + ".db");
                 FileUtils.copyFile(f1, f2);
 
-                catalogo.eliminarDatosTalbas();
-                gl.ruta = null;
-                gl.itinerario = 0;
+                lectura.getLista("WHERE StatCom = 0");
+                if (lectura.filas == 0)  {
+                    gl.ruta = null;
+                    gl.itinerario = 0;
+                    catalogo.eliminarDatosTalbas();
+                    startActivity(new Intent(this, ComApi.class));
+                    super.finish();
 
-                startActivity(new Intent(this, ComApi.class));
-                super.finish();
-
+                } else {
+                    startActivity(new Intent(this, ComApi.class));
+                    super.finish();
+                }
             } catch (Exception e) {
                 helper.msgbox("No se puede generar respaldo : " + e.getMessage());
             }

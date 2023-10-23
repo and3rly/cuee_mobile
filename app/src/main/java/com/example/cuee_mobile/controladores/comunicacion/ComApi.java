@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import org.apache.commons.io.FileUtils;
 
 import androidx.annotation.NonNull;
@@ -52,6 +54,7 @@ import com.example.cuee_mobile.clases.clsBeTransformadores;
 import com.example.cuee_mobile.clases.clsBeUsuarios_por_ruta;
 import com.example.cuee_mobile.clases.clsBeUsuarios_servicio;
 import com.example.cuee_mobile.controladores.MainActivity;
+import com.example.cuee_mobile.controladores.Menu;
 import com.example.cuee_mobile.controladores.PBase;
 import com.example.cuee_mobile.modelos.RutaSincModel;
 import com.example.cuee_mobile.modelos.ServicioInsModel;
@@ -288,7 +291,7 @@ public class ComApi extends PBase {
     }
 
     private void enviarDatos() {
-        String fecha = du.getFecha();
+        String fecha = du.getFechaCompleta();
         try {
 
             relPrg.setVisibility(View.VISIBLE);
@@ -365,6 +368,42 @@ public class ComApi extends PBase {
         }
     }
 
+    private void validaRutaItinerario() {
+        msjProg = "Validando ruta e itinerario...";
+        actualizaProgress();
+
+        try {
+            Ruta cliente = retrofit.CrearServicio(Ruta.class);
+            Call<Boolean> call = cliente.validaRutaItinerario(IdRuta, IdItinerario);
+
+            call.enqueue(new Callback<Boolean>() {
+                @Override
+                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                    if (response.isSuccessful()) {
+                        boolean existe = response.body();
+
+                        if (existe) {
+                            getFechaServidor();
+                        } else {
+                            cancelarPeticion(call);
+                            helper.toast("Ruta o itinerario incorrecto.");
+                        }
+                    } else {
+                        cancelarPeticion(call);
+                        helper.toast("Algo salio mal, intente de nuevo");
+                    }
+                }
+                @Override
+                public void onFailure(Call<Boolean> call, Throwable t) {
+                    cancelarPeticion(call);
+                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
+                }
+            });
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
     private void getFechaServidor() {
         msjProg = "Comprobando fecha servidor...";
         actualizaProgress();
@@ -394,11 +433,15 @@ public class ComApi extends PBase {
                             cancelarPeticion(call);
                             helper.toast("Fecha del dispositivo no coincide con fecha servidor.");
                         }
+                    } else {
+                        cancelarPeticion(call);
+                        helper.toast("Algo salio mal, intente de nuevo");
                     }
                 }
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
                     cancelarPeticion(call);
+                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -431,13 +474,16 @@ public class ComApi extends PBase {
                                 }
                             }
                         }
-
                         getMarca();
+                    } else {
+                        cancelarPeticion(call);
+                        helper.toast("Algo salio mal, intente de nuevo");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeColor>> call, Throwable t) {
                     cancelarPeticion(call);
+                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -471,11 +517,15 @@ public class ComApi extends PBase {
                             }
                         }
                         getInstitucion();
+                    } else {
+                        cancelarPeticion(call);
+                        helper.toast("Algo salio mal, intente de nuevo");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeMarcas>> call, Throwable t) {
                     cancelarPeticion(call);
+                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -509,11 +559,15 @@ public class ComApi extends PBase {
                             }
                         }
                         getInstitucionDetalle();
+                    } else {
+                        cancelarPeticion(call);
+                        helper.toast("Algo salio mal, intente de nuevo");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeInstitucion>> call, Throwable t) {
                     cancelarPeticion(call);
+                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -547,11 +601,15 @@ public class ComApi extends PBase {
                             }
                         }
                         getRutaLectura();
+                    } else {
+                        cancelarPeticion(call);
+                        helper.toast("Algo salio mal, intente de nuevo");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeInstitucion_detalle>> call, Throwable t) {
                     cancelarPeticion(call);
+                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -584,12 +642,16 @@ public class ComApi extends PBase {
                                 }
                             }
                         }
+                        getTecnicos();
+                    } else {
+                        cancelarPeticion(call);
+                        helper.toast("Algo salio mal, intente de nuevo");
                     }
-                    getTecnicos();
                 }
                 @Override
                 public void onFailure(Call<List<clsBeRuta_lectura>> call, Throwable t) {
                     cancelarPeticion(call);
+                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -622,11 +684,15 @@ public class ComApi extends PBase {
                             }
                         }
                         getRutaTecnico();
+                    } else {
+                        cancelarPeticion(call);
+                        helper.toast("Algo salio mal, intente de nuevo");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeTecnicos>> call, Throwable t) {
                     cancelarPeticion(call);
+                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -659,10 +725,15 @@ public class ComApi extends PBase {
                             }
                         }
                         getUsuariosRuta();
+                    } else {
+                        cancelarPeticion(call);
+                        helper.toast("Algo salio mal, intente de nuevo");
                     }
                 }
                 @Override
-                public void onFailure(Call<List<clsBeRuta_tecnico>> call, Throwable t) {cancelarPeticion(call);}
+                public void onFailure(Call<List<clsBeRuta_tecnico>> call, Throwable t) {
+                    cancelarPeticion(call);
+                    helper.toast("Problemas de conexión. Inténtelo de nuevo");}
             });
         } catch (Exception e) {
             helper.msgbox(Objects.requireNonNull(new Object() {
@@ -695,11 +766,15 @@ public class ComApi extends PBase {
                             }
                         }
                         getParametros();
+                    } else {
+                        cancelarPeticion(call);
+                        helper.toast("Algo salio mal, intente de nuevo");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeUsuarios_por_ruta>> call, Throwable t) {
                     cancelarPeticion(call);
+                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -732,11 +807,15 @@ public class ComApi extends PBase {
                             }
                         }
                         getContadores();
+                    } else {
+                        cancelarPeticion(call);
+                        helper.toast("Algo salio mal, intente de nuevo");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeParametros>> call, Throwable t) {
                     cancelarPeticion(call);
+                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -768,12 +847,17 @@ public class ComApi extends PBase {
                                 }
                             }
                         }
+
+                        getLectura();
+                    } else {
+                        cancelarPeticion(call);
+                        helper.toast("Algo salio mal, intente de nuevo");
                     }
-                    getLectura();
                 }
                 @Override
                 public void onFailure(Call<List<clsBeContadores>> call, Throwable t) {
                     cancelarPeticion(call);
+                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -807,13 +891,14 @@ public class ComApi extends PBase {
                         }
                         getRenglones();
                     } else {
-                        helper.msgbox("");
-                        terminaRecepcion();
+                        cancelarPeticion(call);
+                        helper.toast("Algo salio mal, intente de nuevo");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeLectura>> call, Throwable t) {
                     cancelarPeticion(call);
+                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -846,11 +931,15 @@ public class ComApi extends PBase {
                             }
                         }
                         getTransformadores();
+                    } else {
+                        cancelarPeticion(call);
+                        helper.toast("Algo salio mal, intente de nuevo");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeRenglones>> call, Throwable t) {
                     cancelarPeticion(call);
+                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -883,11 +972,15 @@ public class ComApi extends PBase {
                             }
                         }
                         getUsuarioServicio();
+                    } else {
+                        cancelarPeticion(call);
+                        helper.toast("Algo salio mal, intente de nuevo");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeTransformadores>> call, Throwable t) {
                     cancelarPeticion(call);
+                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -920,11 +1013,15 @@ public class ComApi extends PBase {
                             }
                         }
                         getServiciosInstalados();
+                    } else {
+                        cancelarPeticion(call);
+                        helper.toast("Algo salio mal, intente de nuevo");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeUsuarios_servicio>> call, Throwable t) {
                     cancelarPeticion(call);
+                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -964,11 +1061,15 @@ public class ComApi extends PBase {
                         } else {
                             finish();
                         }
+                    } else {
+                        cancelarPeticion(call);
+                        helper.toast("Algo salio mal, intente de nuevo");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeServicios_instalado>> call, Throwable t) {
                     cancelarPeticion(call);
+                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -1112,7 +1213,7 @@ public class ComApi extends PBase {
             Handler handler = new Handler(Looper.getMainLooper());
 
             executor.execute(() -> {
-                getFechaServidor();
+                validaRutaItinerario();
 
                 try {
                     handler.post(() -> {
@@ -1237,7 +1338,24 @@ public class ComApi extends PBase {
 
     private void terminaEnvio() {
         relPrg.setVisibility(View.GONE);
-        existeDatosEnvio();
+
+        if (gl.cierreRuta) {
+            catalogo.eliminarDatosTalbas();
+            objRutaLectura = null;
+            gl.ruta = null;
+            gl.itinerario = 0;
+
+            txtRuta.setText("");
+            txtRuta.setEnabled(true);
+            txtItinerario.setText("");
+            txtItinerario.setEnabled(true);
+            txtRuta.requestFocus();
+
+            existeDatosEnvio();
+        } else {
+            startActivity(new Intent(this, Menu.class));
+            super.finish();
+        }
     }
 
     private void cancelarPeticion(@NonNull Call call) {

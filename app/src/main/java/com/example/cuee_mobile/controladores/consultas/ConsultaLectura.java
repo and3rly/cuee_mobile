@@ -3,6 +3,7 @@ package com.example.cuee_mobile.controladores.consultas;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -47,11 +48,25 @@ public class ConsultaLectura extends PBase {
 
     private void setHandlers() {
 
-        btnLimpiar.setOnClickListener(view -> txtFiltro.setText(""));
+        btnLimpiar.setOnClickListener(v -> txtFiltro.setText(""));
 
         btnRegresar.setOnClickListener(v -> regresar());
 
         btnBuscar.setOnClickListener(v -> getLecturas());
+
+        txtFiltro.setOnKeyListener((v, keyCode, event) -> {
+            try {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_ENTER:
+                            getLecturas();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
+        });
     }
 
     private void getLecturas() {

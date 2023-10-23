@@ -26,7 +26,7 @@ public class CatalogoModel {
         int itinerario = 0;
         Cursor DT;
         try {
-            sql = "SELECT IdItinerario FROM USUARIOS_POR_RUTA";
+            sql = "SELECT IdItinerario FROM USUARIOS_POR_RUTA LIMIT 1";
             DT = Con.OpenDT(sql);
 
             if (DT.getCount() > 0) {

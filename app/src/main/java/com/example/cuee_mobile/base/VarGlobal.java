@@ -13,5 +13,5 @@ public class VarGlobal extends Application {
     public String path= "";
     public String urlApi;
     public int itinerario;
-    public boolean envioPendiente = false;
+    public boolean cierreRuta = false;
 }
