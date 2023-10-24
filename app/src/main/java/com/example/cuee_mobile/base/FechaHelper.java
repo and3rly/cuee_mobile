@@ -28,6 +28,14 @@ public class FechaHelper {
         return strDate;
     }
 
+    public String getFechaHora() {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd ");
+        String strDate = sdf.format(c.getTime());
+
+        return strDate;
+    }
+
     public String convertirFecha(String fecha) {
         String vFecha = "";
         try {
@@ -57,6 +65,21 @@ public class FechaHelper {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
             Date date = dateFormat.parse(fecha);
             dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            rsltfecha=dateFormat.format(date);
+
+        }catch (Exception ex){
+            Log.e("FECHA HELPER", "strFecha: ", ex );
+        }
+        return rsltfecha;
+    }
+
+    public String strFechaHora(String fecha) {
+        String rsltfecha="";
+
+        try{
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            Date date = dateFormat.parse(fecha);
+            dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             rsltfecha=dateFormat.format(date);
 
         }catch (Exception ex){

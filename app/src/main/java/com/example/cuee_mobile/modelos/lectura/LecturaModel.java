@@ -172,6 +172,7 @@ public class LecturaModel {
             item.IdTecnico = DT.getInt(9);
             item.Con_hh = DT.getInt(10);
             item.StatCom = DT.getInt(11);
+            item.NUsuario = DT.getString(12);
 
         } catch (Exception e) {
             Log.e("LECTURA", "setLinea: ", e );
@@ -242,7 +243,7 @@ public class LecturaModel {
         clsBeLectura lectura = null;
         Cursor DT;
         try {
-            sql = "SELECT * FROM LECTURA WHERE IdUsuarioServicio = "+usuario+" AND StatCom = 1 ORDER BY DATE(Fecha) DESC LIMIT 1";
+            sql = "SELECT *,'' FROM LECTURA WHERE IdUsuarioServicio = "+usuario+" AND StatCom = 1 ORDER BY DATE(Fecha) DESC LIMIT 1";
             DT = Con.OpenDT(sql);
 
             if (DT.getCount() > 0) {
@@ -280,6 +281,27 @@ public class LecturaModel {
         } catch (Exception e) {
             Log.e("LECTURA", "getLecturaAnterior: ", e);
         }
+    }
+
+    public boolean getLecturaById(int Id) {
+        Cursor DT;
+        try {
+            sql = "SELECT A.*, B.Nombres as NUsuario FROM LECTURA A " +
+                  "INNER JOIN USUARIOS_SERVICIO B ON B.IdUsuarioServicio = A.IdUsuarioServicio " +
+                  "WHERE A.IdLectura = "+Id;
+            DT = Con.OpenDT(sql);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+                objLectura = setLinea(DT);
+            }
+
+            if (DT != null) DT.close();
+        } catch (Exception e) {
+            Log.e("LECTURA", "getLecturaById: ", e);
+        }
+
+        return true;
     }
 }
 

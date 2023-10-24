@@ -16,6 +16,7 @@ import com.example.cuee_mobile.clases.clsBeContadores;
 import com.example.cuee_mobile.clases.clsBeLectura;
 import com.example.cuee_mobile.clases.clsBeServicios_instalado;
 import com.example.cuee_mobile.controladores.PBase;
+import com.example.cuee_mobile.imprimir.clsDocLectura;
 import com.example.cuee_mobile.modelos.ServicioInsModel;
 import com.example.cuee_mobile.modelos.lectura.LecturaModel;
 import com.example.cuee_mobile.modelos.mnt.ContadoresModel;
@@ -32,11 +33,12 @@ public class LecturaForm extends PBase {
     private ImageView btnRegresar, btnFecha;
     private EditText txtFecha, txtLectura, txtConsumo, txtLecKW;
     private DatePickerDialog datePickerDialog;
-    private FloatingActionButton btnGuardar;
+    private FloatingActionButton btnGuardar, btnImprimir;
     private clsBeLectura objLectura;
     private LecturaModel lecturaModel;
     private ServicioInsModel serviciosModel;
     private ContadoresModel contadorModel;
+    private clsDocLectura prnLec;
     private int dia, mes, anio;
     private double consumo, promedio, tmpPromedio, lecturaAnterior = 0, lecturaActual=0;;
     private boolean editando = false, continuar = false, correcta = false;
@@ -58,11 +60,14 @@ public class LecturaForm extends PBase {
         btnGuardar = findViewById(R.id.btnGuardar);
         btnRegresar = findViewById(R.id.btnRegresar);
         btnFecha = findViewById(R.id.btnFecha);
+        btnImprimir = findViewById(R.id.btnImprimir);
         datePicker = findViewById(R.id.datePicker);
 
         lecturaModel = new LecturaModel(this, Con, db);
         serviciosModel = new ServicioInsModel(this, Con, db);
         contadorModel = new ContadoresModel(this, Con, db);
+
+        prnLec = new clsDocLectura(this, 32, Con, db);
         setDatos();
         setHandlers();
     }
@@ -101,6 +106,10 @@ public class LecturaForm extends PBase {
                 }
             }
 
+            if (editando) {
+                btnImprimir.setVisibility(View.VISIBLE);
+            }
+
             txtLectura.requestFocus();
             txtLectura.selectAll();
         } catch (Exception e) {
@@ -118,6 +127,11 @@ public class LecturaForm extends PBase {
                 correcta = true;
                 dialogo("Guardar lectura", "¿Está seguro de continuar?");
             }
+        });
+
+        btnImprimir.setOnClickListener(v -> {
+            int auxId = !editando ? lecturaModel.IdActualLectura: auxLectura.Lectura_realizada;
+            dImprimir("Imprimir", "¿Desea imprimir lectura?", auxId);
         });
 
         txtLectura.setOnKeyListener((v, keyCode, event) -> {
@@ -261,8 +275,9 @@ public class LecturaForm extends PBase {
             item.Lectura_correcta = correcta ? 1:0;
 
             serviciosModel.actualizarServicio(item);
-
-            regresar();
+            int auxId = !editando ? lecturaModel.IdActualLectura: auxLectura.Lectura_realizada;
+            dImprimir("Imprimir", "¿Desea imprimir lectura?", auxId);
+            //regresar();
 
         } catch (Exception e) {
             helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);
@@ -328,6 +343,23 @@ public class LecturaForm extends PBase {
         });
 
         dialog.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog12, id) -> {
+        });
+
+        dialog.show();
+    }
+
+    private void dImprimir(String titulo, String msg, int IdLectura) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+
+        dialog.setIcon(R.drawable.imprimir);
+        dialog.setTitle(titulo);
+        dialog.setMessage(msg);
+        dialog.setPositiveButton("Si", (dialog1, id) -> {
+            prnLec.buildPrint(IdLectura, 0);
+        });
+
+        dialog.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog12, id) -> {
+            dialog12.cancel();
         });
 
         dialog.show();
