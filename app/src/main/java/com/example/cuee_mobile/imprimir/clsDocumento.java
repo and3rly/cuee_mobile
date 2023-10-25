@@ -9,9 +9,9 @@ public class clsDocumento {
     public clsDocBuilder rep;
     private Context cont;
     protected ArrayList<String> lines= new ArrayList<String>();
-    public clsDocumento(Context context, int printwidth) {
+    public clsDocumento(Context context, int printwidth, String archivo) {
         cont = context;
-        rep=new clsDocBuilder(cont, printwidth);
+        rep=new clsDocBuilder(cont, printwidth, archivo);
     }
 
     public boolean buildPrint(int id,int reimpres) {

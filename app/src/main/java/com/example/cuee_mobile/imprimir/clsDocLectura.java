@@ -21,8 +21,8 @@ public class clsDocLectura extends  clsDocumento{
     private clsBeLectura lecturaActual;
     private clsBeLectura lecturaAnterior;
     private LecturaModel lectura;
-    public clsDocLectura(Context cont, int printwidth, HelperBD con, SQLiteDatabase dbase) {
-        super(cont, printwidth);
+    public clsDocLectura(Context cont, int printwidth, HelperBD con, SQLiteDatabase dbase, String archivo) {
+        super(cont, printwidth, archivo);
 
         gl = ((VarGlobal) (((Activity) cont).getApplication()));
         du = new FechaHelper(cont);

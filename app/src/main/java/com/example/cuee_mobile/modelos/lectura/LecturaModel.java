@@ -19,7 +19,7 @@ public class LecturaModel {
     public HelperBD.Update upd;
     private final String tabla = "LECTURA";
     private String sql;
-    private final String sel =  "SELECT * FROM " + tabla;
+    private final String sel =  "SELECT *, '' FROM " + tabla;
     public ArrayList<clsBeLectura> lista = new ArrayList<>();
     public ArrayList<auxLecturaServicio> serLectura = new ArrayList<>();
     public clsBeLectura objLectura = null;

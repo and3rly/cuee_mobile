@@ -26,7 +26,7 @@ public class clsDocBuilder {
     private String frmstr,ts;
     protected VarGlobal gl;
 
-    public clsDocBuilder(Context context, int printwidth) {
+    public clsDocBuilder(Context context, int printwidth, String archivo) {
 
         cont=context;
         prw=printwidth;
@@ -39,7 +39,11 @@ public class clsDocBuilder {
         prwh=(int) Math.floor(aux/2);
 
         System.setProperty("line.separator","\r\n");
-        fname = gl.path+"/print.txt";
+        if (archivo.isEmpty()) {
+            fname = Environment.getExternalStorageDirectory() + "/print.txt";
+        } else {
+            fname = Environment.getExternalStorageDirectory() + "/"+archivo;
+        }
         decfrm = new DecimalFormat("#,##0.00");
     }
 

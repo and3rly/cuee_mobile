@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.cuee_mobile.R;
+import com.example.cuee_mobile.base.AppMethods;
 import com.example.cuee_mobile.clases.clsBeContadores;
 import com.example.cuee_mobile.clases.clsBeLectura;
 import com.example.cuee_mobile.clases.clsBeServicios_instalado;
@@ -38,6 +39,7 @@ public class LecturaForm extends PBase {
     private LecturaModel lecturaModel;
     private ServicioInsModel serviciosModel;
     private ContadoresModel contadorModel;
+    private AppMethods app;
     private clsDocLectura prnLec;
     private int dia, mes, anio;
     private double consumo, promedio, tmpPromedio, lecturaAnterior = 0, lecturaActual=0;;
@@ -67,7 +69,8 @@ public class LecturaForm extends PBase {
         serviciosModel = new ServicioInsModel(this, Con, db);
         contadorModel = new ContadoresModel(this, Con, db);
 
-        prnLec = new clsDocLectura(this, 32, Con, db);
+        prnLec = new clsDocLectura(this, 32, Con, db, "lectura.txt");
+        app = new AppMethods(this);
         setDatos();
         setHandlers();
     }
@@ -107,6 +110,11 @@ public class LecturaForm extends PBase {
             }
 
             if (editando) {
+                if (objLectura.StatCom == 1) {
+                    txtLectura.setEnabled(false);
+                    btnGuardar.setVisibility(View.GONE);
+                }
+
                 btnImprimir.setVisibility(View.VISIBLE);
             }
 
@@ -355,7 +363,10 @@ public class LecturaForm extends PBase {
         dialog.setTitle(titulo);
         dialog.setMessage(msg);
         dialog.setPositiveButton("Si", (dialog1, id) -> {
-            prnLec.buildPrint(IdLectura, 0);
+            if (prnLec.buildPrint(IdLectura, 0)) {
+                app.doPrint();
+            }
+            regresar();
         });
 
         dialog.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog12, id) -> {

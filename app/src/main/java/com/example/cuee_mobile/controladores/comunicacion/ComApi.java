@@ -296,22 +296,12 @@ public class ComApi extends PBase {
     }
 
     private void enviarDatos() {
-        String fecha = du.getFechaCompleta();
         try {
-
             relPrg.setVisibility(View.VISIBLE);
             btnEnviar.setEnabled(false);
             txtRuta.setEnabled(false);
             txtItinerario.setEnabled(false);
             lblPgr.setText("Enviando...");
-
-            try {
-                File f1 = new File(gl.path + "/database/db_cuee.db");
-                File f2 = new File(gl.path + "/database/db_cuee_" + fecha + ".db");
-                FileUtils.copyFile(f1, f2);
-            } catch (Exception e) {
-                helper.msgbox("No se puede generar respaldo : " + e.getMessage());
-            }
 
             if (pendientesEnvio()) {
                 Handler timer = new Handler();
@@ -320,7 +310,6 @@ public class ComApi extends PBase {
             } else {
                 helper.toast("No tiene datos pendientes para enviar.");
             }
-
         } catch (Exception e) {
             helper.msgbox(Objects.requireNonNull(new Object() {
             }.getClass().getEnclosingClass()).getName() +" - "+ e);
@@ -1059,6 +1048,7 @@ public class ComApi extends PBase {
                             }
                         }
                         terminaRecepcion();
+                        helper.toast("Recepción completa");
 
                         if (gl.ruta == null || gl.ruta.IdRuta == 0) {
                             finish();
@@ -1339,8 +1329,6 @@ public class ComApi extends PBase {
         txtRuta.setEnabled(true);
         txtItinerario.setEnabled(true);
         btnEnviar.setEnabled(true);
-
-        helper.toast("Recepción completa");
     }
 
     private void terminaEnvio() {
