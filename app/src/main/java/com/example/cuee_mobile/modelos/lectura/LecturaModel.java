@@ -19,7 +19,7 @@ public class LecturaModel {
     public HelperBD.Update upd;
     private final String tabla = "LECTURA";
     private String sql;
-    private final String sel =  "SELECT *, '' FROM " + tabla;
+    private final String sel =  "SELECT * FROM " + tabla;
     public ArrayList<clsBeLectura> lista = new ArrayList<>();
     public ArrayList<auxLecturaServicio> serLectura = new ArrayList<>();
     public clsBeLectura objLectura = null;
@@ -172,7 +172,6 @@ public class LecturaModel {
             item.IdTecnico = DT.getInt(9);
             item.Con_hh = DT.getInt(10);
             item.StatCom = DT.getInt(11);
-            item.NUsuario = DT.getString(12);
 
         } catch (Exception e) {
             Log.e("LECTURA", "setLinea: ", e );

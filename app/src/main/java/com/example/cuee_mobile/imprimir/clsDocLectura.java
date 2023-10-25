@@ -10,7 +10,9 @@ import com.example.cuee_mobile.base.FechaHelper;
 import com.example.cuee_mobile.base.VarGlobal;
 import com.example.cuee_mobile.bd.HelperBD;
 import com.example.cuee_mobile.clases.clsBeLectura;
+import com.example.cuee_mobile.clases.clsBeUsuarios_servicio;
 import com.example.cuee_mobile.modelos.lectura.LecturaModel;
+import com.example.cuee_mobile.modelos.usuario.UsrServicioModel;
 
 public class clsDocLectura extends  clsDocumento{
     protected SQLiteDatabase db;
@@ -20,7 +22,9 @@ public class clsDocLectura extends  clsDocumento{
     protected FechaHelper du;
     private clsBeLectura lecturaActual;
     private clsBeLectura lecturaAnterior;
+    private clsBeUsuarios_servicio usuario;
     private LecturaModel lectura;
+    private UsrServicioModel usuarioSer;
     public clsDocLectura(Context cont, int printwidth, HelperBD con, SQLiteDatabase dbase, String archivo) {
         super(cont, printwidth, archivo);
 
@@ -29,6 +33,7 @@ public class clsDocLectura extends  clsDocumento{
         Con = con;
         db = dbase;
         lectura = new LecturaModel(cont, Con, db);
+        usuarioSer = new UsrServicioModel(cont, Con, db);
     }
 
     @Override
@@ -58,10 +63,16 @@ public class clsDocLectura extends  clsDocumento{
     @Override
     protected boolean loadDocData(int id) {
         try {
-            if (lectura.getLecturaById(id)) {
+            lectura.getLinea("WHERE IdLectura = "+id);
+
+            if (lectura.objLectura != null) {
                 lecturaActual = lectura.objLectura;
                 lecturaAnterior = lectura.getLecturaAnterior(lecturaActual.IdUsuarioServicio);
+
+                usuarioSer.getLinea("WHERE IdUsuarioServicio = "+lecturaActual.IdUsuarioServicio);
+                usuario = usuarioSer.objUsuarioServicio;
             }
+
         } catch (Exception e) {
             Log.e("ImpLectura", "loadDocData: ", e);
         }
@@ -72,7 +83,7 @@ public class clsDocLectura extends  clsDocumento{
     @Override
     protected boolean buildDetail() {
         try {
-            rep.add("Usuario: " +lecturaActual.IdUsuarioServicio+"-"+lecturaActual.NUsuario);
+            rep.add("Usuario: " +usuario.IdUsuarioServicio+"-"+usuario.Nombres);
             rep.add("Contador: "+lecturaActual.IdContador);
             rep.add2string("Lectura anterior:",lecturaAnterior.Lectura+" KW");
             rep.add2string("Lectura actual:",lecturaActual.Lectura+" KW");

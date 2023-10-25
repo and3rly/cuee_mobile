@@ -19,6 +19,7 @@ public class UsrServicioModel {
     private final String tabla ="USUARIOS_SERVICIO";
     private final String sel =  "SELECT * FROM " + tabla;
     public ArrayList<clsBeUsuarios_servicio> lista = new ArrayList<>();
+    public clsBeUsuarios_servicio objUsuarioServicio = null;
 
     public UsrServicioModel(Context ct, HelperBD con, SQLiteDatabase dbase) {
         context = ct;
@@ -28,14 +29,21 @@ public class UsrServicioModel {
     }
 
     public void getLista(String sq) {
-        buscar(sel +" "+ sq);
+        buscar(sel +" "+ sq, false);
     }
 
     public void getLista() {
-        buscar(sel);
+        buscar(sel, false);
     }
 
-    private void buscar(String sel) {
+    public void getLinea() {
+        buscar(sel, true);
+    }
+    public void getLinea(String sq) {
+        buscar(sel + " " +sq, true);
+    }
+
+    private void buscar(String sel, boolean uno) {
         clsBeUsuarios_servicio item;
         Cursor DT;
         try {
@@ -44,31 +52,44 @@ public class UsrServicioModel {
             if (DT.getCount() > 0) {
                 DT.moveToFirst();
 
-                lista.clear();
-                while (!DT.isAfterLast()) {
-                    item = new clsBeUsuarios_servicio();
-
-                    item.IdUsuarioServicio = DT.getInt(0);
-                    item.DPI = DT.getString(1);
-                    item.NIT = DT.getString(2);
-                    item.Nombres = DT.getString(3);
-                    item.Telefono = DT.getString(4);
-                    item.IdUsuario = DT.getInt(5);
-                    item.Fecha_creacion = DT.getString(6);
-                    item.Idusuario_modifica = DT.getInt(7);
-                    item.Fecha_modificacion = DT.getString(8);
-                    item.Activo = Boolean.parseBoolean(String.valueOf(DT.getString(9)));
-                    item.Correo_electronico = DT.getString(10);
-                    item.Exento_IVA = Boolean.parseBoolean(String.valueOf(DT.getInt(11)));
-
-                    lista.add(item);
-                    DT.moveToNext();
+                if (!uno) {
+                    lista.clear();
+                    while (!DT.isAfterLast()) {
+                        lista.add(setDatos(DT));
+                        DT.moveToNext();
+                    }
+                } else {
+                    objUsuarioServicio = setDatos(DT);
                 }
             }
             if (DT != null) DT.close();
         } catch (Exception e) {
             Log.e("USUARIOS_SERVICIO", "buscar: ", e );
         }
+    }
+
+    private clsBeUsuarios_servicio setDatos(Cursor DT) {
+        clsBeUsuarios_servicio item = null;
+        try {
+            item = new clsBeUsuarios_servicio();
+
+            item.IdUsuarioServicio = DT.getInt(0);
+            item.DPI = DT.getString(1);
+            item.NIT = DT.getString(2);
+            item.Nombres = DT.getString(3);
+            item.Telefono = DT.getString(4);
+            item.IdUsuario = DT.getInt(5);
+            item.Fecha_creacion = DT.getString(6);
+            item.Idusuario_modifica = DT.getInt(7);
+            item.Fecha_modificacion = DT.getString(8);
+            item.Activo = Boolean.parseBoolean(String.valueOf(DT.getString(9)));
+            item.Correo_electronico = DT.getString(10);
+            item.Exento_IVA = Boolean.parseBoolean(String.valueOf(DT.getInt(11)));
+        } catch (Exception e) {
+            Log.e("USUARIOS_SERVICIO", "setDatos: ", e );
+        }
+
+        return item;
     }
 
     public boolean guardar(clsBeUsuarios_servicio obj) {
