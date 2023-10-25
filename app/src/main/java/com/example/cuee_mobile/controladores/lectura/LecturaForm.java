@@ -69,7 +69,7 @@ public class LecturaForm extends PBase {
         serviciosModel = new ServicioInsModel(this, Con, db);
         contadorModel = new ContadoresModel(this, Con, db);
 
-        prnLec = new clsDocLectura(this, 32, Con, db, "lectura.txt");
+        prnLec = new clsDocLectura(this, 38, Con, db, "lectura.txt");
         app = new AppMethods(this);
         setDatos();
         setHandlers();
@@ -262,7 +262,7 @@ public class LecturaForm extends PBase {
 
             if (!editando) {
                 if (lecturaModel.guardar(objLectura, false)) {
-                    helper.toast("Lectura guardad con éxito");
+                    helper.toast("Lectura guardada con éxito");
                 } else {
                     helper.toast("Hubo problemas al guardar la lectura.");
                     return;
