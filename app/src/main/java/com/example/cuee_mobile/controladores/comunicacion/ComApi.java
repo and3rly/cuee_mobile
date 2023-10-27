@@ -384,13 +384,13 @@ public class ComApi extends PBase {
                         }
                     } else {
                         cancelarPeticion(call);
-                        helper.toast("Algo salio mal, intente de nuevo");
+                        helper.toast("Algo salió mal, intente de nuevo");
                     }
                 }
                 @Override
                 public void onFailure(Call<Boolean> call, Throwable t) {
                     cancelarPeticion(call);
-                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
+                    helper.toast("Problemas de conexión al validar Ruta e itinerario. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
