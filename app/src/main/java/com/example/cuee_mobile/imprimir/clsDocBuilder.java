@@ -2,12 +2,16 @@ package com.example.cuee_mobile.imprimir;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Environment;
 import android.widget.Toast;
+
+import androidx.core.content.FileProvider;
 
 import com.example.cuee_mobile.base.VarGlobal;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -40,9 +44,9 @@ public class clsDocBuilder {
 
         System.setProperty("line.separator","\r\n");
         if (archivo.isEmpty()) {
-            fname = Environment.getExternalStorageDirectory() + "/print.txt";
+            fname = gl.path+ "/files/print.txt";
         } else {
-            fname = Environment.getExternalStorageDirectory() + "/"+archivo;
+            fname = gl.path + "/files/"+archivo;
         }
         decfrm = new DecimalFormat("#,##0.00");
     }

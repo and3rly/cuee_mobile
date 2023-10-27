@@ -70,7 +70,7 @@ public class LecturaForm extends PBase {
         contadorModel = new ContadoresModel(this, Con, db);
 
         prnLec = new clsDocLectura(this, 38, Con, db, "lectura.txt");
-        app = new AppMethods(this);
+        app = new AppMethods(this, gl);
         setDatos();
         setHandlers();
     }
