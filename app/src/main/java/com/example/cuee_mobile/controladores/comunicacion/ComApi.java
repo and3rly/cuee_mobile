@@ -425,11 +425,10 @@ public class ComApi extends PBase {
 
                             getColor();
                         } else {
-                            mostrarError(response, call, "getFechaServidor");
+                            helper.toast("La fecha del servidor o HH, no es válida.");
                         }
                     } else {
-                        cancelarPeticion(call);
-                        helper.toast("Algo salio mal, intente de nuevo");
+                        mostrarError(response, call, "getFechaServidor");
                     }
                 }
                 @Override
@@ -1352,7 +1351,7 @@ public class ComApi extends PBase {
                     if (t instanceof SocketTimeoutException) {
                         helper. msgbox("Connection Timeout \n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
-                        helper. msgbox("¡Algo salió mal! \n\n" + t.getMessage());
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
                     }
                     cancelarEnvio(call);
                 }
