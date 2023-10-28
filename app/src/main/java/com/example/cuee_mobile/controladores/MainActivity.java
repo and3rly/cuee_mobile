@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
@@ -50,21 +52,32 @@ public class MainActivity extends PBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        getPermissionGrant();
-        super.SetBase();
-
-        cmbTecnicos = findViewById(R.id.cmbTecnicos);
-        txtClave = findViewById(R.id.txtClave);
-        lblRuta = findViewById(R.id.lblRuta);
-        lblEmpresa = findViewById(R.id.lblEmpresa);
-        btnLogin = findViewById(R.id.btnLogin);
-
-        setHandlers();
-        setDatos();
-
+        try {
+            Handler mtimer = new Handler();
+            Runnable mrunner= () -> grantPermissions();
+            mtimer.postDelayed(mrunner,50);
+        } catch (Exception e) {
+            helper.msgbox(new Object() {
+            }.getClass().getEnclosingMethod().getName() + " . " + e.getMessage());
+        }
     }
 
+    private void iniciarApp() {
+        try {
+            super.SetBase();
+
+            cmbTecnicos = findViewById(R.id.cmbTecnicos);
+            txtClave = findViewById(R.id.txtClave);
+            lblRuta = findViewById(R.id.lblRuta);
+            lblEmpresa = findViewById(R.id.lblEmpresa);
+            btnLogin = findViewById(R.id.btnLogin);
+
+            setHandlers();
+            setDatos();
+        } catch (Exception e) {
+            helper.msgbox(new Object() {}.getClass().getEnclosingClass().getName() +" - "+ e);
+        }
+    }
     private void setDatos() {
         try {
             setModels();
@@ -225,31 +238,95 @@ public class MainActivity extends PBase {
         }
     }
 
-    @SuppressLint("ObsoleteSdkInt")
-    private void getPermissionGrant() {
-        if (Build.VERSION.SDK_INT >= 23) {
+    private void grantPermissions() {
+        try {
+            final List<String> missingPermissions = new ArrayList<String>();
 
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                    && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                    && checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED
-                    && checkCallingOrSelfPermission(Manifest.permission.WAKE_LOCK) == PackageManager.PERMISSION_GRANTED
-                    && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
-                    && checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
-                    && checkSelfPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                    && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (Build.VERSION.SDK_INT >= 30){
+                    if (checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
+                            && checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED
+                            && checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED
+                            && checkSelfPermission(Manifest.permission.BLUETOOTH_ADVERTISE) == PackageManager.PERMISSION_GRANTED
+                            && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+                        iniciarApp();
+                    }else{
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.READ_MEDIA_IMAGES,
+                                        Manifest.permission.BLUETOOTH_CONNECT,
+                                        Manifest.permission.BLUETOOTH_SCAN,
+                                        Manifest.permission.BLUETOOTH_ADVERTISE,
+                                        Manifest.permission.CAMERA}, 1);
+                    }
+                }else{
+                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                            && checkSelfPermission(Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED
+                            && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        iniciarApp();
+                    } else {
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE , Manifest.permission.CAMERA,Manifest.permission.INTERNET,Manifest.permission.BLUETOOTH}, 1);
+                    }
+                }
             } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.READ_EXTERNAL_STORAGE,
-                                Manifest.permission.MANAGE_EXTERNAL_STORAGE,
-                                Manifest.permission.ACCESS_COARSE_LOCATION,
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.CALL_PHONE,
-                                Manifest.permission.CAMERA,
-                                Manifest.permission.WAKE_LOCK,
-                                Manifest.permission.READ_PHONE_STATE
-                        }, 1);
+                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                        && checkSelfPermission(Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED
+                        && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    iniciarApp();
+                } else {
+                    Toast.makeText(this, "Permission not granted.", Toast.LENGTH_LONG).show();
+                    //super.finish();
+                }
             }
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(),"Error"+e.getMessage(),Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        try {
+
+            final List<String> missingPermissions = new ArrayList<String>();
+
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (Build.VERSION.SDK_INT >= 30) {
+                    if (checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
+                            && checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED
+                            && checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED
+                            && checkSelfPermission(Manifest.permission.BLUETOOTH_ADVERTISE) == PackageManager.PERMISSION_GRANTED
+                            && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        iniciarApp();
+                    } else {
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.READ_MEDIA_IMAGES,
+                                        Manifest.permission.BLUETOOTH_CONNECT,
+                                        Manifest.permission.BLUETOOTH_SCAN,
+                                        Manifest.permission.BLUETOOTH_ADVERTISE,
+                                        Manifest.permission.CAMERA}, 1);
+                    }
+                }else{
+                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                            && checkSelfPermission(Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED
+                            && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        iniciarApp();
+                    } else {
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE , Manifest.permission.CAMERA,Manifest.permission.INTERNET,Manifest.permission.BLUETOOTH}, 1);
+                    }
+                }
+            }else{
+                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                        && checkSelfPermission(Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED
+                        && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    iniciarApp();
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE , Manifest.permission.CAMERA,Manifest.permission.INTERNET,Manifest.permission.BLUETOOTH}, 1);
+                }
+            }
+
+        } catch (Exception e){}
+
     }
 }

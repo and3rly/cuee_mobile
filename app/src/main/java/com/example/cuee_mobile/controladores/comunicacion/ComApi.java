@@ -3,9 +3,7 @@ package com.example.cuee_mobile.controladores.comunicacion;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
@@ -13,9 +11,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.apache.commons.io.FileUtils;
 
 import androidx.annotation.NonNull;
 
@@ -36,6 +31,7 @@ import com.example.cuee_mobile.api.servicios.Transformador;
 import com.example.cuee_mobile.api.servicios.UsuarioServicio;
 import com.example.cuee_mobile.clases.clsBeColor;
 import com.example.cuee_mobile.clases.clsBeContadores;
+import com.example.cuee_mobile.clases.clsBeErrorResponse;
 import com.example.cuee_mobile.clases.clsBeInstitucion;
 import com.example.cuee_mobile.clases.clsBeInstitucion_detalle;
 import com.example.cuee_mobile.clases.clsBeLectura;
@@ -88,8 +84,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -122,6 +116,7 @@ public class ComApi extends PBase {
     private String msjProg = "";
     private int IdRuta, IdItinerario, idx, cant;
     private clsBeRuta_lectura objRutaLectura = null;
+    private clsBeErrorResponse errorResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -761,8 +756,7 @@ public class ComApi extends PBase {
                         }
                         getParametros();
                     } else {
-                        cancelarPeticion(call);
-                        helper.toast("Algo salio mal, intente de nuevo");
+                        mostrarError(response, call);
                     }
                 }
                 @Override
@@ -802,8 +796,7 @@ public class ComApi extends PBase {
                         }
                         getContadores();
                     } else {
-                        cancelarPeticion(call);
-                        helper.toast("Algo salio mal, intente de nuevo");
+                        mostrarError(response, call);
                     }
                 }
                 @Override
@@ -885,8 +878,7 @@ public class ComApi extends PBase {
                         }
                         getRenglones();
                     } else {
-                        cancelarPeticion(call);
-                        helper.toast("Algo salio mal, intente de nuevo");
+                        mostrarError(response, call);
                     }
                 }
                 @Override
@@ -1274,6 +1266,7 @@ public class ComApi extends PBase {
                         lectura.actualizaEstado(obj.IdLectura);
                         envioCompletoLecutura();
                     } else {
+                        mostrarError(response, call);
                     }
                 }
                 @Override
@@ -1357,6 +1350,12 @@ public class ComApi extends PBase {
         call.cancel();
         //Toast.makeText(ComApi.this, "Problemas de conexión, intentelo de nuevo", Toast.LENGTH_LONG).show();
         terminaRecepcion();
+    }
+
+    private void mostrarError(Response response, Call call) {
+        errorResponse = helper.setError(response);
+        helper.msgbox(errorResponse.CodeError + "\n\n" +errorResponse.ErrorMessage);
+        cancelarPeticion(call);
     }
 
     private void actualizaProgress() {

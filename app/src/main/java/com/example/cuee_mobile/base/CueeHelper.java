@@ -5,8 +5,12 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.example.cuee_mobile.R;
+import com.example.cuee_mobile.clases.clsBeErrorResponse;
+import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
+
+import retrofit2.Response;
 
 public class CueeHelper {
     private Context context;
@@ -51,5 +55,17 @@ public class CueeHelper {
 
         });
         dialog.show();
+    }
+
+    public clsBeErrorResponse setError(Response response) {
+        clsBeErrorResponse error = new clsBeErrorResponse();
+        try {
+            Gson gson = new Gson();
+            error = gson.fromJson(response.errorBody().charStream(), clsBeErrorResponse.class);
+            error.CodeError = response.code() + " - " + response.message();
+        } catch (Exception e) {
+            error.CodeError = response.code() +" - " +response.message();
+        }
+        return error;
     }
 }

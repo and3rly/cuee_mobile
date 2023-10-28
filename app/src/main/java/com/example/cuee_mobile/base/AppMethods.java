@@ -23,12 +23,6 @@ public class AppMethods {
     }
     private void printCilico() {
         try {
-
-            File file = new File(cont.getFilesDir()+"/lectura.txt");
-            Uri uri = FileProvider.getUriForFile(cont, "com.olc.printcilico", file);
-            String mime = cont.getContentResolver().getType(uri);
-
-            // Open file with user selected ap
             Intent intent = cont.getPackageManager().getLaunchIntentForPackage("com.olc.printcilico");
             intent.putExtra("fname", cont.getFilesDir()+"/lectura.txt");
             intent.putExtra("copies",0);
