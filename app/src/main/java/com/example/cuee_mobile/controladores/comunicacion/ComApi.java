@@ -268,7 +268,7 @@ public class ComApi extends PBase {
     private void recibirDatos() {
         try {
 
-            if (gl.urlApi.isEmpty()) {
+            if (gl.urlApi.isEmpty() || !txtUrl.getText().toString().equals(gl.urlApi)) {
                 setUrlApi();
             }
 

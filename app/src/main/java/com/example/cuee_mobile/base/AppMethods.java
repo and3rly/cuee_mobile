@@ -26,7 +26,6 @@ public class AppMethods {
             Intent intent = cont.getPackageManager().getLaunchIntentForPackage("com.olc.printcilico");
             intent.putExtra("fname", cont.getFilesDir()+"/lectura.txt");
             intent.putExtra("copies",0);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             cont.startActivity(intent);
         } catch (Exception e) {
             Toast.makeText(cont, "El controlador de PrintCilico no está instalado", Toast.LENGTH_LONG).show();
