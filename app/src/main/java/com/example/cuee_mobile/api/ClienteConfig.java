@@ -9,7 +9,9 @@ import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -26,11 +28,15 @@ public class ClienteConfig {
     }
 
     public void getCliente() {
-        //gl.urlApi = "http://192.168.1.3/cuee_api/";
         OkHttpClient cliente = new OkHttpClient.Builder()
-                .connectTimeout(1, TimeUnit.MINUTES)
-                .writeTimeout(1, TimeUnit.MINUTES)
-                .readTimeout(1, TimeUnit.MINUTES)
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .addInterceptor(chain -> {
+                    Request request = chain.request();
+                    Interceptor.Chain newChain = chain.withReadTimeout(10,TimeUnit.SECONDS);
+                    return newChain.proceed(request);
+                })
                 .build();
 
         Gson gson = new GsonBuilder()

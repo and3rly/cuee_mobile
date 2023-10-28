@@ -80,6 +80,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executor;
@@ -117,6 +119,7 @@ public class ComApi extends PBase {
     private int IdRuta, IdItinerario, idx, cant;
     private clsBeRuta_lectura objRutaLectura = null;
     private clsBeErrorResponse errorResponse;
+    private boolean enviando = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -378,14 +381,17 @@ public class ComApi extends PBase {
                             helper.toast("Ruta o itinerario incorrecto.");
                         }
                     } else {
-                        cancelarPeticion(call);
-                        helper.toast("Algo salió mal, intente de nuevo");
+                        mostrarError(response, call, "validaRutaItinerario");
                     }
                 }
                 @Override
                 public void onFailure(Call<Boolean> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
                     cancelarPeticion(call);
-                    helper.toast("Problemas de conexión al validar Ruta e itinerario. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -419,8 +425,7 @@ public class ComApi extends PBase {
 
                             getColor();
                         } else {
-                            cancelarPeticion(call);
-                            helper.toast("Fecha del dispositivo no coincide con fecha servidor.");
+                            mostrarError(response, call, "getFechaServidor");
                         }
                     } else {
                         cancelarPeticion(call);
@@ -429,8 +434,12 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
                     cancelarPeticion(call);
-                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -465,14 +474,17 @@ public class ComApi extends PBase {
                         }
                         getMarca();
                     } else {
-                        cancelarPeticion(call);
-                        helper.toast("Algo salio mal, intente de nuevo");
+                        mostrarError(response, call, "getColor");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeColor>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
                     cancelarPeticion(call);
-                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -507,14 +519,17 @@ public class ComApi extends PBase {
                         }
                         getInstitucion();
                     } else {
-                        cancelarPeticion(call);
-                        helper.toast("Algo salio mal, intente de nuevo");
+                        mostrarError(response, call, "getMarca");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeMarcas>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
                     cancelarPeticion(call);
-                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -549,14 +564,17 @@ public class ComApi extends PBase {
                         }
                         getInstitucionDetalle();
                     } else {
-                        cancelarPeticion(call);
-                        helper.toast("Algo salio mal, intente de nuevo");
+                        mostrarError(response, call, "getInstitucion");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeInstitucion>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
                     cancelarPeticion(call);
-                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -591,14 +609,17 @@ public class ComApi extends PBase {
                         }
                         getRutaLectura();
                     } else {
-                        cancelarPeticion(call);
-                        helper.toast("Algo salio mal, intente de nuevo");
+                        mostrarError(response, call, "getInstitucionDetalle");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeInstitucion_detalle>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
                     cancelarPeticion(call);
-                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -633,14 +654,17 @@ public class ComApi extends PBase {
                         }
                         getTecnicos();
                     } else {
-                        cancelarPeticion(call);
-                        helper.toast("Algo salio mal, intente de nuevo");
+                        mostrarError(response, call, "getRutaLectura");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeRuta_lectura>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
                     cancelarPeticion(call);
-                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -674,14 +698,17 @@ public class ComApi extends PBase {
                         }
                         getRutaTecnico();
                     } else {
-                        cancelarPeticion(call);
-                        helper.toast("Algo salio mal, intente de nuevo");
+                        mostrarError(response, call, "getTecnicos");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeTecnicos>> call, Throwable t) {
-                    cancelarPeticion(call);
-                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
+                    cancelarPeticion(call);;
                 }
             });
         } catch (Exception e) {
@@ -715,14 +742,18 @@ public class ComApi extends PBase {
                         }
                         getUsuariosRuta();
                     } else {
-                        cancelarPeticion(call);
-                        helper.toast("Algo salio mal, intente de nuevo");
+                        mostrarError(response, call, "getRutaTecnico");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeRuta_tecnico>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
                     cancelarPeticion(call);
-                    helper.toast("Problemas de conexión. Inténtelo de nuevo");}
+                }
             });
         } catch (Exception e) {
             helper.msgbox(Objects.requireNonNull(new Object() {
@@ -756,13 +787,17 @@ public class ComApi extends PBase {
                         }
                         getParametros();
                     } else {
-                        mostrarError(response, call);
+                        mostrarError(response, call, "getUsuariosRuta");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeUsuarios_por_ruta>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
                     cancelarPeticion(call);
-                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -796,13 +831,17 @@ public class ComApi extends PBase {
                         }
                         getContadores();
                     } else {
-                        mostrarError(response, call);
+                        mostrarError(response, call, "getParametros");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeParametros>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
                     cancelarPeticion(call);
-                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -837,14 +876,17 @@ public class ComApi extends PBase {
 
                         getLectura();
                     } else {
-                        cancelarPeticion(call);
-                        helper.toast("Algo salio mal, intente de nuevo");
+                        mostrarError(response, call, "getContadores");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeContadores>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
                     cancelarPeticion(call);
-                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -878,13 +920,17 @@ public class ComApi extends PBase {
                         }
                         getRenglones();
                     } else {
-                        mostrarError(response, call);
+                        mostrarError(response, call, "getLectura");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeLectura>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
                     cancelarPeticion(call);
-                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -918,14 +964,17 @@ public class ComApi extends PBase {
                         }
                         getTransformadores();
                     } else {
-                        cancelarPeticion(call);
-                        helper.toast("Algo salio mal, intente de nuevo");
+                        mostrarError(response, call, "getRenglones");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeRenglones>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
                     cancelarPeticion(call);
-                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -959,14 +1008,17 @@ public class ComApi extends PBase {
                         }
                         getUsuarioServicio();
                     } else {
-                        cancelarPeticion(call);
-                        helper.toast("Algo salio mal, intente de nuevo");
+                        mostrarError(response, call, "getTransformadores");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeTransformadores>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
                     cancelarPeticion(call);
-                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -1000,14 +1052,17 @@ public class ComApi extends PBase {
                         }
                         getServiciosInstalados();
                     } else {
-                        cancelarPeticion(call);
-                        helper.toast("Algo salio mal, intente de nuevo");
+                        mostrarError(response, call, "getUsuarioServicio");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeUsuarios_servicio>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
                     cancelarPeticion(call);
-                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -1049,14 +1104,17 @@ public class ComApi extends PBase {
                             finish();
                         }
                     } else {
-                        cancelarPeticion(call);
-                        helper.toast("Algo salio mal, intente de nuevo");
+                        mostrarError(response, call, "getServiciosInstalados");
                     }
                 }
                 @Override
                 public void onFailure(Call<List<clsBeServicios_instalado>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
                     cancelarPeticion(call);
-                    helper.toast("Problemas de conexión. Inténtelo de nuevo");
                 }
             });
         } catch (Exception e) {
@@ -1088,7 +1146,12 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<List<clsBeMeses_proforma>> call, Throwable t) {
-
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
+                    cancelarPeticion(call);
                 }
             });
         } catch (Exception e) {
@@ -1120,7 +1183,12 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<List<clsBeMeses_mora_proforma>> call, Throwable t) {
-
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
+                    cancelarPeticion(call);
                 }
             });
         } catch (Exception e) {
@@ -1152,7 +1220,12 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<List<clsBeMeses_mora_pagada>> call, Throwable t) {
-
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
+                    cancelarPeticion(call);
                 }
             });
         } catch (Exception e) {
@@ -1185,7 +1258,12 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<List<clsBePagos_detalle_rep>> call, Throwable t) {
-
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    }
+                    cancelarPeticion(call);
                 }
             });
         } catch (Exception e) {
@@ -1266,11 +1344,17 @@ public class ComApi extends PBase {
                         lectura.actualizaEstado(obj.IdLectura);
                         envioCompletoLecutura();
                     } else {
-                        mostrarError(response, call);
+                        mostrarError(response, call, "enviarLecturas");
                     }
                 }
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("Connection Timeout \n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Algo salió mal! \n\n" + t.getMessage());
+                    }
+                    cancelarEnvio(call);
                 }
             });
         } catch (Exception e) {
@@ -1304,8 +1388,10 @@ public class ComApi extends PBase {
         dialog.setMessage(msg);
         dialog.setPositiveButton("Si", (dialog1, id) -> {
             if (accion == 1) {
+                enviando = false;
                 recibirDatos();
             } else if (accion == 2) {
+                enviando = true;
                 enviarDatos();
             }
         });
@@ -1348,14 +1434,24 @@ public class ComApi extends PBase {
 
     private void cancelarPeticion(@NonNull Call call) {
         call.cancel();
-        //Toast.makeText(ComApi.this, "Problemas de conexión, intentelo de nuevo", Toast.LENGTH_LONG).show();
         terminaRecepcion();
     }
 
-    private void mostrarError(Response response, Call call) {
+    private void cancelarEnvio(Call call) {
+        relPrg.setVisibility(View.GONE);
+        btnEnviar.setVisibility(View.VISIBLE);
+        btnEnviar.setEnabled(true);
+        call.cancel();
+    }
+    private void mostrarError(Response response, Call call, String metodo) {
         errorResponse = helper.setError(response);
-        helper.msgbox(errorResponse.CodeError + "\n\n" +errorResponse.ErrorMessage);
-        cancelarPeticion(call);
+        helper.msgbox("Método HH: "+ metodo + "\n" + errorResponse.CodeError + "\n\n" +errorResponse.ErrorMessage);
+
+        if (enviando) {
+            cancelarEnvio(call);
+        } else {
+            cancelarPeticion(call);
+        }
     }
 
     private void actualizaProgress() {
