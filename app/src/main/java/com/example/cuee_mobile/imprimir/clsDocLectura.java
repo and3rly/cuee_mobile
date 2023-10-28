@@ -40,14 +40,10 @@ public class clsDocLectura extends  clsDocumento{
     protected boolean loadHeadData() {
         super.loadHeadData();
         try {
-            rep.add(rep.ctrim("LECTURA"));
-            rep.add(gl.institucion.Nombre_Comercial);
             rep.empty();
-
             if (!gl.institucion.NIT_Emisor.isEmpty()) {
                 rep.add("NIT: " + gl.institucion.NIT_Emisor);
             }
-
             rep.add("Dirección: " + gl.institucion.Direccion_emisor);
             rep.add("Fecha: "+ du.strFechaHora(du.getFechaCompleta()));
             rep.add("Ruta: No." + gl.ruta.IdRuta);

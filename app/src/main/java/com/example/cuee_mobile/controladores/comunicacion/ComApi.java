@@ -1451,6 +1451,7 @@ public class ComApi extends PBase {
             cancelarEnvio(call);
         } else {
             cancelarPeticion(call);
+            helper.toast("Recepción incompleta");
         }
     }
 
