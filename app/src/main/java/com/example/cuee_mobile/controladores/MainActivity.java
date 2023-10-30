@@ -179,7 +179,7 @@ public class MainActivity extends PBase {
             gl.itinerario = catalogo.getItinerario();
 
             if (objRutaLec != null) {
-                lblRuta.setText("No. " +objRutaLec.Nombre+ " - "+"Itinerario No. "+gl.itinerario);
+                lblRuta.setText(objRutaLec.Nombre + " - " + "Itinerario " +gl.itinerario);
                 gl.ruta = objRutaLec;
             } else {
                 return false;

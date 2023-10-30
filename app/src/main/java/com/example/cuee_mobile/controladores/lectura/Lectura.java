@@ -130,6 +130,8 @@ public class Lectura extends PBase {
     }
     private void setServiciosLectura() {
         try {
+            txtFiltro.requestFocus();
+
             lista.clear();
             lista = lectura.getServiciosLectura(pendientes);
 

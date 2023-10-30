@@ -3,6 +3,7 @@ package com.example.cuee_mobile.controladores.lectura;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -15,13 +16,17 @@ import com.example.cuee_mobile.R;
 import com.example.cuee_mobile.base.AppMethods;
 import com.example.cuee_mobile.clases.clsBeContadores;
 import com.example.cuee_mobile.clases.clsBeLectura;
+import com.example.cuee_mobile.clases.clsBeLecturaImp;
 import com.example.cuee_mobile.clases.clsBeServicios_instalado;
+import com.example.cuee_mobile.clases.clsBeUsuarios_servicio;
 import com.example.cuee_mobile.controladores.PBase;
 import com.example.cuee_mobile.imprimir.clsDocLectura;
 import com.example.cuee_mobile.modelos.ServicioInsModel;
 import com.example.cuee_mobile.modelos.lectura.LecturaModel;
 import com.example.cuee_mobile.modelos.mnt.ContadoresModel;
+import com.example.cuee_mobile.modelos.usuario.UsrServicioModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
 
 import static com.example.cuee_mobile.controladores.lectura.Lectura.auxLectura;
 
@@ -41,9 +46,11 @@ public class LecturaForm extends PBase {
     private ContadoresModel contadorModel;
     private AppMethods app;
     private clsDocLectura prnLec;
-    private int dia, mes, anio;
+    private int dia, mes, anio, pk;
     private double consumo, promedio, tmpPromedio, lecturaAnterior = 0, lecturaActual=0;;
     private boolean editando = false, continuar = false, correcta = false;
+    private clsBeLecturaImp lecturaImp;
+    private UsrServicioModel usuarioSer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,9 +75,8 @@ public class LecturaForm extends PBase {
         lecturaModel = new LecturaModel(this, Con, db);
         serviciosModel = new ServicioInsModel(this, Con, db);
         contadorModel = new ContadoresModel(this, Con, db);
+        usuarioSer = new UsrServicioModel(this, Con, db);
 
-        prnLec = new clsDocLectura(this, 38, Con, db, "lectura.txt");
-        app = new AppMethods(this, gl);
         setDatos();
         setHandlers();
     }
@@ -138,8 +144,8 @@ public class LecturaForm extends PBase {
         });
 
         btnImprimir.setOnClickListener(v -> {
-            int auxId = !editando ? lecturaModel.IdActualLectura: auxLectura.Lectura_realizada;
-            dImprimir("Imprimir", "¿Desea imprimir lectura?", auxId);
+            pk = !editando ? lecturaModel.IdActualLectura : auxLectura.Lectura_realizada;
+            imprimir("Imprimir", "¿Desea imprimir lectura?");
         });
 
         txtLectura.setOnKeyListener((v, keyCode, event) -> {
@@ -283,8 +289,8 @@ public class LecturaForm extends PBase {
             item.Lectura_correcta = correcta ? 1:0;
 
             serviciosModel.actualizarServicio(item);
-            int auxId = !editando ? lecturaModel.IdActualLectura: auxLectura.Lectura_realizada;
-            dImprimir("Imprimir", "¿Desea imprimir lectura?", auxId);
+            pk = !editando ? lecturaModel.IdActualLectura: auxLectura.Lectura_realizada;
+            imprimir("Imprimir", "¿Desea imprimir lectura?");
             //regresar();
 
         } catch (Exception e) {
@@ -356,16 +362,14 @@ public class LecturaForm extends PBase {
         dialog.show();
     }
 
-    private void dImprimir(String titulo, String msg, int IdLectura) {
+    private void imprimir(String titulo, String msg) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 
         dialog.setIcon(R.drawable.imprimir);
         dialog.setTitle(titulo);
         dialog.setMessage(msg);
         dialog.setPositiveButton("Si", (dialog1, id) -> {
-            if (prnLec.buildPrint(IdLectura, 0)) {
-                app.doPrint();
-            }
+            doPrint();
             regresar();
         });
 
@@ -374,6 +378,52 @@ public class LecturaForm extends PBase {
         });
 
         dialog.show();
+    }
+
+    private void doPrint() {
+        try {
+            clsBeLectura lecturaActual, lecturaAnterior = null;
+            clsBeUsuarios_servicio usuario = null;
+
+            lecturaImp = new clsBeLecturaImp();
+            lecturaImp.Nit = "NIT: " + gl.institucion.NIT_Emisor;
+            lecturaImp.Direccion = "Dirección: " + gl.institucion.Direccion_emisor;
+            lecturaImp.Fecha = "Fecha: " + du.strFechaHora(du.getFechaCompleta());
+            lecturaImp.Ruta = "Ruta: No." + gl.ruta.IdRuta;
+            lecturaImp.Itinerario = "Itinerario: No." + gl.itinerario;
+            lecturaImp.Tecnico = "Técnico: " + gl.tecnico.Nombre;
+
+            lecturaModel.getLinea("WHERE IdLectura = " + pk);
+            if (lecturaModel.objLectura != null) {
+                lecturaActual = lecturaModel.objLectura;
+                lecturaAnterior = lecturaModel.getLecturaAnterior(lecturaActual.IdUsuarioServicio);
+
+                usuarioSer.getLinea("WHERE IdUsuarioServicio = " + lecturaActual.IdUsuarioServicio);
+                usuario = usuarioSer.objUsuarioServicio;
+
+                lecturaImp.Usuario = "Usuario: " + usuario.IdUsuarioServicio+"-"+usuario.Nombres;
+                lecturaImp.Contador = "Contador: " + lecturaActual.IdContador;
+                lecturaImp.LecturaAnterior = "Lectura anterior: " + lecturaAnterior.Lectura+" KW";
+                lecturaImp.LecturaActual = "Lectura actual: " + lecturaActual.Lectura+" KW";
+                lecturaImp.Consumo = "Consumo: " + lecturaActual.Consumo+" KW";
+
+            } else {
+                helper.toast("Problemas al obtener información.");
+                return;
+            }
+
+            Gson gson = new Gson();
+            String  lecturaJson = gson.toJson(lecturaImp);
+
+            Intent intent = this.getPackageManager().getLaunchIntentForPackage("com.olc.printcilico");
+            intent.putExtra("fname", "");
+            intent.putExtra("lectura", lecturaJson);
+            intent.putExtra("copies", 0);
+            this.startActivity(intent);
+
+        } catch (Exception e) {
+            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);
+        }
     }
 
     private void regresar() {
