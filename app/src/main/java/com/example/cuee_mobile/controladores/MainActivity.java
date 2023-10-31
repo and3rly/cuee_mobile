@@ -305,7 +305,7 @@ public class MainActivity extends PBase {
 
             final List<String> missingPermissions = new ArrayList<String>();
 
-            if (Build.VERSION.SDK_INT >= 23) {
+           /* if (Build.VERSION.SDK_INT >= 23) {
                 if (Build.VERSION.SDK_INT >= 30) {
                     if (checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
                             && checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED
@@ -340,6 +340,21 @@ public class MainActivity extends PBase {
                     ActivityCompat.requestPermissions(this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE , Manifest.permission.CAMERA,Manifest.permission.INTERNET,Manifest.permission.BLUETOOTH}, 1);
                 }
+            }*/
+
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                    && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                    && checkSelfPermission(Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED
+                    && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                iniciarApp();
+            } else{
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.BLUETOOTH,
+                                Manifest.permission.CAMERA}, 1);
+                Toast.makeText(this, "Permission not granted.", Toast.LENGTH_LONG).show();
+                //super.finish();
             }
 
         } catch (Exception e){}
