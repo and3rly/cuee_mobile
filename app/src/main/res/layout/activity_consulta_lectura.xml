@@ -147,7 +147,7 @@
 
                 <TextView
                     android:id="@+id/lblIdLectura"
-                    android:layout_width="150dp"
+                    android:layout_width="100dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_horizontal|center_vertical"
@@ -202,6 +202,16 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal|center_vertical"
                     android:text="Lectura Kw"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/lblFecha"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="Fecha"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp" />
 

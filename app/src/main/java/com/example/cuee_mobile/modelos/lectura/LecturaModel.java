@@ -80,10 +80,17 @@ public class LecturaModel {
         clsBeLectura item;
         Cursor DT;
         try {
-            sql = sel;
+            sql = "SELECT A.*, STRFTIME('%d/%m/%Y', A.Fecha) AS Fecha, STRFTIME('%d/%m/%Y', A.Fecha_creacion) AS Fecha_creacion " +
+                    "FROM LECTURA A ";
+                    //"INNER JOIN USUARIOS_SERVICIO B ON B.IdUsuarioServicio = A.IdUsuarioServicio";
+
             if (!termino.isEmpty()) {
-                sql += " WHERE IdLectura LIKE '%"+Integer.parseInt(termino)+"%' OR IdContador LIKE '%"+termino+"%' OR IdUsuarioServicio LIKE '%"+Integer.parseInt(termino)+"%' ";
+                sql += " WHERE A.IdLectura LIKE '%"+termino+"%' " +
+                        "OR A.IdContador LIKE '%"+termino+"%' " +
+                        "OR A.IdUsuarioServicio LIKE '%"+termino+"%' ";
+                        //"OR B.Nombres LIKE '%"+termino+"%' ";
             }
+
             DT = Con.OpenDT(sql);
 
             if (DT.getCount() > 0) {
@@ -91,7 +98,23 @@ public class LecturaModel {
 
                 lista.clear();
                 while (!DT.isAfterLast()) {
-                    lista.add(setLinea(DT));
+
+                    item = new clsBeLectura();
+
+                    item.IdLectura = DT.getInt(0);
+                    item.IdUsuarioServicio = DT.getInt(1);
+                    item.IdContador = DT.getString(2);
+                    item.Fecha = DT.getString(12);
+                    item.Lectura = DT.getDouble(4);
+                    item.Consumo = DT.getDouble(5);
+                    item.IdUsuario = DT.getInt(6);
+                    item.Fecha_creacion = DT.getString(13);
+                    item.Lectura_kw = DT.getDouble(8);
+                    item.IdTecnico = DT.getInt(9);
+                    item.Con_hh = DT.getInt(10);
+                    item.StatCom = DT.getInt(11);
+
+                    lista.add(item);
                     DT.moveToNext();
                 }
             }

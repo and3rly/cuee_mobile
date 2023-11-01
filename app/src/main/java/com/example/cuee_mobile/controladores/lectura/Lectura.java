@@ -103,21 +103,19 @@ public class Lectura extends PBase {
 
     private void Filtro() {
         String termino  = gl.termino;
-
         try {
-
             auxLista.clear();
-            for (auxLecturaServicio obj : lista) {
 
-                if (obj.IdContador.toLowerCase().equals(termino.toLowerCase())) {
+            for (auxLecturaServicio obj : lista) {
+                if (obj.IdContador.toLowerCase().equals(termino.toLowerCase()) ||
+                    obj.Usuario.toLowerCase().contains(termino.toLowerCase()) ||
+                    String.valueOf(obj. IdUsuarioServicio).toLowerCase().equals(termino.toLowerCase())) {
                     auxLista.add(obj);
                 }
             }
 
             adapter = new LecturaAdapter(this, auxLista);
             lista_servicios.setAdapter(adapter);
-
-
             lblRegistros.setText("REGISTROS: " + auxLista.size());
         } catch (Exception e) {
             helper.msgbox(new Object() {}.getClass().getEnclosingMethod().getName() +" - "+ e.getMessage());
@@ -160,6 +158,7 @@ public class Lectura extends PBase {
         super.onResume();
 
         if (browse == 1) {
+            gl.termino = "";
             setServiciosLectura();
             browse = 0;
         }

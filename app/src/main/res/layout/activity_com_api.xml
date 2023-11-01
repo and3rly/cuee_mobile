@@ -63,11 +63,13 @@
             android:id="@+id/lblVersion"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginStart="0dp"
+            android:layout_toEndOf="@+id/btnRegresar"
             android:gravity="right|center_vertical"
             android:paddingRight="10dp"
             android:text="Versión 1.0"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
     </RelativeLayout>
 

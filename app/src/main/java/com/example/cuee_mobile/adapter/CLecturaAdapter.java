@@ -62,6 +62,7 @@ public class CLecturaAdapter extends BaseAdapter {
             holder.lblLectura = convertView.findViewById(R.id.lblLectura);
             holder.lblConsumo = convertView.findViewById(R.id.lblConsumo);
             holder.lblLecturaKW = convertView.findViewById(R.id.lblLecturaKW);
+            holder.lblFecha = convertView.findViewById(R.id.lblFecha);
 
             convertView.setTag(holder);
         } else {
@@ -74,6 +75,7 @@ public class CLecturaAdapter extends BaseAdapter {
         holder.lblLectura.setText(items.get(position).Lectura+"");
         holder.lblConsumo.setText(items.get(position).Consumo+"");
         holder.lblLecturaKW.setText(items.get(position).Lectura_kw+"");
+        holder.lblFecha.setText(items.get(position).Fecha);
 
         if(selectedIndex!= -1 && position == selectedIndex) {
             convertView.setBackgroundColor(Color.rgb(0, 128, 0));
@@ -85,6 +87,6 @@ public class CLecturaAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-        TextView lblIdLectura, lblContador, lblUsuario, lblLectura, lblConsumo, lblLecturaKW, lblFechaCreacion;
+        TextView lblIdLectura, lblContador, lblUsuario, lblLectura, lblConsumo, lblLecturaKW, lblFecha;
     }
 }

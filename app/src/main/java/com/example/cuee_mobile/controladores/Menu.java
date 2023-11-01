@@ -211,6 +211,7 @@ public class Menu extends PBase {
         });
 
         dialog.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog12, id) -> {
+            gl.cierreRuta = false;
         });
 
         dialog.show();

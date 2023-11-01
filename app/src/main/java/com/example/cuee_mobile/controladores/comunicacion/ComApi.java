@@ -93,7 +93,7 @@ import retrofit2.Response;
 public class ComApi extends PBase {
     private RelativeLayout btnRecibir, btnEnviar, relPrg;
     private EditText txtRuta, txtItinerario, txtUrl;
-    private TextView lblPgr;
+    private TextView lblPgr, lblVersion;
     private ImageView btnRegresar;
     private InstitucionModel institucion;
     private InstitucionDetalleModel insDetalle;
@@ -131,6 +131,7 @@ public class ComApi extends PBase {
         btnEnviar = findViewById(R.id.btnEnviar);
         relPrg = findViewById(R.id.relPrg);
         lblPgr = findViewById(R.id.lblPgr);
+        lblVersion = findViewById(R.id.lblVersion);
         txtRuta = findViewById(R.id.txtRuta);
         txtItinerario = findViewById(R.id.txtItinerario);
         txtUrl = findViewById(R.id.txtUrl);
@@ -210,7 +211,7 @@ public class ComApi extends PBase {
             getUrlApi();
             setHandlers();
             existeDatosEnvio();
-
+            lblVersion.setText("Versión" + gl.version+" / "+gl.vFecha);
             if (gl.ruta != null) {
                 if (gl.ruta.IdRuta != 0) {
                     txtRuta.setText("" + gl.ruta.IdRuta);
@@ -1352,6 +1353,8 @@ public class ComApi extends PBase {
                         helper. msgbox("Connection Timeout \n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox(t.getMessage());
                     }
                     cancelarEnvio(call);
                 }

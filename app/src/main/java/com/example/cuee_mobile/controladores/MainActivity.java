@@ -40,7 +40,7 @@ public class MainActivity extends PBase {
     private Button btnLogin;
     private EditText txtClave;
     private Spinner cmbTecnicos;
-    private TextView lblEmpresa, lblRuta;
+    private TextView lblEmpresa, lblRuta, lblVersion;
     private InstitucionModel institucion;
     private RutaLecturaModel rutaLectura;
     private TecnicoModel tecnico;
@@ -53,10 +53,7 @@ public class MainActivity extends PBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         try {
-            //Handler mtimer = new Handler();
-            //Runnable mrunner= () ->
             grantPermissions();
-            //mtimer.postDelayed(mrunner,50);
         } catch (Exception e) {
             helper.msgbox(new Object() {
             }.getClass().getEnclosingMethod().getName() + " . " + e.getMessage());
@@ -71,6 +68,7 @@ public class MainActivity extends PBase {
             txtClave = findViewById(R.id.txtClave);
             lblRuta = findViewById(R.id.lblRuta);
             lblEmpresa = findViewById(R.id.lblEmpresa);
+            lblVersion = findViewById(R.id.lblVersion);
             btnLogin = findViewById(R.id.btnLogin);
 
             setHandlers();
@@ -85,6 +83,7 @@ public class MainActivity extends PBase {
             if (getInstitucion()) {
                 if (getRutaLectura()) {
                     getTecnicos();
+                    lblVersion.setText("Versión " + gl.version + " / " + gl.vFecha);
                 } else {
                     startActivity(new Intent(this, ComApi.class));
                     super.finish();
@@ -241,44 +240,6 @@ public class MainActivity extends PBase {
 
     private void grantPermissions() {
         try {
-            final List<String> missingPermissions = new ArrayList<String>();
-
-        /*    if (Build.VERSION.SDK_INT >= 23) {
-                if (Build.VERSION.SDK_INT >= 30){
-                    if (checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
-                            && checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED
-                            && checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED
-                            && checkSelfPermission(Manifest.permission.BLUETOOTH_ADVERTISE) == PackageManager.PERMISSION_GRANTED
-                            && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
-                        iniciarApp();
-                    }else{
-                        ActivityCompat.requestPermissions(this,
-                                new String[]{Manifest.permission.READ_MEDIA_IMAGES,
-                                        Manifest.permission.BLUETOOTH_CONNECT,
-                                        Manifest.permission.BLUETOOTH_SCAN,
-                                        Manifest.permission.BLUETOOTH_ADVERTISE,
-                                        Manifest.permission.CAMERA}, 1);
-                    }
-                }else{
-                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                            && checkSelfPermission(Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED
-                            && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                        iniciarApp();
-                    } else {
-                        ActivityCompat.requestPermissions(this,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE , Manifest.permission.CAMERA,Manifest.permission.INTERNET,Manifest.permission.BLUETOOTH}, 1);
-                    }
-                }
-            } else {
-                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                        && checkSelfPermission(Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED
-                        && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                    iniciarApp();
-                } else {
-                    Toast.makeText(this, "Permission not granted.", Toast.LENGTH_LONG).show();
-                    //super.finish();
-                }
-            }*/
 
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                     && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
@@ -292,7 +253,6 @@ public class MainActivity extends PBase {
                                 Manifest.permission.BLUETOOTH,
                                 Manifest.permission.CAMERA}, 1);
                 Toast.makeText(this, "Permission not granted.", Toast.LENGTH_LONG).show();
-                //super.finish();
             }
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(),"Error"+e.getMessage(),Toast.LENGTH_LONG).show();
@@ -302,46 +262,6 @@ public class MainActivity extends PBase {
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         try {
-
-            final List<String> missingPermissions = new ArrayList<String>();
-
-           /* if (Build.VERSION.SDK_INT >= 23) {
-                if (Build.VERSION.SDK_INT >= 30) {
-                    if (checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
-                            && checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED
-                            && checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED
-                            && checkSelfPermission(Manifest.permission.BLUETOOTH_ADVERTISE) == PackageManager.PERMISSION_GRANTED
-                            && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                        iniciarApp();
-                    } else {
-                        ActivityCompat.requestPermissions(this,
-                                new String[]{Manifest.permission.READ_MEDIA_IMAGES,
-                                        Manifest.permission.BLUETOOTH_CONNECT,
-                                        Manifest.permission.BLUETOOTH_SCAN,
-                                        Manifest.permission.BLUETOOTH_ADVERTISE,
-                                        Manifest.permission.CAMERA}, 1);
-                    }
-                }else{
-                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                            && checkSelfPermission(Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED
-                            && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                        iniciarApp();
-                    } else {
-                        ActivityCompat.requestPermissions(this,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE , Manifest.permission.CAMERA,Manifest.permission.INTERNET,Manifest.permission.BLUETOOTH}, 1);
-                    }
-                }
-            }else{
-                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                        && checkSelfPermission(Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED
-                        && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                    iniciarApp();
-                } else {
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE , Manifest.permission.CAMERA,Manifest.permission.INTERNET,Manifest.permission.BLUETOOTH}, 1);
-                }
-            }*/
-
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                     && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                     && checkSelfPermission(Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED
@@ -354,9 +274,7 @@ public class MainActivity extends PBase {
                                 Manifest.permission.BLUETOOTH,
                                 Manifest.permission.CAMERA}, 1);
                 Toast.makeText(this, "Permission not granted.", Toast.LENGTH_LONG).show();
-                //super.finish();
             }
-
         } catch (Exception e){}
 
     }
