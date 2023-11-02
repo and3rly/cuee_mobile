@@ -76,19 +76,23 @@ public class LecturaModel {
         }
     }
 
-    public void getConsultaLectura(String termino) {
+    public void getConsultaLectura(String termino, String fechaInicial, String fechaFinal) {
         clsBeLectura item;
         Cursor DT;
         try {
             sql = "SELECT A.*, STRFTIME('%d/%m/%Y', A.Fecha) AS Fecha, STRFTIME('%d/%m/%Y', A.Fecha_creacion) AS Fecha_creacion " +
-                    "FROM LECTURA A ";
+                    "FROM LECTURA A WHERE 1=1 ";
                     //"INNER JOIN USUARIOS_SERVICIO B ON B.IdUsuarioServicio = A.IdUsuarioServicio";
 
             if (!termino.isEmpty()) {
-                sql += " WHERE A.IdLectura LIKE '%"+termino+"%' " +
+                sql += " AND A.IdLectura LIKE '%"+termino+"%' " +
                         "OR A.IdContador LIKE '%"+termino+"%' " +
                         "OR A.IdUsuarioServicio LIKE '%"+termino+"%' ";
                         //"OR B.Nombres LIKE '%"+termino+"%' ";
+            }
+
+            if (!fechaInicial.isEmpty() && !fechaFinal.isEmpty()) {
+                sql += " AND A.Fecha BETWEEN '"+fechaInicial+"' AND '"+fechaFinal+"'";
             }
 
             DT = Con.OpenDT(sql);

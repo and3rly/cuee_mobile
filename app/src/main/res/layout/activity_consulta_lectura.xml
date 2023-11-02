@@ -6,6 +6,77 @@
     android:layout_height="match_parent"
     tools:context=".controladores.consultas.ConsultaLectura">
 
+    <DatePicker
+        android:id="@+id/datePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:headerBackground="@color/pink"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/lyFechas"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/relFiltro"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="35dp"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="Del"
+            android:textColor="#000000"
+            android:textSize="17sp" />
+
+        <ImageView
+            android:id="@+id/btnFechaDel"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:src="@drawable/calendario" />
+
+        <EditText
+            android:id="@+id/txtFechaDel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Fecha inicial"
+            android:inputType="text"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="35dp"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="Al"
+            android:textColor="#000000"
+            android:textSize="17sp" />
+
+        <ImageView
+            android:id="@+id/btnFechaAl"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:src="@drawable/calendario" />
+
+        <EditText
+            android:id="@+id/txtFechaAl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Fecha final"
+            android:inputType="text"
+            android:textSize="16sp" />
+    </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/relTop"
         android:layout_width="match_parent"
@@ -90,10 +161,7 @@
             android:id="@+id/textView"
             android:layout_width="60dp"
             android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
             android:layout_marginTop="0dp"
             android:gravity="center_vertical"
             android:paddingStart="5dp"
@@ -130,7 +198,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/relBot"
-        android:layout_below="@+id/relFiltro"
+        android:layout_below="@+id/lyFechas"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="0dp">
 

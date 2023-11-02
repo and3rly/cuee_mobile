@@ -2,7 +2,6 @@ package com.example.cuee_mobile.controladores.lectura;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -44,8 +43,6 @@ public class LecturaForm extends PBase {
     private LecturaModel lecturaModel;
     private ServicioInsModel serviciosModel;
     private ContadoresModel contadorModel;
-    private AppMethods app;
-    private clsDocLectura prnLec;
     private int dia, mes, anio, pk;
     private double consumo, promedio, tmpPromedio, lecturaAnterior = 0, lecturaActual=0;;
     private boolean editando = false, continuar = false, correcta = false;
@@ -291,8 +288,6 @@ public class LecturaForm extends PBase {
             serviciosModel.actualizarServicio(item);
             pk = !editando ? lecturaModel.IdActualLectura: auxLectura.Lectura_realizada;
             imprimir("Imprimir", "¿Desea imprimir lectura?");
-            //regresar();
-
         } catch (Exception e) {
             helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);
         }
@@ -336,11 +331,9 @@ public class LecturaForm extends PBase {
         dialog.setIcon(R.drawable.logo);
         dialog.setTitle(titulo);
         dialog.setMessage(msg);
-        dialog.setPositiveButton("Si", (dialog1, id) -> {
-            guardar();
-        });
+        dialog.setPositiveButton("Si", (dialog1, id) -> guardar());
 
-        dialog.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog12, id) -> {
+        dialog.setNegativeButton("No", (dialog12, id) -> {
         });
 
         dialog.show();
@@ -356,7 +349,7 @@ public class LecturaForm extends PBase {
             guardar();
         });
 
-        dialog.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog12, id) -> {
+        dialog.setNegativeButton("No", (dialog12, id) -> {
         });
 
         dialog.show();
@@ -373,7 +366,7 @@ public class LecturaForm extends PBase {
             regresar();
         });
 
-        dialog.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog12, id) -> {
+        dialog.setNegativeButton("No", (dialog12, id) -> {
             dialog12.cancel();
         });
 

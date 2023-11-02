@@ -121,7 +121,7 @@
             android:layout_toStartOf="@+id/btnLimpiar"
             android:layout_toEndOf="@+id/lblContador"
             android:ems="10"
-            android:hint="Contador y usuario"
+            android:hint="Contador o usuario"
             android:inputType="text" />
 
         <ImageView

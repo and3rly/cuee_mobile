@@ -88,6 +88,21 @@ public class FechaHelper {
         return rsltfecha;
     }
 
+    public String strFechaSinHora(String fecha) {
+        String rsltfecha="";
+
+        try{
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            Date date = dateFormat.parse(fecha);
+            dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            rsltfecha=dateFormat.format(date);
+
+        }catch (Exception ex){
+            Log.e("FECHA HELPER", "strFechaSinHora: ", ex );
+        }
+        return rsltfecha;
+    }
+
     public long dayofweek(long f) {
         long y,m,d,dw;
 
