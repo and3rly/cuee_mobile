@@ -43,13 +43,10 @@ public class ClienteConfig {
                 .setLenient()
                 .create();
 
-        if (retrofit==null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(gl.urlApi)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .client(cliente)
-                    .build();
-        }
-
+        retrofit = new Retrofit.Builder()
+                .baseUrl(gl.urlApi)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(cliente)
+                .build();
     }
 }

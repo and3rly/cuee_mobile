@@ -269,7 +269,10 @@ public class ComApi extends PBase {
     private void recibirDatos() {
         try {
 
-            if (gl.urlApi.isEmpty() || !txtUrl.getText().toString().equals(gl.urlApi)) {
+            if (gl.urlApi.isEmpty()) {
+                setUrlApi();
+            } else if (!gl.urlApi.equals(txtUrl.getText().toString())) {
+                gl.urlApi = "";
                 setUrlApi();
             }
 
@@ -327,7 +330,6 @@ public class ComApi extends PBase {
                 archivo.delete();
             }
             gl.urlApi = txtUrl.getText().toString();
-
             wfile=new FileWriter(fname,true);
             writer = new BufferedWriter(wfile);
             writer.write(gl.urlApi + "\n");
