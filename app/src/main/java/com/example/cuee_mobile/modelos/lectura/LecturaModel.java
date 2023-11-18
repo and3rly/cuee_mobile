@@ -142,14 +142,18 @@ public class LecturaModel {
                     "A.Servicio_bajo_demandafp, " +
                     "A.Servicio_bajo_demanda, " +
                     "B.Nombres, " +
-                    "C.IdItinerario" +
+                    "C.IdItinerario, " +
+                    "C.Orden" +
                     " FROM SERVICIOS_INSTALADO A" +
                     " INNER JOIN USUARIOS_SERVICIO B ON A.IdUsuarioServicio = B.IdUsuarioServicio" +
-                    " INNER JOIN USUARIOS_POR_RUTA C ON A.IdUsuarioServicio = C.IdUsuarioServicio WHERE A.Estado_servicio NOT IN (1,3)";
+                    " INNER JOIN USUARIOS_POR_RUTA C ON A.IdUsuarioServicio = C.IdUsuarioServicio " +
+                    " WHERE A.Estado_servicio NOT IN (1,3) ";
 
             if (pendientes) {
                 sql += " AND A.Lectura_realizada = 0 AND A.Lectura_correcta = 0";
             }
+
+            sql += " Order By C.Orden ";
 
             DT = Con.OpenDT(sql);
 
