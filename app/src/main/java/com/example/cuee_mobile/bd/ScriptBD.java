@@ -151,7 +151,9 @@ public class ScriptBD {
                     "IdPeriodoParametros INTEGER DEFAULT NULL," +
                     "pagol INTEGER DEFAULT 0," +
                     "fecha_ultimo_pago TEXT DEFAULT NULL," +
-                    "StatCom TEXT DEFAULT NULL," +
+                    "StatCom INTEGER DEFAULT 0," +
+                    "Con_hh INTEGER DEFAULT NULL," +
+                    "IdTecnico INTEGER DEFAULT NULL," +
                     "PRIMARY KEY ([idproforma])" +
                     ");";
             db.execSQL(sql);
@@ -327,7 +329,7 @@ public class ScriptBD {
             db.execSQL(sql);
 
             sql = "CREATE TABLE [MESES_PROFORMA] (" +
-                    "idproformadet INTEGER NOT NULL," +
+                    "idproformadet INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "idproforma INTEGER DEFAULT NULL," +
                     "IdUsuarioServicio INTEGER DEFAULT NULL," +
                     "nomes INTEGER DEFAULT NULL," +
@@ -336,7 +338,7 @@ public class ScriptBD {
                     "descripcion TEXT DEFAULT NULL," +
                     "cantidad REAL DEFAULT NULL," +
                     "anno INTEGER DEFAULT NULL,"+
-                    "PRIMARY KEY([idproformadet])" +
+                    "StatCom INT DEFAULT 0"+
                     ");";
             db.execSQL(sql);
 
@@ -451,6 +453,58 @@ public class ScriptBD {
                     "Nombre TEXT DEFAULT NULL," +
                     "Activo INTEGER DEFAULT 0," +
                     "PRIMARY KEY ([IdMarca])" +
+                    ");";
+            db.execSQL(sql);
+
+            sql = "CREATE TABLE [CORRELATIVO_PROFORMA] (" +
+                    "IdCorrelativoProforma INTEGER NOT NULL ," +
+                    "Serie TEXT DEFAULT NULL," +
+                    "Inicial INTEGER DEFAULT 0," +
+                    "Final INTEGER DEFAULT 0," +
+                    "Actual INTEGER DEFAULT 0," +
+                    "IdTecnico INTEGER DEFAULT 0," +
+                    "Activo INTEGER DEFAULT 0," +
+                    "Fec_agr TEXT DEFAULT NULL," +
+                    "Fec_mod TEXT DEFAULT NULL," +
+                    "User_mod TEXT DEFAULT NULL," +
+                    "User_agr TEXT DEFAULT NULL," +
+                    "PRIMARY KEY ([IdCorrelativoProforma])" +
+                    ");";
+            db.execSQL(sql);
+
+            sql = "CREATE TABLE [MESES_PAGO] (" +
+                    "IdMesPago INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "IdRecibo INTEGER DEFAULT NULL," +
+                    "IdUsuarioServicio INTEGER DEFAULT NULL," +
+                    "NoMes INTEGER DEFAULT NULL," +
+                    "Anno INTEGER DEFAULT NULL" +
+                    ");";
+            db.execSQL(sql);
+
+            sql = "CREATE TABLE [RAZON_NO_LECTURA] (" +
+                    "IdRazonNoLectura INTEGER NOT NULL ," +
+                    "Nombre TEXT DEFAULT NULL," +
+                    "Activo INTEGER DEFAULT 0," +
+                    "IdUsuario_crea INTEGER DEFAULT 0," +
+                    "fecha_crea TEXT DEFAULT NULL," +
+                    "IdUsuario_modifica INTEGER DEFAULT 0," +
+                    "fecha_modifica TEXT DEFAULT NULL," +
+                    "PRIMARY KEY ([IdRazonNoLectura])"+
+                    ");";
+            db.execSQL(sql);
+
+            sql = "CREATE TABLE [USUARIO_SIN_LECTURA] (" +
+                    "IdUsuarioSinLectura INTEGER PRIMARY KEY AUTOINCREMENT ," +
+                    "IdRuta INTEGER DEFAULT NULL," +
+                    "IdItinerario INTEGER DEFAULT NULL," +
+                    "IdTecnico INTEGER DEFAULT NULL," +
+                    "IdUsuarioServicio INTEGER DEFAULT NULL," +
+                    "IdRazonNoLectura INTEGER DEFAULT NULL," +
+                    "Usuario_crea INTEGER DEFAULT 0," +
+                    "Fecha_crea TEXT DEFAULT NULL," +
+                    "Usuario_Modifica INTEGER DEFAULT 0," +
+                    "Fecha_Modifica TEXT DEFAULT NULL," +
+                    "StatCom INTEGER DEFAULT 0"+
                     ");";
             db.execSQL(sql);
 

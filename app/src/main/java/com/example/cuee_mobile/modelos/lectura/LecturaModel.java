@@ -8,6 +8,7 @@ import android.util.Log;
 import com.example.cuee_mobile.bd.HelperBD;
 import com.example.cuee_mobile.clases.auxLecturaServicio;
 import com.example.cuee_mobile.clases.clsBeLectura;
+import com.example.cuee_mobile.clases.clsBePendientes_lectura;
 
 import java.util.ArrayList;
 
@@ -143,10 +144,13 @@ public class LecturaModel {
                     "A.Servicio_bajo_demanda, " +
                     "B.Nombres, " +
                     "C.IdItinerario, " +
-                    "C.Orden" +
+                    "C.Orden," +
+                    "A.Direccion," +
+                    "D.Consumo" +
                     " FROM SERVICIOS_INSTALADO A" +
                     " INNER JOIN USUARIOS_SERVICIO B ON A.IdUsuarioServicio = B.IdUsuarioServicio" +
                     " INNER JOIN USUARIOS_POR_RUTA C ON A.IdUsuarioServicio = C.IdUsuarioServicio " +
+                    " LEFT JOIN LECTURA D ON D.IdLectura = A.Lectura_realizada" +
                     " WHERE A.Estado_servicio NOT IN (1,3) ";
 
             if (pendientes) {
@@ -172,6 +176,8 @@ public class LecturaModel {
                     item.Servicio_bajo_demanda = DT.getInt(6) == 1 ? true:false;
                     item.Usuario = DT.getString(7);
                     item.IdItinerario = DT.getInt(8);
+                    item.Direccion = DT.getString(10);
+                    item.Consumo = DT.getDouble(11);
 
                     serLectura.add(item);
                     DT.moveToNext();
@@ -332,6 +338,179 @@ public class LecturaModel {
         }
 
         return true;
+    }
+
+    public int getLecturaByFecha(int anio, int mes, int usuario, String contador) {
+        int lectura = 0;
+        String mess = "";
+        Cursor DT;
+        try {
+            mess = mes <= 9 ? "0"+mes : mes+"";
+
+            sql = "SELECT LECTURA FROM LECTURA" +
+                    " WHERE IdUsuarioServicio = "+ usuario +
+                    " AND IdContador = '"+ contador +"'" +
+                    " AND STRFTIME('%Y', Fecha) = '"+ anio +"'"+
+                    " AND STRFTIME('%m', Fecha) = '"+ mess +"'";
+
+            DT = Con.OpenDT(sql);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+                lectura = DT.getInt(0);
+
+            }
+
+            if (DT != null) DT.close();
+
+        } catch (Exception e) {
+            Log.e("LECTURA", "getConsultaLectura: ", e );
+        }
+
+        return lectura;
+    }
+
+    public String getFechaUltimaLectura(int IdUsuarioServicio) {
+        Cursor DT;
+        String fecha="";
+        try {
+            sql = "SELECT STRFTIME('%Y-%m-%d', Fecha) AS Fecha FROM LECTURA" +
+                    " WHERE IdUsuarioServicio = "+ IdUsuarioServicio +
+                    " ORDER BY Fecha DESC";
+
+            DT = Con.OpenDT(sql);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+                fecha = DT.getString(0);
+            }
+
+            if (DT != null) DT.close();
+
+        } catch (Exception e) {
+            Log.e("LECTURA", "getFechaUltimaLectura: ", e );
+        }
+
+        return fecha;
+    }
+
+    public String getFechaPrimeraLectura(int IdUsuarioServicio) {
+        Cursor DT;
+        String fecha="";
+        try {
+            sql = "SELECT STRFTIME('%Y-%m-%d', Fecha) FROM LECTURA" +
+                    " WHERE IdUsuarioServicio = "+ IdUsuarioServicio +
+                    " ORDER BY Fecha ASC";
+
+            DT = Con.OpenDT(sql);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+                fecha = DT.getString(0);
+            }
+
+            if (DT != null) DT.close();
+
+        } catch (Exception e) {
+            Log.e("LECTURA", "getFechaPrimeraLectura: ", e );
+        }
+
+        return fecha;
+    }
+
+    public clsBeLectura getLecturas(int IdUsuarioServicio, int anio, int mes, String contador) {
+        Cursor DT;
+        clsBeLectura item = null;
+        String mess = "", sq="";
+        try {
+
+            mess = mes <= 9 ? "0"+mes : mes+"";
+
+            sq = " SELECT * FROM LECTURA WHERE IdUsuarioServicio = "+IdUsuarioServicio+
+                    " AND STRFTIME('%Y', Fecha) = '"+ anio +"'"+
+                    " AND STRFTIME('%m', Fecha) = '"+ mess +"'" +
+                    " AND IdContador = '"+contador+"'";
+
+            DT = Con.OpenDT(sq);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+                item = setLinea(DT);
+            }
+
+            if (DT != null) DT.close();
+
+        } catch (Exception e) {
+            Log.e("LECTURA", "getFechaPrimeraLectura: ", e );
+        }
+
+        return item;
+    }
+
+    public String getContadorFecha(int IdUsuarioServicio, int anio, int mes) {
+        Cursor DT;
+        String contador="", mess="", sq="";
+        try {
+
+            mess = mes <= 9 ? "0"+mes : mes+"";
+
+            sq = " SELECT IdContador FROM LECTURA WHERE IdUsuarioServicio = '"+IdUsuarioServicio+"'" +
+                 " AND STRFTIME('%Y', Fecha) = '"+ anio +"'"+
+                 " AND STRFTIME('%m', Fecha) = '"+ mess +"'" ;
+
+            DT = Con.OpenDT(sq);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+                contador = DT.getString(0);
+            }
+
+            if (DT != null) DT.close();
+
+        } catch (Exception e) {
+            Log.e("LECTURA", "getContadorFecha: ", e );
+        }
+
+        return contador;
+    }
+
+    public ArrayList<clsBePendientes_lectura> getLecturasPendientes() {
+        Cursor DT;
+        ArrayList<clsBePendientes_lectura> lpendientes = new ArrayList<>();
+        clsBePendientes_lectura item;
+        try {
+            lpendientes.clear();
+
+            sql = "SELECT " +
+                    "A.IdUsuarioServicio, " +
+                    "B.Nombres " +
+                    " FROM SERVICIOS_INSTALADO A" +
+                    " INNER JOIN USUARIOS_SERVICIO B ON A.IdUsuarioServicio = B.IdUsuarioServicio" +
+                    " INNER JOIN USUARIOS_POR_RUTA C ON A.IdUsuarioServicio = C.IdUsuarioServicio " +
+                    " LEFT JOIN USUARIO_SIN_LECTURA D ON D.IdUsuarioServicio = A.IdUsuarioServicio " +
+                    " WHERE A.Estado_servicio NOT IN (1,3) AND A.Lectura_realizada = 0 AND A.Lectura_correcta = 0";
+            DT = Con.OpenDT(sql);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+
+                while (!DT.isAfterLast()) {
+                    item = new clsBePendientes_lectura();
+
+                    item.IdUsuarioServicio = DT.getInt(0);
+                    item.Nombre = DT.getString(1);
+
+                    lpendientes.add(item);
+                    DT.moveToNext();
+                }
+            }
+
+            if (DT != null) DT.close();
+        } catch (Exception e) {
+            Log.e("LECTURA", "getLecturasPendientes: ", e );
+        }
+
+        return lpendientes;
     }
 }
 

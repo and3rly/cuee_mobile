@@ -10,6 +10,7 @@ public class clsBeProforma_detalle {
     public double monto_impuesto = 0;
     public boolean exento = false;
     public double monto_gravable = 0;
+    public String StatCom = "";
 
     public int getIdproforma() {
         return idproforma;

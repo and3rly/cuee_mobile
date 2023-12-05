@@ -103,6 +103,29 @@ public class ContadoresModel {
 
         return item;
     }
+
+    private clsBeContadores setLinea(Cursor DT) {
+        clsBeContadores item = null;
+        try {
+            item = new clsBeContadores();
+
+            item.IdContador = DT.getString(0);
+            item.IdMarca = DT.getInt(1);
+            item.Activo = DT.getInt(2) == 1 ? true: false;
+            item.No_marchamo = DT.getString(3);
+            item.Color = DT.getString(4);
+            item.IdUsuarioServicio = DT.getInt(5);
+            item.Fecha_Cambio = DT.getString(6);
+            item.Fecha_Creacion = DT.getString(7);
+            item.Lectura = DT.getDouble(8);
+
+        } catch (Exception e) {
+            Log.e("CONTADORES", "guardar: ", e);
+        }
+
+        return item;
+    }
+
     public boolean guardar(clsBeContadores obj) {
         try {
             ins.init(tabla);
@@ -141,6 +164,41 @@ public class ContadoresModel {
             Log.e("LECTURA", "getLecturaAnterior: ", e);
         }
         return contador;
+    }
+
+    public clsBeContadores getContadorByUsuario(int IdUsuario) {
+        clsBeContadores contador = null;
+        Cursor DT;
+        try {
+            sql = "SELECT * FROM CONTADORES WHERE IdUsuarioServicio = "+IdUsuario+" AND ACTIVO = 1";
+            DT = Con.OpenDT(sql);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+                contador = setLinea(DT);
+            }
+        } catch (Exception e) {
+            Log.e("LECTURA", "getContadorByUsuario: ", e);
+        }
+        return contador;
+    }
+
+    public double getLecturaByContador(String contador) {
+        Cursor DT;
+        String sq="";
+        double lectura = 0;
+        try {
+            sq = "SELECT Lectura FROM CONTADORES WHERE IdContador = '"+contador+"'";
+            DT = Con.OpenDT(sq);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+                lectura = DT.getDouble(0);
+            }
+        } catch (Exception e) {
+            Log.e("LECTURA", "getLecturaByContador: ", e);
+        }
+        return lectura;
     }
 }
 

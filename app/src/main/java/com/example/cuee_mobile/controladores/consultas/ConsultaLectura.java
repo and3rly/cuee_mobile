@@ -90,24 +90,11 @@ public class ConsultaLectura extends PBase {
     }
 
     private void getLecturas() {
-        Date fechaDel;
-        Date fechaAl;
         String fecha1 = "", fecha2 = "";
         try {
             String termino = txtFiltro.getText().toString();
 
             if (!txtFechaDel.getText().toString().isEmpty() && !txtFechaAl.getText().toString().isEmpty()) {
-                /*SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-                fechaDel = formato.parse(txtFechaDel.getText().toString());
-                fechaAl = formato.parse(txtFechaAl.getText().toString());
-
-                if (fechaAl.before(fechaDel)) {
-                    txtFechaAl.selectAll();
-                    txtFechaAl.requestFocus();
-                    helper.toast( "Fecha final debe ser mayor a la inicial");
-                    return;
-                }*/
-
                 fecha1 = du.strFechaSinHora(txtFechaDel.getText().toString());
                 fecha2 = du.strFechaSinHora(txtFechaAl.getText().toString());
             }

@@ -15,8 +15,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.example.cuee_mobile.R;
+import com.example.cuee_mobile.api.servicios.Catalogo;
 import com.example.cuee_mobile.api.servicios.Color;
 import com.example.cuee_mobile.api.servicios.Contador;
+import com.example.cuee_mobile.api.servicios.Correlativo;
 import com.example.cuee_mobile.api.servicios.Institucion;
 import com.example.cuee_mobile.api.servicios.Lectura;
 import com.example.cuee_mobile.api.servicios.Marca;
@@ -31,6 +33,7 @@ import com.example.cuee_mobile.api.servicios.Transformador;
 import com.example.cuee_mobile.api.servicios.UsuarioServicio;
 import com.example.cuee_mobile.clases.clsBeColor;
 import com.example.cuee_mobile.clases.clsBeContadores;
+import com.example.cuee_mobile.clases.clsBeCorrelativo_proforma;
 import com.example.cuee_mobile.clases.clsBeErrorResponse;
 import com.example.cuee_mobile.clases.clsBeInstitucion;
 import com.example.cuee_mobile.clases.clsBeInstitucion_detalle;
@@ -38,9 +41,12 @@ import com.example.cuee_mobile.clases.clsBeLectura;
 import com.example.cuee_mobile.clases.clsBeMarcas;
 import com.example.cuee_mobile.clases.clsBeMeses_mora_pagada;
 import com.example.cuee_mobile.clases.clsBeMeses_mora_proforma;
+import com.example.cuee_mobile.clases.clsBeMeses_pago;
 import com.example.cuee_mobile.clases.clsBeMeses_proforma;
 import com.example.cuee_mobile.clases.clsBePagos_detalle_rep;
 import com.example.cuee_mobile.clases.clsBeParametros;
+import com.example.cuee_mobile.clases.clsBeProforma;
+import com.example.cuee_mobile.clases.clsBeRazon_no_lectura;
 import com.example.cuee_mobile.clases.clsBeRenglones;
 import com.example.cuee_mobile.clases.clsBeRutaSincronizacion;
 import com.example.cuee_mobile.clases.clsBeRuta_lectura;
@@ -53,6 +59,9 @@ import com.example.cuee_mobile.clases.clsBeUsuarios_servicio;
 import com.example.cuee_mobile.controladores.MainActivity;
 import com.example.cuee_mobile.controladores.Menu;
 import com.example.cuee_mobile.controladores.PBase;
+import com.example.cuee_mobile.modelos.CorrelativoModel;
+import com.example.cuee_mobile.modelos.MesesPagoModel;
+import com.example.cuee_mobile.modelos.ProformaModel;
 import com.example.cuee_mobile.modelos.RutaSincModel;
 import com.example.cuee_mobile.modelos.ServicioInsModel;
 import com.example.cuee_mobile.modelos.institucion.InstitucionDetalleModel;
@@ -65,6 +74,7 @@ import com.example.cuee_mobile.modelos.mnt.ColorModel;
 import com.example.cuee_mobile.modelos.mnt.ContadoresModel;
 import com.example.cuee_mobile.modelos.mnt.MarcaModel;
 import com.example.cuee_mobile.modelos.mnt.ParametrosModel;
+import com.example.cuee_mobile.modelos.mnt.RazonNoCierreModel;
 import com.example.cuee_mobile.modelos.mnt.RenglonesModel;
 import com.example.cuee_mobile.modelos.mnt.TecnicoModel;
 import com.example.cuee_mobile.modelos.mnt.TransformadorModel;
@@ -86,6 +96,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -113,8 +125,12 @@ public class ComApi extends PBase {
     private UsrServicioModel usrServicio;
     private ServicioInsModel srInstalado;
     private RutaSincModel runtaSinc;
+    private RazonNoCierreModel rNoCierre;
     private ColorModel color;
     private MarcaModel marca;
+    private CorrelativoModel correlativo;
+    private ProformaModel proformaModel;
+    private MesesPagoModel mspagos;
     private String msjProg = "";
     private int IdRuta, IdItinerario, idx, cant;
     private clsBeRuta_lectura objRutaLectura = null;
@@ -162,6 +178,10 @@ public class ComApi extends PBase {
             runtaSinc = new RutaSincModel(this, Con, db);
             color = new ColorModel(this, Con, db);
             marca = new MarcaModel(this, Con, db);
+            correlativo = new CorrelativoModel(this, Con, db);
+            mspagos = new MesesPagoModel(this, Con, db);
+            rNoCierre = new RazonNoCierreModel(this, Con, db);
+            proformaModel = new ProformaModel(this, Con, db);
 
             txtRuta.requestFocus();
         } catch (Exception e) {
@@ -252,12 +272,26 @@ public class ComApi extends PBase {
 
     private boolean pendientesEnvio() {
         boolean pendiente = false;
+        String mensaje = "";
         try {
             lectura.getLista("WHERE StatCom = 0");
             if (lectura.filas > 0)  {
-                helper.toast("Tiene lecturas pendientes de enviar.");
+                mensaje +="Tiene facturas pendientes por enviar.\n";
                 pendiente = true;
             }
+
+            proformaModel.getLista("WHERE StatCom = 0");
+            if (proformaModel.lista.size() > 0)  {
+
+                for (clsBeProforma obj:proformaModel.lista) {
+                    obj.detalle = proformaModel.getDetalle(obj.idproforma);
+                    obj.MesesProforma = proformaModel.getMesesProforma(obj.idproforma);
+                }
+                mensaje +="Tiene proformas pendientes por enviar.";
+                pendiente = true;
+            }
+
+            helper.toast(mensaje);
         } catch (Exception e) {
             helper.msgbox(Objects.requireNonNull(new Object() {
             }.getClass().getEnclosingClass()).getName() +" - "+ e);
@@ -393,7 +427,10 @@ public class ComApi extends PBase {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
                     }
+
                     cancelarPeticion(call);
                 }
             });
@@ -429,6 +466,7 @@ public class ComApi extends PBase {
                             getColor();
                         } else {
                             helper.toast("La fecha del servidor o HH, no es válida.");
+                            cancelarPeticion(call);
                         }
                     } else {
                         mostrarError(response, call, "getFechaServidor");
@@ -440,7 +478,10 @@ public class ComApi extends PBase {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
                     }
+
                     cancelarPeticion(call);
                 }
             });
@@ -485,7 +526,10 @@ public class ComApi extends PBase {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
                     }
+
                     cancelarPeticion(call);
                 }
             });
@@ -530,7 +574,10 @@ public class ComApi extends PBase {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
                     }
+
                     cancelarPeticion(call);
                 }
             });
@@ -575,7 +622,10 @@ public class ComApi extends PBase {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
                     }
+
                     cancelarPeticion(call);
                 }
             });
@@ -620,7 +670,10 @@ public class ComApi extends PBase {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
                     }
+
                     cancelarPeticion(call);
                 }
             });
@@ -665,7 +718,10 @@ public class ComApi extends PBase {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
                     }
+
                     cancelarPeticion(call);
                 }
             });
@@ -709,7 +765,10 @@ public class ComApi extends PBase {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
                     }
+
                     cancelarPeticion(call);;
                 }
             });
@@ -753,7 +812,10 @@ public class ComApi extends PBase {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
                     }
+
                     cancelarPeticion(call);
                 }
             });
@@ -798,7 +860,10 @@ public class ComApi extends PBase {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
                     }
+
                     cancelarPeticion(call);
                 }
             });
@@ -842,7 +907,10 @@ public class ComApi extends PBase {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
                     }
+
                     cancelarPeticion(call);
                 }
             });
@@ -887,7 +955,10 @@ public class ComApi extends PBase {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
                     }
+
                     cancelarPeticion(call);
                 }
             });
@@ -931,7 +1002,10 @@ public class ComApi extends PBase {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
                     }
+
                     cancelarPeticion(call);
                 }
             });
@@ -975,7 +1049,10 @@ public class ComApi extends PBase {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
                     }
+
                     cancelarPeticion(call);
                 }
             });
@@ -1019,7 +1096,10 @@ public class ComApi extends PBase {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
                     }
+
                     cancelarPeticion(call);
                 }
             });
@@ -1063,7 +1143,10 @@ public class ComApi extends PBase {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
                     }
+
                     cancelarPeticion(call);
                 }
             });
@@ -1096,15 +1179,8 @@ public class ComApi extends PBase {
                                 }
                             }
                         }
-                        terminaRecepcion();
-                        helper.toast("Recepción completa");
 
-                        if (gl.ruta == null || gl.ruta.IdRuta == 0) {
-                            finish();
-                            startActivity(new Intent(ComApi.this, MainActivity.class));
-                        } else {
-                            finish();
-                        }
+                        getMesesPago();
                     } else {
                         mostrarError(response, call, "getServiciosInstalados");
                     }
@@ -1115,6 +1191,207 @@ public class ComApi extends PBase {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
                         helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
+                    }
+
+                    cancelarPeticion(call);
+                }
+            });
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    public void getMesesPago() {
+        msjProg = "Procesando meses pagados...";
+        actualizaProgress();
+
+        try {
+            Catalogo cliente = retrofit.CrearServicio(Catalogo.class);
+            Call<List<clsBeMeses_pago>> call = cliente.get_MesesPago(IdRuta, IdItinerario);
+
+            call.enqueue(new Callback<List<clsBeMeses_pago>>() {
+                @Override
+                public void onResponse(Call<List<clsBeMeses_pago>> call, Response<List<clsBeMeses_pago>> response) {
+                    if (response.isSuccessful()) {
+                        List<clsBeMeses_pago> lista = response.body();
+
+                        if (lista != null && lista.size() > 0) {
+                            for (clsBeMeses_pago obj:lista) {
+                                mspagos.getLista("WHERE IdMesPago = "+obj.IdMesPago);
+
+                                if (mspagos.lista.size() == 0) {
+                                    mspagos.guardar(obj);
+                                }
+                            }
+                        }
+
+                        getMesesMoraPagada();
+                    } else {
+                        mostrarError(response, call, "getMesesPago");
+                    }
+                }
+                @Override
+                public void onFailure(Call<List<clsBeMeses_pago>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox("Ocurrió un error: \n" + t.getMessage());
+                    }
+
+                    cancelarPeticion(call);
+                }
+            });
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    public void getMesesMoraPagada() {
+        msjProg = "Procesando meses mora pagada...";
+        actualizaProgress();
+
+        try {
+            MesProforma cliente = retrofit.CrearServicio(MesProforma.class);
+            Call<List<clsBeMeses_mora_pagada>> call = cliente.getMesesMoraPagada(IdRuta, IdItinerario);
+
+            call.enqueue(new Callback<List<clsBeMeses_mora_pagada>>() {
+                @Override
+                public void onResponse(Call<List<clsBeMeses_mora_pagada>> call, Response<List<clsBeMeses_mora_pagada>> response) {
+                    if (response.isSuccessful()) {
+                        List<clsBeMeses_mora_pagada> lista = response.body();
+
+                        if (lista != null && lista.size() > 0) {
+                            for (clsBeMeses_mora_pagada obj:lista) {
+                                moraPg.guardar(obj);
+                            }
+                        }
+
+                        getRazonNoLectura();
+                    } else {
+                        mostrarError(response, call, "getMesesMoraPagada");
+                    }
+                }
+                @Override
+                public void onFailure(Call<List<clsBeMeses_mora_pagada>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper.msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper.msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper.msgbox("Ocurrió un error: \n" + t.getMessage());
+                    }
+
+                    cancelarPeticion(call);
+                }
+            });
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    public void getRazonNoLectura() {
+        msjProg = "Procesando razones no lectura...";
+        actualizaProgress();
+
+        try {
+            Catalogo cliente = retrofit.CrearServicio(Catalogo.class);
+            Call<List<clsBeRazon_no_lectura>> call = cliente.get_razon_no_lectura();
+
+            call.enqueue(new Callback<List<clsBeRazon_no_lectura>>() {
+                @Override
+                public void onResponse(Call<List<clsBeRazon_no_lectura>> call, Response<List<clsBeRazon_no_lectura>> response) {
+                    response.body();
+                    if (response.isSuccessful()) {
+                        List<clsBeRazon_no_lectura> lista = response.body();
+
+                        if (lista != null && lista.size() > 0) {
+                            for (clsBeRazon_no_lectura obj:lista) {
+                                rNoCierre.getLista(" WHERE IdRazonNoLectura = "+obj.IdRazonNoLectura);
+
+                                if (rNoCierre.lista.size() == 0) {
+                                    rNoCierre.guardar(obj);
+                                }
+                            }
+                        }
+
+                        getCorrelativoProforma();
+                    } else {
+                        mostrarError(response, call, "getRazonNoLectura");
+                    }
+                }
+                @Override
+                public void onFailure(Call<List<clsBeRazon_no_lectura>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper.msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper.msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper.msgbox("Ocurrió un error: \n" + t.getMessage());
+                    }
+
+                    cancelarPeticion(call);
+                }
+            });
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    public void getCorrelativoProforma() {
+        msjProg = "Procesando correlativos proforma...";
+        actualizaProgress();
+
+        try {
+            Correlativo cliente = retrofit.CrearServicio(Correlativo.class);
+            Call<List<clsBeCorrelativo_proforma>> call = cliente.get_CorrelativosProforma_by_IdRuta(IdRuta);
+
+
+            call.enqueue(new Callback<List<clsBeCorrelativo_proforma>>() {
+                @Override
+                public void onResponse(Call<List<clsBeCorrelativo_proforma>> call, Response<List<clsBeCorrelativo_proforma>> response) {
+                    if (response.isSuccessful()) {
+                        List<clsBeCorrelativo_proforma> lista = response.body();
+
+                        if (lista != null && lista.size() > 0) {
+                            for (clsBeCorrelativo_proforma obj:lista) {
+                                correlativo.getLista("WHERE idCorrelativoProforma = "+obj.idCorrelativoProforma);
+
+                                if (correlativo.lista.size() == 0) {
+                                    correlativo.guardar(obj);
+                                }
+                            }
+                        }
+
+                        //Pensar como mejorar el proceso
+                        terminaRecepcion();
+                        helper.toast("Recepción completa");
+
+                        if (gl.ruta == null || gl.ruta.IdRuta == 0) {
+                            finish();
+                            startActivity(new Intent(ComApi.this, MainActivity.class));
+                        } else {
+                            finish();
+                        }
+                    } else {
+                        mostrarError(response, call, "getCorrelativoProforma");
+                    }
+                }
+                @Override
+                public void onFailure(Call<List<clsBeCorrelativo_proforma>> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper.msgbox("¡Connection Timeout!\n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper.msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper.msgbox("Error: " + t.getMessage());
                     }
                     cancelarPeticion(call);
                 }
@@ -1185,43 +1462,6 @@ public class ComApi extends PBase {
                 }
                 @Override
                 public void onFailure(Call<List<clsBeMeses_mora_proforma>> call, Throwable t) {
-                    if (t instanceof SocketTimeoutException) {
-                        helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
-                    } else if (t instanceof ConnectException) {
-                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
-                    }
-                    cancelarPeticion(call);
-                }
-            });
-        } catch (Exception e) {
-            helper.msgbox(Objects.requireNonNull(new Object() {
-            }.getClass().getEnclosingClass()).getName() +" - "+ e);
-        }
-    }
-
-    public void getMesesMoraPagada() {
-        msjProg = "Procesando meses mora pagada...";
-        actualizaProgress();
-
-        try {
-            MesProforma cliente = retrofit.CrearServicio(MesProforma.class);
-            Call<List<clsBeMeses_mora_pagada>> call = cliente.getMesesMoraPagada();
-
-            call.enqueue(new Callback<List<clsBeMeses_mora_pagada>>() {
-                @Override
-                public void onResponse(Call<List<clsBeMeses_mora_pagada>> call, Response<List<clsBeMeses_mora_pagada>> response) {
-                    if (response.isSuccessful()) {
-                        List<clsBeMeses_mora_pagada> lista = response.body();
-
-                        if (lista != null && lista.size() > 0) {
-                            for (clsBeMeses_mora_pagada obj:lista) {
-                                moraPg.guardar(obj);
-                            }
-                        }
-                    }
-                }
-                @Override
-                public void onFailure(Call<List<clsBeMeses_mora_pagada>> call, Throwable t) {
                     if (t instanceof SocketTimeoutException) {
                         helper. msgbox("¡Connection Timeout!\n\n" + t.getMessage());
                     } else if (t instanceof ConnectException) {
@@ -1324,7 +1564,15 @@ public class ComApi extends PBase {
         try {
             idx = 0;
             cant = 1;
-            enviarLecturas(lectura.lista.get(idx));
+
+            if (lectura.lista.size() > 0) {
+                enviarLecturas(lectura.lista.get(idx));
+            }
+
+            if (proformaModel.lista.size() > 0) {
+                enviaProforma(proformaModel.lista.get(idx));
+            }
+
         } catch (Exception e) {
             helper.msgbox(Objects.requireNonNull(new Object() {
             }.getClass().getEnclosingClass()).getName() +" - "+ e);
@@ -1367,12 +1615,63 @@ public class ComApi extends PBase {
         }
     }
 
+    private void enviaProforma(clsBeProforma obj) {
+        msjProg = "Enviando proforma(s) "+cant+"/"+proformaModel.lista.size()+" ...";
+        actualizaProgress();
+        try {
+
+            Catalogo cliente = retrofit.CrearServicio(Catalogo.class);
+            Call call = cliente.guardarProforma(obj);
+
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if(response.isSuccessful()){
+                        proformaModel.actualizaEstado(obj.idproforma);
+                        envioCompletoProformas();
+                    } else {
+                        mostrarError(response, call, "enviarLecturas");
+                    }
+                }
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("Connection Timeout \n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox(t.getMessage());
+                    }
+                    cancelarEnvio(call);
+                }
+            });
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    private void envioCompletoProformas() {
+        try {
+            if (cant == proformaModel.lista.size()) {
+                helper.toast("Completo");
+                terminaEnvio();
+                //lectura.lista.clear();
+            } else {
+                idx++;
+                cant++;
+                enviaProforma(proformaModel.lista.get(idx));
+            }
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
     private void envioCompletoLecutura() {
         try {
             if (cant == lectura.lista.size()) {
-                helper.toast("Completo");
                 lectura.lista.clear();
-                terminaEnvio();
             } else {
                 idx++;
                 cant++;

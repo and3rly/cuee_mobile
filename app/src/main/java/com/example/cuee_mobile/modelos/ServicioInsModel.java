@@ -6,11 +6,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.cuee_mobile.bd.HelperBD;
+import com.example.cuee_mobile.clases.clsBeRenglones;
 import com.example.cuee_mobile.clases.clsBeServicios_instalado;
 
 import java.util.ArrayList;
 
-public class ServicioInsModel {
+public class
+ServicioInsModel {
     private Context context;
     private HelperBD Con;
     private SQLiteDatabase db;
@@ -19,6 +21,7 @@ public class ServicioInsModel {
     private final String tabla = "SERVICIOS_INSTALADO";
     private final String sel =  "SELECT * FROM " + tabla;
     public ArrayList<clsBeServicios_instalado> lista = new ArrayList<>();
+    public clsBeServicios_instalado objSins = null;
 
     public ServicioInsModel(Context ct, HelperBD con, SQLiteDatabase dbase) {
         context = ct;
@@ -28,14 +31,18 @@ public class ServicioInsModel {
     }
 
     public void getLista(String sq) {
-        buscar(sel +" "+ sq);
+        buscar(sel +" "+ sq, false);
     }
 
     public void getLista() {
-        buscar(sel);
+        buscar(sel, false);
     }
 
-    private void buscar(String sel) {
+    public void getLinea(String sq) {
+        buscar(sel + " " +sq, true);
+    }
+
+    private void buscar(String sel, boolean uno) {
         clsBeServicios_instalado item;
         Cursor DT;
         try {
@@ -44,83 +51,14 @@ public class ServicioInsModel {
             if (DT.getCount() > 0) {
                 DT.moveToFirst();
 
-                lista.clear();
-                while (!DT.isAfterLast()) {
-                    item = new clsBeServicios_instalado();
-
-                    item.IdInstalacion = DT.getInt(0);
-                    item.IdUsuarioServicio = DT.getInt(1);
-                    item.IdContador = DT.getString(2);
-                    item.IdVoltaje = DT.getInt(3);
-                    item.IdPotencia = DT.getInt(4);
-                    item.IdTransformador = DT.getInt(5);
-                    item.IdTipoServicio = DT.getInt(6);
-                    item.fecha = DT.getString(7);
-                    item.hora = DT.getString(8);
-                    item.IdTecnico = DT.getInt(9);
-                    item.contador_anterior = DT.getString(10);
-                    item.usuario_anterior = DT.getString(11);
-                    item.contador_siguiente = DT.getString(12);
-                    item.usuario_siguiente = DT.getString(13);
-                    item.modificacion_red = DT.getInt(14) == 1 ? true : false;
-                    item.subestacion = DT.getInt(15);
-                    item.id_circuito = DT.getInt(16);
-                    item.IdGPS = Double.valueOf(DT.getString(17));
-                    item.IdFotografia = DT.getString(18);
-                    item.direccion = DT.getString(19);
-                    item.IdMunicipio = DT.getInt(20);
-                    item.IdDepartamento = DT.getInt(21);
-                    item.Zona = DT.getString(22);
-                    item.Colonia = DT.getString(23);
-                    item.Avenida = DT.getString(24);
-                    item.Calle = DT.getString(25);
-                    item.Numero = DT.getString(26);
-                    item.centro = DT.getInt(27);
-                    item.id_poste_inicio = DT.getString(28);
-                    item.tension_nominal_acom = DT.getString(29);
-                    item.fases_de_conexion = DT.getInt(30);
-                    item.acometida_subt_area = DT.getInt(31);
-                    item.long_cable_acom = DT.getInt(32);
-                    item.tipo_de_conductor = DT.getString(33);
-                    item.donacion_acom = DT.getString(34);
-                    item.fecha_puesto_servicio = DT.getString(35);
-                    item.fecha_retiro_acom = DT.getString(36);
-                    item.num_serie_medido = DT.getString(37);
-                    item.tipo_medidor = DT.getString(38);
-                    item.voltaje_medidor = DT.getInt(39);
-                    item.voltaje_suministro = DT.getInt(40);
-                    item.corriente_nominal = DT.getInt(41);
-                    item.corriente_maxima = DT.getInt(42);
-                    item.kh = DT.getDouble(43);
-                    item.Rr = DT.getString(44);
-                    item.fecha_puesto_servicio_m = DT.getString(45);
-                    item.fecha_retiro_medidor = DT.getString(46);
-                    item.coor_x = DT.getDouble(47);
-                    item.coor_y = DT.getDouble(48);
-                    item.zona_utm_medidor = DT.getString(49);
-                    item.fecha_ultimo_pago = DT.getString(50);
-                    item.numero_contrato = DT.getDouble(51);
-                    item.fecha_contrato = DT.getString(52);
-                    item.hora_contrato = DT.getString(53);
-                    item.servicio_bajo_demanda = DT.getInt(54) == 1 ? true:false;
-                    item.kw_contratada = DT.getDouble(55);
-                    item.potencia_contratada = DT.getDouble(56);
-                    item.ruta = DT.getString(57);
-                    item.itinerario = DT.getInt(58);
-                    item.IdUsuario = DT.getInt(59);
-                    item.fecha_creacion = DT.getString(60);
-                    item.idusuario_modifica = DT.getInt(61);
-                    item.fecha_modificacion = DT.getString(62);
-                    item.Activo = Boolean.parseBoolean(String.valueOf(DT.getInt(63)));
-                    item.estado_servicio = DT.getInt(64);
-                    item.IdTipoUsuario = DT.getInt(65);
-                    item.num_tarjeta = DT.getString(66);
-                    item.tipo_registro = DT.getString(67);
-                    item.servicio_bajo_demandafp = DT.getInt(68) == 1 ? true:false;
-                    item.es_autoproductor = DT.getInt(69) == 1 ? true:false;
-
-                    lista.add(item);
-                    DT.moveToNext();
+                if (!uno) {
+                    lista.clear();
+                    while (!DT.isAfterLast()) {
+                        lista.add(setDatos(DT));
+                        DT.moveToNext();
+                    }
+                } else {
+                    objSins = setDatos(DT);
                 }
             }
 
@@ -128,6 +66,88 @@ public class ServicioInsModel {
         } catch (Exception e) {
             Log.e("SERVICIOS_INSTALADO", "buscar: ", e );
         }
+    }
+
+    private clsBeServicios_instalado setDatos(Cursor DT) {
+        clsBeServicios_instalado item = null;
+        try {
+            item = new clsBeServicios_instalado();
+
+            item.IdInstalacion = DT.getInt(0);
+            item.IdUsuarioServicio = DT.getInt(1);
+            item.IdContador = DT.getString(2);
+            item.IdVoltaje = DT.getInt(3);
+            item.IdPotencia = DT.getInt(4);
+            item.IdTransformador = DT.getInt(5);
+            item.IdTipoServicio = DT.getInt(6);
+            item.fecha = DT.getString(7);
+            item.hora = DT.getString(8);
+            item.IdTecnico = DT.getInt(9);
+            item.contador_anterior = DT.getString(10);
+            item.usuario_anterior = DT.getString(11);
+            item.contador_siguiente = DT.getString(12);
+            item.usuario_siguiente = DT.getString(13);
+            item.modificacion_red = DT.getInt(14) == 1 ? true : false;
+            item.subestacion = DT.getInt(15);
+            item.id_circuito = DT.getInt(16);
+            item.IdGPS = Double.valueOf(DT.getString(17));
+            item.IdFotografia = DT.getString(18);
+            item.direccion = DT.getString(19);
+            item.IdMunicipio = DT.getInt(20);
+            item.IdDepartamento = DT.getInt(21);
+            item.Zona = DT.getString(22);
+            item.Colonia = DT.getString(23);
+            item.Avenida = DT.getString(24);
+            item.Calle = DT.getString(25);
+            item.Numero = DT.getString(26);
+            item.centro = DT.getInt(27);
+            item.id_poste_inicio = DT.getString(28);
+            item.tension_nominal_acom = DT.getString(29);
+            item.fases_de_conexion = DT.getInt(30);
+            item.acometida_subt_area = DT.getInt(31);
+            item.long_cable_acom = DT.getInt(32);
+            item.tipo_de_conductor = DT.getString(33);
+            item.donacion_acom = DT.getString(34);
+            item.fecha_puesto_servicio = DT.getString(35);
+            item.fecha_retiro_acom = DT.getString(36);
+            item.num_serie_medido = DT.getString(37);
+            item.tipo_medidor = DT.getString(38);
+            item.voltaje_medidor = DT.getInt(39);
+            item.voltaje_suministro = DT.getInt(40);
+            item.corriente_nominal = DT.getInt(41);
+            item.corriente_maxima = DT.getInt(42);
+            item.kh = DT.getDouble(43);
+            item.Rr = DT.getString(44);
+            item.fecha_puesto_servicio_m = DT.getString(45);
+            item.fecha_retiro_medidor = DT.getString(46);
+            item.coor_x = DT.getDouble(47);
+            item.coor_y = DT.getDouble(48);
+            item.zona_utm_medidor = DT.getString(49);
+            item.fecha_ultimo_pago = DT.getString(50);
+            item.numero_contrato = DT.getDouble(51);
+            item.fecha_contrato = DT.getString(52);
+            item.hora_contrato = DT.getString(53);
+            item.servicio_bajo_demanda = DT.getInt(54) == 1 ? true:false;
+            item.kw_contratada = DT.getDouble(55);
+            item.potencia_contratada = DT.getDouble(56);
+            item.ruta = DT.getString(57);
+            item.itinerario = DT.getInt(58);
+            item.IdUsuario = DT.getInt(59);
+            item.fecha_creacion = DT.getString(60);
+            item.idusuario_modifica = DT.getInt(61);
+            item.fecha_modificacion = DT.getString(62);
+            item.Activo = DT.getInt(63) == 1 ? true:false;
+            item.estado_servicio = DT.getInt(64);
+            item.IdTipoUsuario = DT.getInt(65);
+            item.num_tarjeta = DT.getString(66);
+            item.tipo_registro = DT.getString(67);
+            item.servicio_bajo_demandafp = DT.getInt(68) == 1 ? true:false;
+            item.es_autoproductor = DT.getInt(69) == 1 ? true:false;
+        } catch (Exception e) {
+            Log.e("USUARIOS_SERVICIO", "setDatos: ", e );
+        }
+
+        return item;
     }
 
     public boolean guardar(clsBeServicios_instalado obj) {
@@ -227,5 +247,27 @@ public class ServicioInsModel {
         } catch (Exception e) {
             Log.e("SERVICIOS_INSTALADO", "actualizar: ", e);
         }
+    }
+
+    public clsBeServicios_instalado getUsServicio(int usuario) {
+        clsBeServicios_instalado item = null;
+        Cursor DT;
+        String sq="";
+        try {
+            sq ="SELECT * FROM SERVICIOS_INSTALADO WHERE IdUsuarioServicio = " + usuario;
+            DT = Con.OpenDT(sq);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+
+                item = setDatos(DT);
+            }
+
+            if (DT != null) DT.close();
+        } catch (Exception e) {
+            Log.e("RENGLONES", "getUsServicio: ", e );
+        }
+
+        return item;
     }
 }

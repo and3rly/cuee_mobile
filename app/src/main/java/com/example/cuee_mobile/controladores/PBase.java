@@ -11,6 +11,7 @@ import com.example.cuee_mobile.R;
 import com.example.cuee_mobile.api.ClienteConfig;
 import com.example.cuee_mobile.base.CueeHelper;
 import com.example.cuee_mobile.base.FechaHelper;
+import com.example.cuee_mobile.base.NumerosALetras;
 import com.example.cuee_mobile.base.VarGlobal;
 import com.example.cuee_mobile.bd.HelperBD;
 import com.example.cuee_mobile.modelos.CatalogoModel;
@@ -25,6 +26,7 @@ public class PBase extends Activity {
     protected int browse;
     protected VarGlobal gl;
     protected CatalogoModel catalogo;
+    protected NumerosALetras letras;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,6 +38,7 @@ public class PBase extends Activity {
         retrofit = new ClienteConfig(this);
         helper = new CueeHelper(this);
         du = new FechaHelper(this);
+        letras = new NumerosALetras();
 
         gl=((VarGlobal) this.getApplication());
 

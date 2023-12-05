@@ -11,6 +11,7 @@ public class clsBeMeses_proforma {
     public String descripcion = "";
     public double cantidad = 0;
     public int anno = 0;
+    public int StatCom = 0;
 
     public int getIdproformadet() {
         return idproformadet;

@@ -28,12 +28,22 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/DemoTheme"
         android:usesCleartextTraffic="true"
-        android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
+        <activity
+            android:name=".controladores.lectura.Lpendientes"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivitysaf"
+            android:exported="false"
+            android:theme="@style/DemoTheme" />
+        <activity
+            android:name=".controladores.Lpendientes"
+            android:exported="false" />
         <activity
             android:name=".controladores.consultas.ConsultaLectura"
             android:exported="false" />

@@ -13,10 +13,12 @@ import com.example.cuee_mobile.R;
 import com.example.cuee_mobile.adapter.MenuAdapter;
 import com.example.cuee_mobile.clases.auxLecturaServicio;
 import com.example.cuee_mobile.clases.clsBeMenu;
+import com.example.cuee_mobile.clases.clsBePendientes_lectura;
 import com.example.cuee_mobile.controladores.comunicacion.ComApi;
 import com.example.cuee_mobile.controladores.consultas.ConsultaContadores;
 import com.example.cuee_mobile.controladores.consultas.ConsultaLectura;
 import com.example.cuee_mobile.controladores.lectura.Lectura;
+import com.example.cuee_mobile.controladores.lectura.Lpendientes;
 import com.example.cuee_mobile.controladores.utilerias.Tablas;
 import com.example.cuee_mobile.modelos.lectura.LecturaModel;
 
@@ -114,11 +116,18 @@ public class Menu extends PBase {
                     menuConsultas();
                     break;
                 case 3:
-                    lectura.getLista("WHERE StatCom = 0");
-                    if (lectura.filas > 0) {
-                        startActivity(new Intent(this, ComApi.class));
+                    ArrayList<clsBePendientes_lectura> lpendientes = new ArrayList<>();
+                    lpendientes = lectura.getLecturasPendientes();
+
+                    if (lpendientes.size() > 0) {
+                        startActivity(new Intent(this, Lpendientes.class));
                     } else {
-                        helper.toast("No hay datos pendientes para enviar.");
+                        lectura.getLista("WHERE StatCom = 0");
+                        if (lectura.filas > 0) {
+                            startActivity(new Intent(this, ComApi.class));
+                        } else {
+                            helper.toast("No hay datos pendientes para enviar.");
+                        }
                     }
                     break;
                 case 4:

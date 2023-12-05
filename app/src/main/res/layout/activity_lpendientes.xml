@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".controladores.lectura.Lpendientes">
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/relBot"
+        android:layout_below="@+id/relTop"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp" />
+
+    <RelativeLayout
+        android:id="@+id/relTop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/blue_gray"
+        android:gravity="top"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:id="@+id/lblTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-1dp"
+            android:layout_marginBottom="1dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="Datos Lectura"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/lblTecnico"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lblTop"
+            android:layout_marginTop="0dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="TextView"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/factura" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relBot"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:background="@color/blue_gray"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/btnRegresar"
+            android:layout_width="45dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/regresar" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

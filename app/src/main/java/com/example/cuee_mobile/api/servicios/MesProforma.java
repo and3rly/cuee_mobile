@@ -8,6 +8,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 public interface MesProforma {
     @GET("MesesProforma")
@@ -17,5 +18,6 @@ public interface MesProforma {
     Call<List<clsBeMeses_mora_proforma>> getMesesMoraProforma();
 
     @GET("MesesMoraPagada")
-    Call<List<clsBeMeses_mora_pagada>> getMesesMoraPagada();
+    Call<List<clsBeMeses_mora_pagada>> getMesesMoraPagada(@Query("IdRuta") int IdRuta,
+                                                          @Query("IdItinerario") int IdItinerario);
 }

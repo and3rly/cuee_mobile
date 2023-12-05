@@ -80,14 +80,18 @@ public class LecturaAdapter extends BaseAdapter {
             holder.lblLecCorrecta.setText(correcta);
 
             int lrealizada = items.get(position).Lectura_realizada;
+            double consumo = items.get(position).Consumo;
             boolean lcorrecta = items.get(position).Lectura_correcta;
 
-            if (lrealizada > 0 && lcorrecta) {
+            if (lrealizada > 0 && lcorrecta &&  consumo != 0) {
                 //Verde
                 convertView.setBackgroundColor(Color.parseColor("#00E676"));
             } else if (lrealizada > 0 && !lcorrecta) {
                 //Rojo
                 convertView.setBackgroundColor(Color.parseColor("#EF5350"));
+            } else if (lrealizada > 0 && consumo == 0) {
+                //Azul
+                convertView.setBackgroundColor(Color.parseColor("#B3E5FC"));
             } else {
                 convertView.setBackgroundColor(Color.TRANSPARENT);
             }

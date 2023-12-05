@@ -83,4 +83,35 @@ public class RenglonesModel {
 
         return true;
     }
+
+    public void getRenglon(String sqw) {
+        clsBeRenglones item;
+        Cursor DT;
+        String sq="";
+        try {
+            sq ="SELECT Idrenglon, renglon || especifico1 || '.' || especifico2 || ' ' || concepto AS renglon " +
+                " FROM renglones " +
+                " WHERE Idrenglon in "+ sqw;
+            DT = Con.OpenDT(sq);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+
+                lista.clear();
+                while (!DT.isAfterLast()) {
+                    item = new clsBeRenglones();
+
+                    item.Idrenglon = DT.getInt(0);
+                    item.renglon = DT.getString(1);
+
+                    lista.add(item);
+                    DT.moveToNext();
+                }
+            }
+
+            if (DT != null) DT.close();
+        } catch (Exception e) {
+            Log.e("RENGLONES", "buscar: ", e );
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package com.example.cuee_mobile.clases;
 
+import java.util.ArrayList;
+
 public class clsBeProforma {
     public int idproforma = 0;
     public int IdUsuarioServicio = 0;
@@ -19,6 +21,10 @@ public class clsBeProforma {
     public int IdPeriodoParametros = 0;
     public boolean pagol = false;
     public String fecha_ultimo_pago = "";
+    public int Con_hh = 0;
+    public int IdTecnico = 0;
+    public ArrayList<clsBeProforma_detalle> detalle = new ArrayList<>();
+    public ArrayList<clsBeMeses_proforma> MesesProforma = new ArrayList<>();
 
     public String StatCom = "N";
 

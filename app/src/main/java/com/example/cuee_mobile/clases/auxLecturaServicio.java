@@ -11,6 +11,8 @@ public class auxLecturaServicio {
     public int IdItinerario;
     public boolean Servicio_bajo_demandafp = false;
     public boolean Servicio_bajo_demanda = false;
+    public String Direccion = "";
+    public double Consumo = 0;
 
     public int getIdUsuarioServicio() {
         return IdUsuarioServicio;
