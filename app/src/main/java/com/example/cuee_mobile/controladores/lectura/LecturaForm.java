@@ -12,14 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.cuee_mobile.R;
-import com.example.cuee_mobile.base.AppMethods;
 import com.example.cuee_mobile.clases.clsBeContadores;
 import com.example.cuee_mobile.clases.clsBeLectura;
 import com.example.cuee_mobile.clases.clsBeLecturaImp;
 import com.example.cuee_mobile.clases.clsBeServicios_instalado;
 import com.example.cuee_mobile.clases.clsBeUsuarios_servicio;
 import com.example.cuee_mobile.controladores.PBase;
-import com.example.cuee_mobile.imprimir.clsDocLectura;
 import com.example.cuee_mobile.modelos.ServicioInsModel;
 import com.example.cuee_mobile.modelos.lectura.LecturaModel;
 import com.example.cuee_mobile.modelos.mnt.ContadoresModel;
@@ -186,6 +184,11 @@ public class LecturaForm extends PBase {
                     txtLecKW.requestFocus();
                     txtLecKW.selectAll();
                     return false;
+                } else {
+                    if (txtLecKW.getText().toString().equals("0.0") || txtLecKW.getText().toString().equals("0")) {
+                        helper.toast("La lectura en KW debe ser mayor a 0");
+                        return false;
+                    }
                 }
             }
 
@@ -367,7 +370,11 @@ public class LecturaForm extends PBase {
         });
 
         dialog.setNegativeButton("No", (dialog12, id) -> {
-            dialog12.cancel();
+            if (!editando) {
+                editando = true;
+                auxLectura.Lectura_realizada = lecturaModel.IdActualLectura;
+                dialog12.cancel();
+            }
         });
 
         dialog.show();
