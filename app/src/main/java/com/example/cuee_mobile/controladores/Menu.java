@@ -20,7 +20,9 @@ import com.example.cuee_mobile.controladores.consultas.ConsultaLectura;
 import com.example.cuee_mobile.controladores.lectura.Lectura;
 import com.example.cuee_mobile.controladores.lectura.Lpendientes;
 import com.example.cuee_mobile.controladores.utilerias.Tablas;
+import com.example.cuee_mobile.modelos.ProformaModel;
 import com.example.cuee_mobile.modelos.lectura.LecturaModel;
+import com.example.cuee_mobile.modelos.usuario.UsinLecturaModel;
 
 import org.apache.commons.io.FileUtils;
 
@@ -34,6 +36,9 @@ public class Menu extends PBase {
     private ArrayList<clsBeMenu> lista = new ArrayList<>();
     private MenuAdapter adapter;
     private LecturaModel lectura;
+    private ProformaModel proforma;
+    private UsinLecturaModel pendientesModel;
+    public static ArrayList<clsBePendientes_lectura> lpendientes = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,9 @@ public class Menu extends PBase {
         grdMenu = findViewById(R.id.grdMenu);
 
         lectura = new LecturaModel(this, Con, db);
+        proforma = new ProformaModel(this, Con, db);
+        pendientesModel = new UsinLecturaModel(this, Con, db);
+
         setMenu();
         setHandlers();
         lblUsuario.setText(gl.tecnico.Nombre);
@@ -116,25 +124,28 @@ public class Menu extends PBase {
                     menuConsultas();
                     break;
                 case 3:
-                    ArrayList<clsBePendientes_lectura> lpendientes = new ArrayList<>();
-                    lpendientes = lectura.getLecturasPendientes();
+                    lectura.getLista(" WHERE StatCom = 0");
+                    proforma.getLista(" WHERE StatCom = 0");
+                    pendientesModel.getLista(" WHERE StatCom = 0");
 
-                    if (lpendientes.size() > 0) {
-                        startActivity(new Intent(this, Lpendientes.class));
+                    if (lectura.filas > 0 || proforma.lista.size() > 0 || pendientesModel.lista.size() > 0) {
+                        startActivity(new Intent(this, ComApi.class));
                     } else {
-                        lectura.getLista("WHERE StatCom = 0");
-                        if (lectura.filas > 0) {
-                            startActivity(new Intent(this, ComApi.class));
-                        } else {
-                            helper.toast("No hay datos pendientes para enviar.");
-                        }
+                        helper.toast("No hay datos pendientes para enviar.");
                     }
                     break;
                 case 4:
                     menuUtilerias();
                     break;
                 case 5:
-                    cierreRuta();
+                    lpendientes = lectura.getLecturasPendientes();
+
+                    if (lpendientes.size() > 0) {
+                        helper.toast("Tiene usuarios pendientes de ingreso lectura.");
+                        startActivity(new Intent(this, Lpendientes.class));
+                    } else {
+                        cierreRuta();
+                    }
                     break;
                 case 6:
                     gl.tecnico = null;
@@ -299,5 +310,10 @@ public class Menu extends PBase {
     @Override
     public void onBackPressed() {
         if (gl.tecnico == null) super.onBackPressed();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }

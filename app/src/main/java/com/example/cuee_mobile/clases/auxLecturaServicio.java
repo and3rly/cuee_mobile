@@ -13,6 +13,7 @@ public class auxLecturaServicio {
     public boolean Servicio_bajo_demanda = false;
     public String Direccion = "";
     public double Consumo = 0;
+    public int RazonSinLectura = 0;
 
     public int getIdUsuarioServicio() {
         return IdUsuarioServicio;

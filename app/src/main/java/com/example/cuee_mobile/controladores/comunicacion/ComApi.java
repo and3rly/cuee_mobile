@@ -54,6 +54,7 @@ import com.example.cuee_mobile.clases.clsBeRuta_tecnico;
 import com.example.cuee_mobile.clases.clsBeServicios_instalado;
 import com.example.cuee_mobile.clases.clsBeTecnicos;
 import com.example.cuee_mobile.clases.clsBeTransformadores;
+import com.example.cuee_mobile.clases.clsBeUsuario_sin_lectura;
 import com.example.cuee_mobile.clases.clsBeUsuarios_por_ruta;
 import com.example.cuee_mobile.clases.clsBeUsuarios_servicio;
 import com.example.cuee_mobile.controladores.MainActivity;
@@ -82,6 +83,7 @@ import com.example.cuee_mobile.modelos.reporte.PagosDetModel;
 import com.example.cuee_mobile.modelos.ruta.RutaLecturaModel;
 import com.example.cuee_mobile.modelos.ruta.RutaTecnicoModel;
 import com.example.cuee_mobile.modelos.ruta.UsuariosRutaModel;
+import com.example.cuee_mobile.modelos.usuario.UsinLecturaModel;
 import com.example.cuee_mobile.modelos.usuario.UsrServicioModel;
 
 import java.io.BufferedReader;
@@ -130,6 +132,7 @@ public class ComApi extends PBase {
     private MarcaModel marca;
     private CorrelativoModel correlativo;
     private ProformaModel proformaModel;
+    private UsinLecturaModel pendientesModel;
     private MesesPagoModel mspagos;
     private String msjProg = "";
     private int IdRuta, IdItinerario, idx, cant;
@@ -182,6 +185,7 @@ public class ComApi extends PBase {
             mspagos = new MesesPagoModel(this, Con, db);
             rNoCierre = new RazonNoCierreModel(this, Con, db);
             proformaModel = new ProformaModel(this, Con, db);
+            pendientesModel = new UsinLecturaModel(this, Con, db);
 
             txtRuta.requestFocus();
         } catch (Exception e) {
@@ -276,7 +280,7 @@ public class ComApi extends PBase {
         try {
             lectura.getLista("WHERE StatCom = 0");
             if (lectura.filas > 0)  {
-                mensaje +="Tiene facturas pendientes por enviar.\n";
+                mensaje +="- Tiene facturas pendientes por enviar.\n";
                 pendiente = true;
             }
 
@@ -287,11 +291,18 @@ public class ComApi extends PBase {
                     obj.detalle = proformaModel.getDetalle(obj.idproforma);
                     obj.MesesProforma = proformaModel.getMesesProforma(obj.idproforma);
                 }
-                mensaje +="Tiene proformas pendientes por enviar.";
+                mensaje +="- Tiene proformas pendientes por enviar.\n";
                 pendiente = true;
             }
 
-            helper.toast(mensaje);
+            pendientesModel.getLista(" WHERE StatCom = 0");
+            if (pendientesModel.lista.size() > 0)  {
+                mensaje +="- Tiene razones de no lectura pendientes por enviar.\n";
+                pendiente = true;
+            }
+
+            if (!mensaje.isEmpty()) helper.toast(mensaje);
+
         } catch (Exception e) {
             helper.msgbox(Objects.requireNonNull(new Object() {
             }.getClass().getEnclosingClass()).getName() +" - "+ e);
@@ -1567,10 +1578,12 @@ public class ComApi extends PBase {
 
             if (lectura.lista.size() > 0) {
                 enviarLecturas(lectura.lista.get(idx));
-            }
 
-            if (proformaModel.lista.size() > 0) {
+            } else if (proformaModel.lista.size() > 0) {
                 enviaProforma(proformaModel.lista.get(idx));
+
+            } else if (pendientesModel.lista.size() > 0) {
+                enviaRazonesNoLectura(pendientesModel.lista.get(idx));
             }
 
         } catch (Exception e) {
@@ -1630,7 +1643,43 @@ public class ComApi extends PBase {
                         proformaModel.actualizaEstado(obj.idproforma);
                         envioCompletoProformas();
                     } else {
-                        mostrarError(response, call, "enviarLecturas");
+                        mostrarError(response, call, "enviaProforma");
+                    }
+                }
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper.msgbox("Connection Timeout \n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper.msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper.msgbox(t.getMessage());
+                    }
+                    cancelarEnvio(call);
+                }
+            });
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    private void enviaRazonesNoLectura(clsBeUsuario_sin_lectura obj) {
+        msjProg = "Enviando razones no lectura "+cant+"/"+pendientesModel.lista.size()+" ...";
+        actualizaProgress();
+        try {
+
+            Catalogo cliente = retrofit.CrearServicio(Catalogo.class);
+            Call call = cliente.guardar(obj);
+
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if(response.isSuccessful()){
+                        pendientesModel.actualizaEstado(obj.IdUsuarioSinLectura);
+                        envioCompletoRazones();
+                    } else {
+                        mostrarError(response, call, "enviaRazonesNoLectura");
                     }
                 }
                 @Override
@@ -1651,12 +1700,41 @@ public class ComApi extends PBase {
         }
     }
 
+    private void envioCompletoLecutura() {
+        try {
+            if (cant == lectura.lista.size()) {
+                lectura.lista.clear();
+
+                if (proformaModel.lista.size() > 0) {
+                    idx = 0;
+                    cant = 1;
+                    enviaProforma(proformaModel.lista.get(idx));
+                } else {
+                    terminaEnvio();
+                }
+            } else {
+                idx++;
+                cant++;
+                enviarLecturas(lectura.lista.get(idx));
+            }
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
     private void envioCompletoProformas() {
         try {
             if (cant == proformaModel.lista.size()) {
-                helper.toast("Completo");
-                terminaEnvio();
-                //lectura.lista.clear();
+                proformaModel.lista.clear();
+
+                if (pendientesModel.lista.size() > 0) {
+                    idx = 0;
+                    cant = 1;
+                    enviaRazonesNoLectura(pendientesModel.lista.get(idx));
+                } else {
+                    terminaEnvio();
+                }
             } else {
                 idx++;
                 cant++;
@@ -1668,14 +1746,15 @@ public class ComApi extends PBase {
         }
     }
 
-    private void envioCompletoLecutura() {
+    private void envioCompletoRazones() {
         try {
-            if (cant == lectura.lista.size()) {
-                lectura.lista.clear();
+            if (cant == pendientesModel.lista.size()) {
+                helper.toast("Completo");
+                terminaEnvio();
             } else {
                 idx++;
                 cant++;
-                enviarLecturas(lectura.lista.get(idx));
+                enviaRazonesNoLectura(pendientesModel.lista.get(idx));
             }
         } catch (Exception e) {
             helper.msgbox(Objects.requireNonNull(new Object() {

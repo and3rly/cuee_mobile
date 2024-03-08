@@ -146,11 +146,16 @@ public class LecturaModel {
                     "C.IdItinerario, " +
                     "C.Orden," +
                     "A.Direccion," +
-                    "D.Consumo" +
+                    "D.Consumo," +
+                    "CASE "+
+                        "WHEN E.IdUsuarioSinLectura IS NULL THEN 0 "+
+                        "ELSE E.IdUsuarioSinLectura "+
+                    "END AS Razon"+
                     " FROM SERVICIOS_INSTALADO A" +
                     " INNER JOIN USUARIOS_SERVICIO B ON A.IdUsuarioServicio = B.IdUsuarioServicio" +
                     " INNER JOIN USUARIOS_POR_RUTA C ON A.IdUsuarioServicio = C.IdUsuarioServicio " +
                     " LEFT JOIN LECTURA D ON D.IdLectura = A.Lectura_realizada" +
+                    " LEFT JOIN USUARIO_SIN_LECTURA E ON E.IdUsuarioServicio = A.IdUsuarioServicio "+
                     " WHERE A.Estado_servicio NOT IN (1,3) ";
 
             if (pendientes) {
@@ -178,6 +183,7 @@ public class LecturaModel {
                     item.IdItinerario = DT.getInt(8);
                     item.Direccion = DT.getString(10);
                     item.Consumo = DT.getDouble(11);
+                    item.RazonSinLectura = DT.getInt(12);
 
                     serLectura.add(item);
                     DT.moveToNext();
@@ -483,12 +489,15 @@ public class LecturaModel {
 
             sql = "SELECT " +
                     "A.IdUsuarioServicio, " +
-                    "B.Nombres " +
+                    "A.IdContador, "+
+                    "B.Nombres, " +
+                    "E.Nombre as Nombre_Razon"+
                     " FROM SERVICIOS_INSTALADO A" +
                     " INNER JOIN USUARIOS_SERVICIO B ON A.IdUsuarioServicio = B.IdUsuarioServicio" +
                     " INNER JOIN USUARIOS_POR_RUTA C ON A.IdUsuarioServicio = C.IdUsuarioServicio " +
                     " LEFT JOIN USUARIO_SIN_LECTURA D ON D.IdUsuarioServicio = A.IdUsuarioServicio " +
-                    " WHERE A.Estado_servicio NOT IN (1,3) AND A.Lectura_realizada = 0 AND A.Lectura_correcta = 0";
+                    " LEFT JOIN RAZON_NO_LECTURA E ON E.IdRazonNoLectura = D.IdRazonNoLectura " +
+                    " WHERE A.Estado_servicio NOT IN (1,3) AND A.Lectura_realizada = 0 AND A.Lectura_correcta = 0 AND D.IdRazonNoLectura IS NULL";
             DT = Con.OpenDT(sql);
 
             if (DT.getCount() > 0) {
@@ -498,7 +507,9 @@ public class LecturaModel {
                     item = new clsBePendientes_lectura();
 
                     item.IdUsuarioServicio = DT.getInt(0);
-                    item.Nombre = DT.getString(1);
+                    item.Contador = DT.getString(1);
+                    item.Nombre = DT.getString(2);
+                    item.Razon = DT.getString(3);
 
                     lpendientes.add(item);
                     DT.moveToNext();

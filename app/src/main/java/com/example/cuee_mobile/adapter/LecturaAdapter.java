@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.cuee_mobile.R;
@@ -63,6 +64,7 @@ public class LecturaAdapter extends BaseAdapter {
                 holder.lblItinerario = convertView.findViewById(R.id.lblItinerario);
                 holder.lblLecRealizada = convertView.findViewById(R.id.lblLecRealizada);
                 holder.lblLecCorrecta = convertView.findViewById(R.id.lblLecCorrecta);
+                holder.imgBloqueado = convertView.findViewById(R.id.imgBloqueado);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -78,6 +80,12 @@ public class LecturaAdapter extends BaseAdapter {
             correcta = items.get(position).Lectura_correcta ? "Si":"No";
             holder.lblLecRealizada.setText(realizada);
             holder.lblLecCorrecta.setText(correcta);
+
+            if (items.get(position).RazonSinLectura != 0) {
+                holder.imgBloqueado.setVisibility(View.VISIBLE);
+            } else {
+                holder.imgBloqueado.setVisibility(View.INVISIBLE);
+            }
 
             int lrealizada = items.get(position).Lectura_realizada;
             double consumo = items.get(position).Consumo;
@@ -108,5 +116,6 @@ public class LecturaAdapter extends BaseAdapter {
 
     static class ViewHolder {
         TextView lblInstalacion, lblContador, lblUsuario, lblItinerario, lblLecRealizada, lblLecCorrecta;
+        ImageView imgBloqueado;
     }
 }

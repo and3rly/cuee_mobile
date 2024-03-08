@@ -3,6 +3,7 @@ import com.example.cuee_mobile.clases.clsBeLectura;
 import com.example.cuee_mobile.clases.clsBeMeses_pago;
 import com.example.cuee_mobile.clases.clsBeProforma;
 import com.example.cuee_mobile.clases.clsBeRazon_no_lectura;
+import com.example.cuee_mobile.clases.clsBeUsuario_sin_lectura;
 
 import java.util.List;
 
@@ -22,4 +23,7 @@ public interface Catalogo {
 
     @POST("Proformas/guardar")
     Call<String> guardarProforma(@Body clsBeProforma beProforma);
+
+    @POST("UsuarioSinLectura/guardar")
+    Call<String> guardar(@Body clsBeUsuario_sin_lectura beProforma);
 }

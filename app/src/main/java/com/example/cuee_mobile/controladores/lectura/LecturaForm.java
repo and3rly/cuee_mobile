@@ -42,16 +42,8 @@ import com.google.gson.Gson;
 
 import static com.example.cuee_mobile.controladores.lectura.Lectura.auxLectura;
 
-import static java.util.Arrays.stream;
-
-import androidx.annotation.RequiresApi;
-
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 
 public class LecturaForm extends PBase {
@@ -83,11 +75,11 @@ public class LecturaForm extends PBase {
     private clsBeInstitucion_detalle parametros = null;
     private clsBeServicios_instalado uServicioInstalado = null;
     private clsBeCorrelativo_proforma corel = null;
-    private LocalDate  FechaPagoActual;
+    private LocalDate  FechaPagoActual, FechaUltimoPago;
     private clsBeMeses_pago objUP;
     private ArrayList<clsBeTmpProformaUs> pendientes = new ArrayList<>();
     private double tmpActualLect = 0;
-    private  int IdProformaActual = 0;
+    private  int IdProformaActual = 0, CantidadMesesPendientes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +122,11 @@ public class LecturaForm extends PBase {
             ContadorActual = contadorModel.getContadorByUsuario(IdUsuarioServicio);
             IdContadorActual = ContadorActual.IdContador;
             lblTecnico.setText("Técnico: "+ gl.tecnico.Nombre);
+
+            objUP = mpago.getUltimoPago(IdUsuarioServicio);
+            FechaPagoActual = LocalDate.now();
+            FechaUltimoPago = LocalDate.of(objUP.anno, objUP.nomes, 1);
+            CantidadMesesPendientes = du.diffMeses(FechaUltimoPago, FechaPagoActual);
 
             txtRuta.setText("No. #" + gl.ruta.IdRuta);
             txtItinerario.setText("No. #" + auxLectura.IdItinerario);
@@ -181,7 +178,7 @@ public class LecturaForm extends PBase {
             txtLectura.requestFocus();
             txtLectura.selectAll();
         } catch (Exception e) {
-            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - AT$$$$444"+ e);
+            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);
         }
     }
 
@@ -267,7 +264,7 @@ public class LecturaForm extends PBase {
                 }
             }
         } catch (Exception e) {
-            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - AT333 "+ e);
+            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);
             return false;
         }
 
@@ -341,6 +338,7 @@ public class LecturaForm extends PBase {
 
                     if (tmpActualLect != objLectura.Lectura) {
                         tmpActualLect = objLectura.Lectura;
+
                         IdProformaActual = catalogo.existeProforma(auxLectura.IdUsuarioServicio);
                         if (IdProformaActual != 0) {
                             sql="UPDATE PROFORMA SET ANULADO = 1 WHERE IdProforma = "+IdProformaActual;
@@ -373,16 +371,17 @@ public class LecturaForm extends PBase {
     }
 
     private void getDatosGeneralesProforma() {
+        double consumo = 0;
         try  {
             uServicioInstalado = serviciosModel.getUsServicio(IdUsuarioServicio);
-            objUP = mpago.getUltimoPago(IdUsuarioServicio);
-
-            FechaPagoActual = LocalDate.now();
 
             sql = "DELETE FROM TMP_PROFORMA_USUARIO WHERE IdUsuarioServicio = " + IdUsuarioServicio;
             db.execSQL(sql);
 
-            Calcula_Meses_Pago_Trans();
+            consumo = Double.valueOf(txtConsumo.getText().toString());
+            if (consumo > 0) {
+                Calcula_Meses_Pago_Trans();
+            }
 
         } catch (Exception e) {
             helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - " + e);
@@ -390,13 +389,13 @@ public class LecturaForm extends PBase {
     }
 
     private int Calcula_Meses_Pago_Trans() {
-        int filas = 0, CantidadMesesPendientes = 0, vCantidadMesesPendientes = 0;
-        LocalDate FechaUltimoPago = null, vFechaPendiente = null;
+        int filas = 0, vCantidadMesesPendientes = 0;
+        LocalDate vFechaPendiente = null;
         double MontoTotalMesesPendientes = 0;
 
         try {
-            FechaUltimoPago = LocalDate.of(objUP.anno, objUP.nomes, 1);
-            CantidadMesesPendientes = du.diffMeses(FechaUltimoPago, FechaPagoActual);
+            /*FechaUltimoPago = LocalDate.of(objUP.anno, objUP.nomes, 1);
+            CantidadMesesPendientes = du.diffMeses(FechaUltimoPago, FechaPagoActual);*/
 
             if (CantidadMesesPendientes <= 6) {
 
@@ -409,10 +408,8 @@ public class LecturaForm extends PBase {
                         vCantidadMesesPendientes += 1;
                     }
                 }
-
+                guardarProforma();
             }
-
-            guardarProforma();
         } catch (Exception e) {
             helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);
         }
@@ -452,12 +449,12 @@ public class LecturaForm extends PBase {
                 FechaAnt = LocalDate.parse(du.strFechaIng(lanterior.Fecha));
                 Lectura_Anterior = lanterior.Lectura;
             } else {
-                return 0;
+                Lectura_Anterior = 0;
             }
 
             if (Lectura_Actual == 0) {
                 Consumo_A_Cobrar = 0;
-            } else if (Lectura_Anterior == 0) {
+            } else if (Lectura_Anterior == 0 && lanterior != null) {
                 String ContadorMesAnterior = lecturaModel.getContadorFecha(IdUsuarioServicio, FechaAnt.getYear(), FechaAnt.getMonthValue());
 
                 if (!IdContadorActual.equals(ContadorMesAnterior)) {
@@ -523,7 +520,7 @@ public class LecturaForm extends PBase {
                             } else {
                                 if (Consumo_A_Cobrar > 300) {
                                     ImporteTNS = Consumo_A_Cobrar * paramDet.Preciotns;
-                                    IVA = (ImporteTNS + paramDet.Cargo_fijo) * vIvaDecimal;
+                                    IVA = (ImporteTNS) * vIvaDecimal;
 
                                 } else if (Consumo_A_Cobrar <= 300) {
                                     ImporteTS = Consumo_A_Cobrar * paramDet.Preciots;
@@ -951,8 +948,8 @@ public class LecturaForm extends PBase {
 
             proformaImp.pendientes = pendientes;
             total = proformaImp.proforma.detalle.stream().mapToDouble(clsBeProforma_detalle::getCantidad).sum();
-
             iva = proformaImp.proforma.detalle.stream().mapToDouble(clsBeProforma_detalle::getMonto_impuesto).sum();
+
             if (iva > 0) {
                 clsBeProforma_detalle detIva = new clsBeProforma_detalle();
                 detIva.descripcion = "IVA";
@@ -1092,6 +1089,21 @@ public class LecturaForm extends PBase {
                 lecturaImp.LecturaActual = "Lectura actual: " + lecturaActual.Lectura+" KW";
                 lecturaImp.Consumo = "Consumo: " + lecturaActual.Consumo+" KW";
 
+                String msj = "";
+
+                if (CantidadMesesPendientes > 6) {
+                    msj += "Debe más de 6 meses de energía, \n";
+                }
+
+                if (lecturaActual.Consumo == 0) {
+                    msj += "No tuvo consumo de energía, \n";
+                }
+
+                if (!msj.isEmpty()) {
+                    lecturaImp.Texto = msj +
+                            " Favor abocarse a oficina \n" +
+                            " de inmediato";
+                }
             } else {
                 helper.toast("Problemas al obtener información.");
                 return;

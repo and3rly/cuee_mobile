@@ -9,9 +9,11 @@ import com.example.cuee_mobile.bd.HelperBD;
 import com.example.cuee_mobile.clases.clsBeMeses_proforma;
 import com.example.cuee_mobile.clases.clsBeProforma;
 import com.example.cuee_mobile.clases.clsBeProforma_detalle;
+import com.example.cuee_mobile.clases.clsBeRazon_no_lectura;
 import com.example.cuee_mobile.clases.clsBeTmpProformaUs;
 import com.example.cuee_mobile.clases.clsBeTransformadores;
 import com.example.cuee_mobile.clases.clsBeUltimo_consumo;
+import com.example.cuee_mobile.clases.clsBeUsuario_sin_lectura;
 
 import java.util.ArrayList;
 
@@ -111,6 +113,15 @@ public class CatalogoModel {
             db.execSQL(sql);
 
             sql = "DELETE FROM PAGOS_DETALLE_REP";
+            db.execSQL(sql);
+
+            sql = "DELETE FROM RAZON_NO_LECTURA";
+            db.execSQL(sql);
+
+            sql = "DELETE FROM USUARIO_SIN_LECTURA";
+            db.execSQL(sql);
+
+            sql = "DELETE FROM CORRELATIVO_PROFORMA";
             db.execSQL(sql);
 
         } catch (Exception e) {
@@ -496,5 +507,44 @@ public class CatalogoModel {
         }
 
         return ultimoConsumos;
+    }
+
+    public ArrayList<clsBeRazon_no_lectura> getRazones() {
+        ArrayList<clsBeRazon_no_lectura> lista = new ArrayList<>();
+        clsBeRazon_no_lectura item = null;
+        String sq = "";
+        Cursor DT;
+        try {
+
+            sq = "SELECT * FROM RAZON_NO_LECTURA";
+            DT = Con.OpenDT(sq);
+
+            if (DT.getCount() > 0) {
+
+                lista.clear();
+
+                DT.moveToFirst();
+                while (!DT.isAfterLast()) {
+                    item = new clsBeRazon_no_lectura();
+
+                    item.IdRazonNoLectura = DT.getInt(0);
+                    item.Nombre = DT.getString(1);
+                    item.Activo = DT.getInt(2) == 1 ? true:false;
+                    item.IdUsuario_crea = DT.getInt(3);
+                    item.fecha_crea = DT.getString(4);
+                    item.IdUsuario_modifica = DT.getInt(5);
+                    item.fecha_modifica = DT.getString(6);
+
+                    lista.add(item);
+                    DT.moveToNext();
+                }
+            }
+
+            if (DT != null) DT.close();
+        } catch (Exception e) {
+            Log.e("CatalogoModel", "getRazones: ", e);
+        }
+
+        return lista;
     }
 }
