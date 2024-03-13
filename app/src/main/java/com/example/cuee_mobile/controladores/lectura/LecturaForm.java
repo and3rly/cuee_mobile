@@ -838,7 +838,7 @@ public class LecturaForm extends PBase {
             fechaPago = LocalDate.now();
             auxLista = catalogo.getMesesPendientes(auxLectura.IdUsuarioServicio);
             corel = corelModel.getCorrelativo();
-            int correlativo = corel.acutal + 1;
+            int correlativo = corel.actual + 1;
 
             proforma = new clsBeProforma();
             proforma.IdUsuarioServicio = IdUsuarioServicio;
@@ -850,9 +850,10 @@ public class LecturaForm extends PBase {
             proforma.fecha_creacion = fechaLocal;
             proforma.proveedor = auxLectura.Usuario;
 
-            if (auxLista.size() > 2) {
+            if (CantidadMesesPendientes > 2) {
                 LocalDate fechaCorte = fechaPago.plusDays(1);
-                desc = "SU PROFORMA GENERA ORDEN DE CORTE A PARTIR DEL " +du.setFechaToString(fechaCorte);
+                desc = "SU PROFORMA GENERA ORDEN DE CORTE A PARTIR DEL " +du.setFechaToString(fechaCorte) + ". " +
+                        "Si ya realizó su pago, favor hacer caso omiso.";
             } else {
                 desc = "";
             }

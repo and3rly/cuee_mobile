@@ -468,6 +468,7 @@ public class ScriptBD {
                     "Fec_mod TEXT DEFAULT NULL," +
                     "User_mod TEXT DEFAULT NULL," +
                     "User_agr TEXT DEFAULT NULL," +
+                    "StatCom INTEGER DEFAULT 0,"+
                     "PRIMARY KEY ([IdCorrelativoProforma])" +
                     ");";
             db.execSQL(sql);

@@ -20,6 +20,7 @@ import com.example.cuee_mobile.controladores.consultas.ConsultaLectura;
 import com.example.cuee_mobile.controladores.lectura.Lectura;
 import com.example.cuee_mobile.controladores.lectura.Lpendientes;
 import com.example.cuee_mobile.controladores.utilerias.Tablas;
+import com.example.cuee_mobile.modelos.CorrelativoModel;
 import com.example.cuee_mobile.modelos.ProformaModel;
 import com.example.cuee_mobile.modelos.lectura.LecturaModel;
 import com.example.cuee_mobile.modelos.usuario.UsinLecturaModel;
@@ -38,6 +39,7 @@ public class Menu extends PBase {
     private LecturaModel lectura;
     private ProformaModel proforma;
     private UsinLecturaModel pendientesModel;
+    private CorrelativoModel corelModel;
     public static ArrayList<clsBePendientes_lectura> lpendientes = new ArrayList<>();
 
     @Override
@@ -52,6 +54,7 @@ public class Menu extends PBase {
         lectura = new LecturaModel(this, Con, db);
         proforma = new ProformaModel(this, Con, db);
         pendientesModel = new UsinLecturaModel(this, Con, db);
+        corelModel = new CorrelativoModel(this, Con, db);
 
         setMenu();
         setHandlers();
@@ -127,8 +130,11 @@ public class Menu extends PBase {
                     lectura.getLista(" WHERE StatCom = 0");
                     proforma.getLista(" WHERE StatCom = 0");
                     pendientesModel.getLista(" WHERE StatCom = 0");
+                    //corelModel.getLista(" WHERE StatCom = 0");
 
-                    if (lectura.filas > 0 || proforma.lista.size() > 0 || pendientesModel.lista.size() > 0) {
+                    if (lectura.filas > 0 ||
+                        proforma.lista.size() > 0 ||
+                        pendientesModel.lista.size() > 0) {
                         startActivity(new Intent(this, ComApi.class));
                     } else {
                         helper.toast("No hay datos pendientes para enviar.");

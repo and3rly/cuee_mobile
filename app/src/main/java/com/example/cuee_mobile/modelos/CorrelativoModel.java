@@ -53,7 +53,7 @@ public class CorrelativoModel {
                     item.serie = DT.getString(1);
                     item.inicial = DT.getInt(2);
                     item.cfinal = DT.getInt(3);
-                    item.acutal = DT.getInt(4);
+                    item.actual = DT.getInt(4);
                     item.idtecnico = DT.getInt(5);
                     item.activo = DT.getInt(6) == 1 ? true:false;
                     item.fec_agr = DT.getString(7);
@@ -88,7 +88,7 @@ public class CorrelativoModel {
                     item.serie = DT.getString(1);
                     item.inicial = DT.getInt(2);
                     item.cfinal = DT.getInt(3);
-                    item.acutal = DT.getInt(4);
+                    item.actual = DT.getInt(4);
                     item.idtecnico = DT.getInt(5);
                     item.activo = DT.getInt(6) == 1 ? true:false;
                     item.fec_agr = DT.getString(7);
@@ -113,7 +113,7 @@ public class CorrelativoModel {
             ins.add("Serie", obj.serie);
             ins.add("Inicial", obj.inicial);
             ins.add("Final", obj.cfinal);
-            ins.add("Actual", obj.acutal);
+            ins.add("Actual", obj.actual);
             ins.add("IdTecnico", obj.idtecnico);
             ins.add("Activo", obj.activo);
             ins.add("Fec_agr", obj.fec_agr);
@@ -128,5 +128,16 @@ public class CorrelativoModel {
             return false;
         }
         return  true;
+    }
+
+    public void actualizaEstado(int id) {
+        String sq = "";
+        try {
+            sq = "UPDATE CORRELATIVO_PROFORMA SET StatCom = 1 WHERE IdCorrelativoProforma = " + id;
+            db.execSQL(sq);
+
+        } catch (Exception e) {
+            Log.e("CorrelativoProforma", "actualizaEstado: ", e);
+        }
     }
 }

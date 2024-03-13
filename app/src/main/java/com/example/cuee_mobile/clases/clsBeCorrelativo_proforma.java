@@ -9,11 +9,12 @@ public class clsBeCorrelativo_proforma {
 
     @SerializedName("final")
     public int cfinal;
-    public int acutal;
+    public int actual;
     public int idtecnico;
     public boolean activo;
     public String fec_agr;
     public String user_agr;
+    public int StatCom = 0;
 
     public int getIdCorrelativoProforma() {
         return idCorrelativoProforma;
@@ -48,11 +49,11 @@ public class clsBeCorrelativo_proforma {
     }
 
     public int getAcutal() {
-        return acutal;
+        return actual;
     }
 
     public void setAcutal(int acutal) {
-        this.acutal = acutal;
+        this.actual = acutal;
     }
 
     public int getIdtecnico() {

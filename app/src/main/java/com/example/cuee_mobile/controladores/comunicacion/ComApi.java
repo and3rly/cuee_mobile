@@ -301,6 +301,12 @@ public class ComApi extends PBase {
                 pendiente = true;
             }
 
+            correlativo.getLista(" WHERE StatCom = 0");
+            /*if (correlativo.lista.size() > 0)  {
+                mensaje +="- Correlativo proforma pendiente por enviar.\n";
+                pendiente = true;
+            }*/
+
             if (!mensaje.isEmpty()) helper.toast(mensaje);
 
         } catch (Exception e) {
@@ -1584,6 +1590,8 @@ public class ComApi extends PBase {
 
             } else if (pendientesModel.lista.size() > 0) {
                 enviaRazonesNoLectura(pendientesModel.lista.get(idx));
+            } else if (correlativo.lista.size() > 0) {
+                enviaCorrelativo(correlativo.lista.get(idx));
             }
 
         } catch (Exception e) {
@@ -1700,6 +1708,43 @@ public class ComApi extends PBase {
         }
     }
 
+    private void enviaCorrelativo(clsBeCorrelativo_proforma obj) {
+        msjProg = "Enviando correlativo proforma "+cant+"/"+correlativo.lista.size()+" ...";
+        actualizaProgress();
+        try {
+            obj.fec_mod = du.getFechaCompleta();
+            obj.user_mod = ""+gl.tecnico.IdTecnico;
+            Catalogo cliente = retrofit.CrearServicio(Catalogo.class);
+            Call call = cliente.actualizar_correlativo(obj);
+
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if(response.isSuccessful()){
+                        //correlativo.actualizaEstado(obj.idCorrelativoProforma);
+                        envioCorrelativoCompleto();
+                    } else {
+                        mostrarError(response, call, "enviaCorrelativo");
+                    }
+                }
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    if (t instanceof SocketTimeoutException) {
+                        helper. msgbox("Connection Timeout \n\n" + t.getMessage());
+                    } else if (t instanceof ConnectException) {
+                        helper. msgbox("¡Problemas de conexión!\nInténtelo de nuevo\n\n" + t.getMessage());
+                    } else {
+                        helper. msgbox(t.getMessage());
+                    }
+                    cancelarEnvio(call);
+                }
+            });
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
     private void envioCompletoLecutura() {
         try {
             if (cant == lectura.lista.size()) {
@@ -1749,12 +1794,35 @@ public class ComApi extends PBase {
     private void envioCompletoRazones() {
         try {
             if (cant == pendientesModel.lista.size()) {
+                pendientesModel.lista.clear();
+
+                if (correlativo.lista.size() > 0) {
+                    idx = 0;
+                    cant = 1;
+                    enviaCorrelativo(correlativo.lista.get(idx));
+                } else {
+                    terminaEnvio();
+                }
+            } else {
+                idx++;
+                cant++;
+                enviaRazonesNoLectura(pendientesModel.lista.get(idx));
+            }
+        } catch (Exception e) {
+            helper.msgbox(Objects.requireNonNull(new Object() {
+            }.getClass().getEnclosingClass()).getName() +" - "+ e);
+        }
+    }
+
+    private void envioCorrelativoCompleto() {
+        try {
+            if (cant == correlativo.lista.size()) {
                 helper.toast("Completo");
                 terminaEnvio();
             } else {
                 idx++;
                 cant++;
-                enviaRazonesNoLectura(pendientesModel.lista.get(idx));
+                enviaCorrelativo(correlativo.lista.get(idx));
             }
         } catch (Exception e) {
             helper.msgbox(Objects.requireNonNull(new Object() {
