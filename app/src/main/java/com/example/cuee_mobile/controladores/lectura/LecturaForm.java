@@ -65,7 +65,7 @@ public class LecturaForm extends PBase {
     private InstitucionDetalleModel insDetModel;
     private int dia, mes, anio, pk, IdUsuarioServicio;
     private double consumo, promedio, tmpPromedio, lecturaAnterior = 0, lecturaActual=0, vIvaDecimal = 0.12, MontoMora = 0;
-    private boolean editando = false, continuar = false, correcta = false, vTieneMora = false;
+    private boolean editando = false, continuar = false, correcta = false, tieneProforma = false;
     private clsBeLecturaImp lecturaImp;
     private clsBeProformaImp proformaImp;
     private UsrServicioModel usuarioSer;
@@ -170,6 +170,7 @@ public class LecturaForm extends PBase {
 
             IdProformaActual = catalogo.existeProforma(auxLectura.IdUsuarioServicio);
             if (IdProformaActual != 0) {
+                tieneProforma = true;
                 lblProforma.setText("Proforma creada.");
                 lblProforma.setVisibility(View.VISIBLE);
             } else {
@@ -196,7 +197,7 @@ public class LecturaForm extends PBase {
 
         btnImprimir.setOnClickListener(v -> {
             pk = !editando ? lecturaModel.IdActualLectura : auxLectura.Lectura_realizada;
-            imprimir("Imprimir", "¿Desea imprimir lectura?");
+            imprimir("Imprimir", "¿Desea imprimir?");
         });
 
         txtLectura.setOnKeyListener((v, keyCode, event) -> {
@@ -329,8 +330,6 @@ public class LecturaForm extends PBase {
                     helper.toast("Hubo problemas al guardar la lectura.");
                     return;
                 }
-
-                getDatosGeneralesProforma();
             } else {
                 objLectura.IdLectura = auxLectura.Lectura_realizada;
                 if (lecturaModel.actualizar(objLectura)) {
@@ -347,13 +346,16 @@ public class LecturaForm extends PBase {
                             sql="DELETE FROM MESES_PROFORMA WHERE IdProforma = "+IdProformaActual;
                             db.execSQL(sql);
                         }
-
-                        getDatosGeneralesProforma();
                     }
                 } else {
                     helper.toast("Hubo problemas al actualizar la lectura.");
                     return;
                 }
+            }
+
+            Double consumo = Double.valueOf(txtConsumo.getText().toString());
+            if (consumo > 0) {
+                getDatosGeneralesProforma();
             }
 
             item = new clsBeServicios_instalado();
@@ -363,7 +365,7 @@ public class LecturaForm extends PBase {
 
             serviciosModel.actualizarServicio(item);
             pk = !editando ? lecturaModel.IdActualLectura: auxLectura.Lectura_realizada;
-            imprimir("Imprimir", "¿Desea imprimir lectura?");
+            imprimir("Imprimir", "¿Desea imprimir?");
 
         } catch (Exception e) {
             helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);
@@ -377,12 +379,7 @@ public class LecturaForm extends PBase {
 
             sql = "DELETE FROM TMP_PROFORMA_USUARIO WHERE IdUsuarioServicio = " + IdUsuarioServicio;
             db.execSQL(sql);
-
-            consumo = Double.valueOf(txtConsumo.getText().toString());
-            if (consumo > 0) {
-                Calcula_Meses_Pago_Trans();
-            }
-
+            Calcula_Meses_Pago_Trans();
         } catch (Exception e) {
             helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - " + e);
         }
@@ -910,14 +907,13 @@ public class LecturaForm extends PBase {
             }
 
             if (catalogo.guardarProforma(proforma)) {
+                tieneProforma = true;
                 sql = "UPDATE CORRELATIVO_PROFORMA SET ACTUAL = "+ correlativo;
                 db.execSQL(sql);
 
                 IdProformaActual = catalogo.existeProforma(auxLectura.IdUsuarioServicio);
                 lblProforma.setText("Proforma creada.");
                 lblProforma.setVisibility(View.VISIBLE);
-
-                generaJsonProf();
             }
 
         } catch (Exception e) {
@@ -1048,7 +1044,12 @@ public class LecturaForm extends PBase {
         dialog.setTitle(titulo);
         dialog.setMessage(msg);
         dialog.setPositiveButton("Si", (dialog1, id) -> {
-            doPrint();
+            if (!tieneProforma) {
+                doPrint();
+            } else {
+                generaJsonProf();
+            }
+
             regresar();
         });
 
