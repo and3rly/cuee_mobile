@@ -65,7 +65,7 @@ public class LecturaForm extends PBase {
     private InstitucionDetalleModel insDetModel;
     private int dia, mes, anio, pk, IdUsuarioServicio;
     private double consumo, promedio, tmpPromedio, lecturaAnterior = 0, lecturaActual=0, vIvaDecimal = 0.12, MontoMora = 0;
-    private boolean editando = false, continuar = false, correcta = false, tieneProforma = false;
+    private boolean editando = false, continuar = false, correcta = false, tieneProforma = false, contadorNuevo = false;
     private clsBeLecturaImp lecturaImp;
     private clsBeProformaImp proformaImp;
     private UsrServicioModel usuarioSer;
@@ -125,7 +125,11 @@ public class LecturaForm extends PBase {
 
             objUP = mpago.getUltimoPago(IdUsuarioServicio);
             FechaPagoActual = LocalDate.now();
-            FechaUltimoPago = LocalDate.of(objUP.anno, objUP.nomes, 1);
+
+            if (objUP != null) {
+                FechaUltimoPago = LocalDate.of(objUP.anno, objUP.nomes, 1);
+            }
+
             CantidadMesesPendientes = du.diffMeses(FechaUltimoPago, FechaPagoActual);
 
             txtRuta.setText("No. #" + gl.ruta.IdRuta);
@@ -263,6 +267,8 @@ public class LecturaForm extends PBase {
                     correcta = false;
                     return false;
                 }
+            } else {
+                return false;
             }
         } catch (Exception e) {
             helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);
@@ -291,17 +297,25 @@ public class LecturaForm extends PBase {
                     lecturaAnterior = objLecturaAnt.Lectura;
                 }
             } else {
-                return false;
+                if (ContadorActual != null) {
+                    if (ContadorActual.Lectura == 0) {
+                        contadorNuevo  = true;
+                    } else {
+                        lecturaAnterior = ContadorActual.Lectura;
+                    }
+                } else {
+                    return false;
+                }
             }
 
-            consumo = lecturaActual - lecturaAnterior;
+            consumo = contadorNuevo == true ?  lecturaActual : (lecturaActual - lecturaAnterior);
             tmpPromedio = lecturaModel.getPromedio(auxLectura.IdUsuarioServicio);
 
             double porcentaje_lectura = (gl.institucion.Porcentaje_lectura) / 100;
             promedio = helper.round2dec(tmpPromedio + (tmpPromedio * porcentaje_lectura));
 
         } catch (Exception e) {
-            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - AT222"+ e);
+            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);
             return false;
         }
         return true;
@@ -1068,6 +1082,7 @@ public class LecturaForm extends PBase {
         try {
             clsBeLectura lecturaActual, lecturaAnterior = null;
             clsBeUsuarios_servicio usuario = null;
+            double tmpLecturaAnterior = 0;
 
             lecturaImp = new clsBeLecturaImp();
             lecturaImp.Nit = "NIT: " + gl.institucion.NIT_Emisor;
@@ -1085,9 +1100,11 @@ public class LecturaForm extends PBase {
                 usuarioSer.getLinea("WHERE IdUsuarioServicio = " + lecturaActual.IdUsuarioServicio);
                 usuario = usuarioSer.objUsuarioServicio;
 
+                tmpLecturaAnterior = lecturaAnterior == null ? 0:lecturaAnterior.Lectura;
+
                 lecturaImp.Usuario = "Usuario: " + usuario.IdUsuarioServicio+"-"+usuario.Nombres;
                 lecturaImp.Contador = "Contador: " + lecturaActual.IdContador;
-                lecturaImp.LecturaAnterior = "Lectura anterior: " + lecturaAnterior.Lectura+" KW";
+                lecturaImp.LecturaAnterior = "Lectura anterior: " + tmpLecturaAnterior+" KW";
                 lecturaImp.LecturaActual = "Lectura actual: " + lecturaActual.Lectura+" KW";
                 lecturaImp.Consumo = "Consumo: " + lecturaActual.Consumo+" KW";
 
