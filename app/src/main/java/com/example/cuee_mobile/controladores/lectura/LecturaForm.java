@@ -291,7 +291,11 @@ public class LecturaForm extends PBase {
                     contadorActual = contadorModel.getContador(auxLectura.IdContador);
 
                     if (!objLecturaAnt.IdContador.equals(contadorActual.IdContador)) {
-                        lecturaAnterior = contadorActual.Lectura;
+                        if (contadorActual.Lectura == 0) {
+                            contadorNuevo  = true;
+                        } else {
+                            lecturaAnterior = contadorActual.Lectura;
+                        }
                     }
                 } else {
                     lecturaAnterior = objLecturaAnt.Lectura;
