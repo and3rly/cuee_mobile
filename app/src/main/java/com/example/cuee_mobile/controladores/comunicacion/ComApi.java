@@ -1193,6 +1193,8 @@ public class ComApi extends PBase {
 
                                 if (srInstalado.lista.size() == 0) {
                                     srInstalado.guardar(obj);
+                                }else{
+                                    srInstalado.lista.clear();
                                 }
                             }
                         }
