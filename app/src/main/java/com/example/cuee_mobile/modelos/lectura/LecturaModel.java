@@ -298,6 +298,57 @@ public class LecturaModel {
         return lectura;
     }
 
+    public String Get_IdContador_Fecha(int usuario, int mes, int anio) {
+        String contador = "";
+        String mess;
+        Cursor DT;
+        try {
+            mess = mes <= 9 ? "0"+mes : mes+"";
+
+            sql = "SELECT IdContador FROM LECTURA WHERE IdUsuarioServicio = "+usuario+" " +
+                  " AND STRFTIME('%Y', Fecha) = '"+ anio +"'"+
+                  " AND STRFTIME('%m', Fecha) = '"+ mess +"'"+
+                  " AND StatCom = 1 ORDER BY DATE(Fecha) DESC LIMIT 1";
+            DT = Con.OpenDT(sql);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+                contador = DT.getString(0);
+            }
+        } catch (Exception e) {
+            Log.e("LECTURA", "getLecturaAnterior: ", e);
+        }
+        return contador;
+    }
+
+    public double getLecturaAnteriorContador(int usuario, String contador, int anio, int mes) {
+        double lectura = 0;
+        String mess;
+        Cursor DT;
+        try {
+
+            mess = mes <= 9 ? "0"+mes : mes+"";
+
+            sql = "SELECT Lectura " +
+                  " FROM LECTURA " +
+                  " WHERE IdUsuarioServicio = "+usuario+" " +
+                  " AND IdContador = '"+ contador +"'" +
+                  " AND STRFTIME('%Y', Fecha) = '"+ anio +"'"+
+                  " AND STRFTIME('%m', Fecha) = '"+ mess +"'"+
+                  " AND StatCom = 1 " +
+                  " ORDER BY DATE(Fecha) DESC LIMIT 1";
+            DT = Con.OpenDT(sql);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+                lectura = DT.getDouble(0);
+            }
+        } catch (Exception e) {
+            Log.e("LECTURA", "getLecturaAnterior: ", e);
+        }
+        return lectura;
+    }
+
     public double getPromedio(int usuario) {
         double promedio = 0;
         Cursor DT;

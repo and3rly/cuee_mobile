@@ -166,6 +166,23 @@ public class ContadoresModel {
         return contador;
     }
 
+    public double getLecturaContadoActual(String IdContador) {
+        double lectura = 0;
+        Cursor DT;
+        try {
+            sql = "SELECT Lectura FROM CONTADORES WHERE IdContador = '"+IdContador+"' AND ACTIVO = 1";
+            DT = Con.OpenDT(sql);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+                lectura = DT.getDouble(0);
+            }
+        } catch (Exception e) {
+            Log.e("LECTURA", "getLecturaAnterior: ", e);
+        }
+        return lectura;
+    }
+
     public clsBeContadores getContadorByUsuario(int IdUsuario) {
         clsBeContadores contador = null;
         Cursor DT;

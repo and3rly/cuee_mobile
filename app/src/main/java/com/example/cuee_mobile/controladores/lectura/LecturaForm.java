@@ -280,39 +280,33 @@ public class LecturaForm extends PBase {
 
     private boolean calculosLectura() {
         clsBeLectura objLecturaAnt;
+        double lecturaAnt;
         clsBeContadores contadorActual;
+        String contadorMesAnterior;
         try {
 
             lecturaActual = Double.valueOf(txtLectura.getText().toString());
-            objLecturaAnt = lecturaModel.getLecturaAnterior(auxLectura.IdUsuarioServicio);
 
-            if (objLecturaAnt != null) {
-                if (objLecturaAnt.Lectura == 0) {
-                    contadorActual = contadorModel.getContador(auxLectura.IdContador);
+            LocalDate fechaAnterior = FechaPagoActual.minusMonths(1);
+            lecturaAnt = lecturaModel.getLecturaAnteriorContador(auxLectura.IdUsuarioServicio,
+                                                                    IdContadorActual,
+                                                                    fechaAnterior.getYear(),
+                                                                    fechaAnterior.getMonthValue());
 
-                    if (!objLecturaAnt.IdContador.equals(contadorActual.IdContador)) {
-                        if (contadorActual.Lectura == 0) {
-                            contadorNuevo  = true;
-                        } else {
-                            lecturaAnterior = contadorActual.Lectura;
-                        }
-                    }
-                } else {
-                    lecturaAnterior = objLecturaAnt.Lectura;
-                }
-            } else {
-                if (ContadorActual != null) {
-                    if (ContadorActual.Lectura == 0) {
-                        contadorNuevo  = true;
-                    } else {
-                        lecturaAnterior = ContadorActual.Lectura;
-                    }
-                } else {
-                    return false;
+            if (lecturaAnt == 0) {
+                contadorActual = contadorModel.getContadorByUsuario(auxLectura.IdUsuarioServicio);
+                contadorMesAnterior = lecturaModel.Get_IdContador_Fecha(auxLectura.IdUsuarioServicio,
+                                                                        fechaAnterior.getMonthValue(),
+                                                                        fechaAnterior.getYear());
+
+                if (!contadorActual.IdContador.equals(contadorMesAnterior)) {
+                    double tmpL = contadorModel.getLecturaContadoActual(contadorActual.IdContador);
+                    lecturaAnterior = tmpL;
                 }
             }
 
-            consumo = contadorNuevo == true ?  lecturaActual : (lecturaActual - lecturaAnterior);
+
+            consumo = (lecturaActual - lecturaAnterior);
             tmpPromedio = lecturaModel.getPromedio(auxLectura.IdUsuarioServicio);
 
             double porcentaje_lectura = (gl.institucion.Porcentaje_lectura) / 100;
