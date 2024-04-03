@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.cuee_mobile.R;
-import com.example.cuee_mobile.clases.clsBeColor;
 import com.example.cuee_mobile.clases.clsBeContadores;
 import com.example.cuee_mobile.clases.clsBeCorrelativo_proforma;
 import com.example.cuee_mobile.clases.clsBeInstitucion_detalle;
@@ -36,6 +35,7 @@ import com.example.cuee_mobile.modelos.institucion.InstitucionDetalleModel;
 import com.example.cuee_mobile.modelos.lectura.LecturaModel;
 import com.example.cuee_mobile.modelos.mnt.ContadoresModel;
 import com.example.cuee_mobile.modelos.mnt.RenglonesModel;
+import com.example.cuee_mobile.modelos.usuario.UsinLecturaModel;
 import com.example.cuee_mobile.modelos.usuario.UsrServicioModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
@@ -80,6 +80,7 @@ public class LecturaForm extends PBase {
     private ArrayList<clsBeTmpProformaUs> pendientes = new ArrayList<>();
     private double tmpActualLect = 0;
     private  int IdProformaActual = 0, CantidadMesesPendientes;
+    private UsinLecturaModel mdlSinLectura;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +112,7 @@ public class LecturaForm extends PBase {
         renglonModel = new RenglonesModel(this, Con, db);
         insDetModel = new InstitucionDetalleModel(this, Con, db);
         corelModel = new CorrelativoModel(this, Con, db);
+        mdlSinLectura = new UsinLecturaModel(this, Con, db);
 
         setDatos();
         setHandlers();
@@ -279,10 +281,10 @@ public class LecturaForm extends PBase {
     }
 
     private boolean calculosLectura() {
-        clsBeLectura objLecturaAnt;
-        double lecturaAnt;
         clsBeContadores contadorActual;
         String contadorMesAnterior;
+        double lecturaAnt;
+
         try {
 
             lecturaActual = Double.valueOf(txtLectura.getText().toString());
@@ -296,15 +298,14 @@ public class LecturaForm extends PBase {
             if (lecturaAnt == 0) {
                 contadorActual = contadorModel.getContadorByUsuario(auxLectura.IdUsuarioServicio);
                 contadorMesAnterior = lecturaModel.Get_IdContador_Fecha(auxLectura.IdUsuarioServicio,
-                                                                        fechaAnterior.getMonthValue(),
-                                                                        fechaAnterior.getYear());
+                        fechaAnterior.getMonthValue(),
+                        fechaAnterior.getYear());
 
                 if (!contadorActual.IdContador.equals(contadorMesAnterior)) {
                     double tmpL = contadorModel.getLecturaContadoActual(contadorActual.IdContador);
                     lecturaAnterior = tmpL;
                 }
             }
-
 
             consumo = (lecturaActual - lecturaAnterior);
             tmpPromedio = lecturaModel.getPromedio(auxLectura.IdUsuarioServicio);
@@ -313,7 +314,7 @@ public class LecturaForm extends PBase {
             promedio = helper.round2dec(tmpPromedio + (tmpPromedio * porcentaje_lectura));
 
         } catch (Exception e) {
-            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);
+            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" calculosLectura - "+ e);
             return false;
         }
         return true;
@@ -376,11 +377,19 @@ public class LecturaForm extends PBase {
             item.Lectura_correcta = correcta ? 1:0;
 
             serviciosModel.actualizarServicio(item);
+
+            int IdUsuarioSinLectura = mdlSinLectura.getIdUsuarioSinLectura(auxLectura.IdUsuarioServicio);
+
+            if (IdUsuarioSinLectura > 0) {
+                sql = "DELETE FROM USUARIO_SIN_LECTURA WHERE IdUsuarioSinLectura = " + IdUsuarioSinLectura;
+                db.execSQL(sql);
+            }
+
             pk = !editando ? lecturaModel.IdActualLectura: auxLectura.Lectura_realizada;
             imprimir("Imprimir", "¿Desea imprimir?");
 
         } catch (Exception e) {
-            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);
+            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" guardar -  "+ e);
         }
     }
 
@@ -393,7 +402,7 @@ public class LecturaForm extends PBase {
             db.execSQL(sql);
             Calcula_Meses_Pago_Trans();
         } catch (Exception e) {
-            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - " + e);
+            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" getDatosGeneralesProforma - " + e);
         }
     }
 
@@ -420,7 +429,7 @@ public class LecturaForm extends PBase {
                 guardarProforma();
             }
         } catch (Exception e) {
-            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);
+            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+"  Calcula_Meses_Pago_Trans - "+ e);
         }
         return filas;
     }
@@ -623,7 +632,7 @@ public class LecturaForm extends PBase {
             }
 
         } catch (Exception e) {
-            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);
+            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" Calcula_Monto_PagoUsuario - "+ e);
         }
 
         return total;
@@ -809,7 +818,7 @@ public class LecturaForm extends PBase {
                 }
             }
         } catch (Exception e) {
-            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);
+            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" Calcula_Monto_Pago_Usuario_Anterior - "+ e);
         }
 
         return total;
@@ -830,7 +839,7 @@ public class LecturaForm extends PBase {
             }
 
         } catch (Exception e) {
-            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);
+            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" Tiene_Mora - "+ e);
             return false;
         }
         return false;
@@ -847,6 +856,11 @@ public class LecturaForm extends PBase {
             fechaPago = LocalDate.now();
             auxLista = catalogo.getMesesPendientes(auxLectura.IdUsuarioServicio);
             corel = corelModel.getCorrelativo();
+
+            if (corel == null) {
+                helper.toast("No tiene correlativo asignado a la ruta: " +gl.ruta);
+            }
+
             int correlativo = corel.actual + 1;
 
             proforma = new clsBeProforma();
@@ -929,7 +943,7 @@ public class LecturaForm extends PBase {
             }
 
         } catch (Exception e) {
-            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);
+            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" guardarProforma - "+ e);
         }
     }
 
@@ -982,7 +996,7 @@ public class LecturaForm extends PBase {
             this.startActivity(intent);
 
         } catch (Exception e) {
-            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" - "+ e);
+            helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" generaJsonProf - "+ e);
         }
 
     }

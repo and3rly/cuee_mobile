@@ -119,6 +119,24 @@ public class UsinLecturaModel {
         return exito;
     }
 
+    public int getIdUsuarioSinLectura(int usuario) {
+        int id = 0;
+        String sql = "";
+        Cursor DT;
+        try {
+            sql = "SELECT IdUsuarioSinLectura FROM USUARIO_SIN_LECTURA WHERE IdUsuarioServicio = "+usuario;
+            DT = Con.OpenDT(sql);
+
+            if (DT.getCount() > 0) {
+                DT.moveToFirst();
+                id = DT.getInt(0);
+            }
+        } catch (Exception e) {
+            Log.e("USUARIO_SIN_LECTURA", "getIdUsuarioSinLectura: ", e);
+        }
+        return id;
+    }
+
     public void actualizaEstado(int id) {
         String sq = "";
         try {
