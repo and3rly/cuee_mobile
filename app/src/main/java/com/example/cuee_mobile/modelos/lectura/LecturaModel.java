@@ -150,7 +150,8 @@ public class LecturaModel {
                     "CASE "+
                         "WHEN E.IdUsuarioSinLectura IS NULL THEN 0 "+
                         "ELSE E.IdUsuarioSinLectura "+
-                    "END AS Razon"+
+                    "END AS Razon, " +
+                    "A.ESTADO_SERVICIO "+
                     " FROM SERVICIOS_INSTALADO A" +
                     " INNER JOIN USUARIOS_SERVICIO B ON A.IdUsuarioServicio = B.IdUsuarioServicio" +
                     " INNER JOIN USUARIOS_POR_RUTA C ON A.IdUsuarioServicio = C.IdUsuarioServicio " +
@@ -184,6 +185,7 @@ public class LecturaModel {
                     item.Direccion = DT.getString(10);
                     item.Consumo = DT.getDouble(11);
                     item.RazonSinLectura = DT.getInt(12);
+                    item.EstadoServicio = DT.getInt(13);
 
                     serLectura.add(item);
                     DT.moveToNext();

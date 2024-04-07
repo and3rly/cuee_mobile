@@ -305,6 +305,22 @@ public class LecturaForm extends PBase {
                     double tmpL = contadorModel.getLecturaContadoActual(contadorActual.IdContador);
                     lecturaAnterior = tmpL;
                 }
+
+                if (lecturaAnterior == 0) {
+                    if (auxLectura.EstadoServicio == 2) {
+                        clsBeLectura tmpLectura = lecturaModel.getLecturaAnterior(auxLectura.IdUsuarioServicio);
+
+                        if (tmpLectura != null) {
+                            lecturaAnterior = tmpLectura.Lectura;
+                        } else {
+                            helper.toast("No se encontró ninguna lectura anterior.");
+                        }
+                    } else {
+                        helper.toast("No se encontró ninguna lectura anterior.");
+                    }
+                }
+            } else {
+                lecturaAnterior = lecturaAnt;
             }
 
             consumo = (lecturaActual - lecturaAnterior);
@@ -875,7 +891,7 @@ public class LecturaForm extends PBase {
 
             if (CantidadMesesPendientes > 2) {
                 LocalDate fechaCorte = fechaPago.plusDays(1);
-                desc = "SU PROFORMA GENERA ORDEN DE CORTE A PARTIR DEL " +du.setFechaToString(fechaCorte) + ". " +
+                desc = "SU PROFORMA GENERA ORDEN DE CORTE \n A PARTIR DEL " +du.setFechaToString(fechaCorte) + ". " +
                         "Si ya realizó su pago, favor hacer caso omiso.";
             } else {
                 desc = "";
@@ -893,6 +909,7 @@ public class LecturaForm extends PBase {
             double factor = 1 + (gl.institucion.Porcentaje_iva / 100);
 
             proforma.detalle.clear();
+
             for (clsBeTmpProformaUs obj: lista) {
                 clsBeProforma_detalle itemdet = new clsBeProforma_detalle();
                 itemdet.idrenglon = obj.IdRenglon;

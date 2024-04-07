@@ -14,6 +14,7 @@ public class auxLecturaServicio {
     public String Direccion = "";
     public double Consumo = 0;
     public int RazonSinLectura = 0;
+    public int EstadoServicio = 0;
 
     public int getIdUsuarioServicio() {
         return IdUsuarioServicio;
