@@ -339,6 +339,12 @@ public class LecturaForm extends PBase {
     private void guardar() {
         clsBeServicios_instalado item;
         try {
+            corel = corelModel.getCorrelativo();
+            if (corel == null) {
+                helper.msgbox("No tiene correlativo asignado a la ruta: #" +gl.ruta.IdRuta);
+                return;
+            }
+
             objLectura = new clsBeLectura();
 
             objLectura.IdUsuarioServicio = auxLectura.IdUsuarioServicio;
@@ -871,12 +877,6 @@ public class LecturaForm extends PBase {
             String fechaLocal = du.getFechaCompleta();;
             fechaPago = LocalDate.now();
             auxLista = catalogo.getMesesPendientes(auxLectura.IdUsuarioServicio);
-            corel = corelModel.getCorrelativo();
-
-            if (corel == null) {
-                helper.msgbox("No tiene correlativo asignado a la ruta: " +gl.ruta);
-                return;
-            }
 
             int correlativo = corel.actual + 1;
 
