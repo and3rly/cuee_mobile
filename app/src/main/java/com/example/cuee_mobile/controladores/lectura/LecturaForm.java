@@ -874,7 +874,8 @@ public class LecturaForm extends PBase {
             corel = corelModel.getCorrelativo();
 
             if (corel == null) {
-                helper.toast("No tiene correlativo asignado a la ruta: " +gl.ruta);
+                helper.msgbox("No tiene correlativo asignado a la ruta: " +gl.ruta);
+                return;
             }
 
             int correlativo = corel.actual + 1;
