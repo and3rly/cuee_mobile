@@ -107,7 +107,8 @@ public class MesesPagoModel {
         Cursor DT;
         String sq="";
         try {
-            sq ="SELECT * FROM MESES_PAGO WHERE IdUsuarioServicio = " + usuario;
+            sq ="SELECT * FROM MESES_PAGO WHERE IdUsuarioServicio = " + usuario +
+                " order by anno desc, nomes desc limit 1";
             DT = Con.OpenDT(sq);
 
             if (DT.getCount() > 0) {

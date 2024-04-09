@@ -345,6 +345,16 @@ public class LecturaForm extends PBase {
                 return;
             }
 
+            if  (objUP == null) {
+                helper.toast("No se encontro la fecha de último pago.");
+                return;
+            }
+
+            if (CantidadMesesPendientes < 0) {
+                helper.toast("Error en el calculo de meses pendientes");
+                return;
+            }
+
             objLectura = new clsBeLectura();
 
             objLectura.IdUsuarioServicio = auxLectura.IdUsuarioServicio;
@@ -892,7 +902,7 @@ public class LecturaForm extends PBase {
 
             if (CantidadMesesPendientes > 2) {
                 LocalDate fechaCorte = fechaPago.plusDays(1);
-                desc = "SU PROFORMA GENERA ORDEN DE CORTE \n A PARTIR DEL " +du.setFechaToString(fechaCorte) + ". " +
+                desc = "SU PROFORMA GENERA ORDEN DE CORTE A PARTIR DEL " +du.setFechaToString(fechaCorte) + ". " +
                         "Si ya realizó su pago, favor hacer caso omiso.";
             } else {
                 desc = "";
