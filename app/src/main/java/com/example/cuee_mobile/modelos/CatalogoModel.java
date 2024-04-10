@@ -463,7 +463,7 @@ public class CatalogoModel {
 
         try {
             sq = "SELECT consumo," +
-            "CASE strftime('%m', fecha_creacion)"+
+            "CASE strftime('%m', fecha)"+
                 " WHEN '01' THEN 'ENE'"+
                 " WHEN '02' THEN 'FEB'"+
                 " WHEN '03' THEN 'MAR'"+
@@ -476,11 +476,12 @@ public class CatalogoModel {
                 " WHEN '10' THEN 'OCT'"+
                 " WHEN '11' THEN 'NOV'"+
                 " WHEN '12' THEN 'DIC'"+
-            " END AS nombre_mes"+
+            " END AS nombre_mes, fecha"+
             " FROM LECTURA"+
-            " WHERE fecha_creacion <= date('now', '-1 months') AND IdUsuarioServicio ="+usuario +
-            " GROUP BY strftime('%Y-%m', fecha_creacion)"+
-            " ORDER BY fecha_creacion DESC"+
+            " WHERE fecha < date('now') AND strftime('%m', fecha) <> strftime('%m', 'now') AND " +
+            " IdUsuarioServicio ="+usuario +
+            " GROUP BY strftime('%Y-%m', fecha)"+
+            " ORDER BY fecha DESC"+
             " LIMIT 3";
 
             DT = Con.OpenDT(sq);

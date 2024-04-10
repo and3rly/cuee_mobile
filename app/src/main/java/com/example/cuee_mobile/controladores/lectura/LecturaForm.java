@@ -495,16 +495,26 @@ public class LecturaForm extends PBase {
             //FechaAnt = LocalDate.parse(du.strFechaIng(lanterior.Fecha));
             //Lectura_Anterior = lanterior.Lectura;
 
+            FechaAnt = FechaAPagar.minusMonths(1);
+
             if (lanterior != null) {
-                FechaAnt = LocalDate.parse(du.strFechaIng(lanterior.Fecha));
+                //FechaAnt = LocalDate.parse(du.strFechaIng(lanterior.Fecha));
                 Lectura_Anterior = lanterior.Lectura;
             } else {
-                Lectura_Anterior = 0;
+                if (auxLectura.EstadoServicio == 2) {
+                    clsBeLectura tmpLectura = lecturaModel.getLecturaAnterior(auxLectura.IdUsuarioServicio);
+
+                    if (tmpLectura != null) {
+                        Lectura_Anterior = tmpLectura.Lectura;
+                    }
+                } else {
+                    Lectura_Anterior = 0;
+                }
             }
 
             if (Lectura_Actual == 0) {
                 Consumo_A_Cobrar = 0;
-            } else if (Lectura_Anterior == 0 && lanterior != null) {
+            } else if (Lectura_Anterior == 0) {
                 String ContadorMesAnterior = lecturaModel.getContadorFecha(IdUsuarioServicio, FechaAnt.getYear(), FechaAnt.getMonthValue());
 
                 if (!IdContadorActual.equals(ContadorMesAnterior)) {
@@ -1013,6 +1023,7 @@ public class LecturaForm extends PBase {
             proformaImp.Fecha_notificacion = du.setFechaImp();
             proformaImp.Total = total;
             proformaImp.consumos = catalogo.ultimosConsumos(IdUsuarioServicio);
+            proformaImp.LecturaActual = "Lectura actual: "+txtLectura.getText().toString();
 
             Gson gson = new Gson();
             String  profJson = gson.toJson(proformaImp);
