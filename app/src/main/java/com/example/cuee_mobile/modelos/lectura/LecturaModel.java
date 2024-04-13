@@ -217,6 +217,7 @@ public class LecturaModel {
             item.IdTecnico = DT.getInt(9);
             item.Con_hh = DT.getInt(10);
             item.StatCom = DT.getInt(11);
+            item.Observaciones = DT.getString(12);
 
         } catch (Exception e) {
             Log.e("LECTURA", "setLinea: ", e );
@@ -251,6 +252,7 @@ public class LecturaModel {
             ins.add("IdTecnico", obj.IdTecnico);
             ins.add("con_hh", obj.Con_hh);
             ins.add("StatCom", obj.StatCom);
+            ins.add("Observaciones", obj.Observaciones);
 
             db.execSQL(ins.sql());
 
@@ -274,10 +276,22 @@ public class LecturaModel {
             upd.add("Lectura_kw", obj.Lectura_kw);
             upd.add("IdTecnico", obj.IdTecnico);
             upd.add("con_hh", obj.Con_hh);
+            upd.add("Observaciones", obj.Observaciones);
             upd.Where("IdLectura = "+obj.IdLectura);
             db.execSQL(upd.sql());
         } catch (Exception e) {
             Log.e("LECTURA", "actualizar: ", e);
+            return false;
+        }
+        return  true;
+    }
+
+    public boolean eliminar(clsBeLectura obj) {
+        try {
+            String sql = "DELETE FROM lectura WHERE IdLectura = "+obj.IdLectura;
+            db.execSQL(sql);
+        } catch (Exception e) {
+            Log.e("LECTURA", "eliminar: ", e);
             return false;
         }
         return  true;

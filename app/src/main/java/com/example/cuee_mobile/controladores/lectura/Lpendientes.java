@@ -28,6 +28,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import static com.example.cuee_mobile.controladores.Menu.lpendientes;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Lpendientes extends PBase {
@@ -144,6 +145,7 @@ public class Lpendientes extends PBase {
     }
 
     private boolean guardar() {
+        LocalDate  fechaNoLectura = LocalDate.now();
         boolean exito = false;
         clsBeUsuario_sin_lectura obj = new clsBeUsuario_sin_lectura();
         try {
@@ -158,6 +160,8 @@ public class Lpendientes extends PBase {
             obj.Usuario_Crea = gl.tecnico.IdTecnico;
             obj.Usuario_Modifica = gl.tecnico.IdTecnico;
             obj.StatCom = 0;
+            obj.Mes = fechaNoLectura.getMonthValue();
+            obj.Anno = fechaNoLectura.getYear();
 
             if (pendientesModel.guardarNoLectura(obj)) {
                 helper.toast("Razón de no lectura guardada con éxito.");

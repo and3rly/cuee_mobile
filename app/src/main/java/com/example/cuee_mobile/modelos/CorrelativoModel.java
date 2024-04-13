@@ -72,12 +72,12 @@ public class CorrelativoModel {
         }
     }
 
-    public clsBeCorrelativo_proforma getCorrelativo() {
+    public clsBeCorrelativo_proforma getCorrelativo(int IdTecnico) {
         clsBeCorrelativo_proforma item = null;
         String sql = "";
         Cursor DT;
         try {
-            sql = "SELECT * FROM CORRELATIVO_PROFORMA WHERE ACTIVO = 1";
+            sql = "SELECT * FROM CORRELATIVO_PROFORMA WHERE ACTIVO = 1 AND IdTecnico = '" + IdTecnico + "'";
             DT = Con.OpenDT(sql);
 
             if (DT.getCount() > 0) {

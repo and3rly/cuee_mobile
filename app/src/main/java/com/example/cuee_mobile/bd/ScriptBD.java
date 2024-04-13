@@ -34,6 +34,7 @@ public class ScriptBD {
                     "IdTecnico INTEGER DEFAULT NULL," +
                     "con_hh INTEGER DEFAULT NULL," +
                     "StatCom INTEGER DEFAULT 1," +
+                    "Observaciones TEXT DEFAULT NULL,"+
                     "PRIMARY KEY ([IdLectura])" +
                     ");";
             db.execSQL(sql);
@@ -505,7 +506,9 @@ public class ScriptBD {
                     "Fecha_crea TEXT DEFAULT NULL," +
                     "Usuario_Modifica INTEGER DEFAULT 0," +
                     "Fecha_Modifica TEXT DEFAULT NULL," +
-                    "StatCom INTEGER DEFAULT 0"+
+                    "StatCom INTEGER DEFAULT 0," +
+                    "Mes INTEGER DEFAULT 0," +
+                    "Anno INTEGER DEFAULT 0"+
                     ");";
             db.execSQL(sql);
 

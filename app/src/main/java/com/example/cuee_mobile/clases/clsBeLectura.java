@@ -8,14 +8,15 @@ public class clsBeLectura {
     public int IdUsuarioServicio = 0;
     public String IdContador = "";
     public String Fecha = "";
-    public double Lectura = 0.0;
-    public double Consumo = 0.0;
+    public double Lectura = 0;
+    public double Consumo = 0;
     public int IdUsuario = 0;
     public String Fecha_creacion = "";
-    public double Lectura_kw = 0.0;
+    public double Lectura_kw = 0;
     public int IdTecnico = 0;
     public int Con_hh = 0;
     public int StatCom= 1;
+    public String Observaciones = "";
     public String NUsuario = "";
 
     public int getIdLectura() {
@@ -104,6 +105,14 @@ public class clsBeLectura {
 
     public void setStatCom(int statCom) {
         StatCom = statCom;
+    }
+
+    public String getObservaciones() {
+        return Observaciones;
+    }
+
+    public void setObservaciones(String value) {
+        Observaciones = value;
     }
 
 }

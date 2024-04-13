@@ -12,5 +12,7 @@ public class clsBeUsuario_sin_lectura {
     public int Usuario_Modifica = 0;
     public String Fecha_Modifica = "";
     public int StatCom = 0;
+    public int Mes = 0;
+    public int Anno = 0;
 
 }

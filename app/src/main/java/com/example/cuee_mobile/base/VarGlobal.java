@@ -10,8 +10,8 @@ public class VarGlobal extends Application {
     public clsBeTecnicos tecnico = new clsBeTecnicos();
     public clsBeInstitucion institucion = new clsBeInstitucion();
     public String termino ="", path= "";
-    public String version = "1.8";
-    public String vFecha ="10-04-2024";
+    public String version = "2.0";
+    public String vFecha ="12-04-2024";
     public String urlApi;
     public int itinerario;
     public boolean cierreRuta = false;

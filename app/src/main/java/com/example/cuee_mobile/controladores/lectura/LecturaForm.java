@@ -125,11 +125,21 @@ public class LecturaForm extends PBase {
             IdContadorActual = ContadorActual.IdContador;
             lblTecnico.setText("Técnico: "+ gl.tecnico.Nombre);
 
+            uServicioInstalado = serviciosModel.getUsServicio(IdUsuarioServicio);
+
             objUP = mpago.getUltimoPago(IdUsuarioServicio);
             FechaPagoActual = LocalDate.now();
 
             if (objUP != null) {
                 FechaUltimoPago = LocalDate.of(objUP.anno, objUP.nomes, 1);
+            }else{
+                if (uServicioInstalado.fecha_ultimo_pago!=null){
+                    objUP = new clsBeMeses_pago();
+                    objUP.anno = Integer.valueOf(uServicioInstalado.fecha_ultimo_pago.substring(0,4));
+                    objUP.nomes = Integer.valueOf(uServicioInstalado.fecha_ultimo_pago.substring(5,7));
+                    objUP.IdUsuarioServicio = IdUsuarioServicio;
+                    FechaUltimoPago = LocalDate.of(objUP.anno, objUP.nomes, 1);
+                }
             }
 
             CantidadMesesPendientes = du.diffMeses(FechaUltimoPago, FechaPagoActual);
@@ -159,9 +169,9 @@ public class LecturaForm extends PBase {
                         txtFecha.setText(du.strFecha(objLectura.Fecha));
                     }
 
-                    txtLectura.setText(objLectura.Lectura+"");
-                    txtConsumo.setText(objLectura.Consumo+"");
-                    txtLecKW.setText(objLectura.Lectura_kw+"");
+                    txtLectura.setText(Math.round(objLectura.Lectura) +"");
+                    txtConsumo.setText(Math.round(objLectura.Consumo)+"");
+                    txtLecKW.setText(Math.round(objLectura.Lectura_kw)+"");
                 }
             }
 
@@ -339,19 +349,19 @@ public class LecturaForm extends PBase {
     private void guardar() {
         clsBeServicios_instalado item;
         try {
-            corel = corelModel.getCorrelativo();
+            corel = corelModel.getCorrelativo(gl.tecnico.IdTecnico);
             if (corel == null) {
-                helper.msgbox("No tiene correlativo asignado a la ruta: #" +gl.ruta.IdRuta);
+                helper.msgbox("No tiene correlativo asignado al técnico: " +gl.tecnico.Nombre);
                 return;
             }
 
             if  (objUP == null) {
-                helper.toast("No se encontro la fecha de último pago.");
+                helper.toast("No se encontró la fecha de último pago.");
                 return;
             }
 
             if (CantidadMesesPendientes < 0) {
-                helper.toast("Error en el calculo de meses pendientes");
+                helper.toast("Error en el cálculo de meses pendientes");
                 return;
             }
 
@@ -376,6 +386,7 @@ public class LecturaForm extends PBase {
                     return;
                 }
             } else {
+
                 objLectura.IdLectura = auxLectura.Lectura_realizada;
                 if (lecturaModel.actualizar(objLectura)) {
                     helper.toast("Lectura actualizada con éxito");
@@ -577,7 +588,11 @@ public class LecturaForm extends PBase {
                                 IVA = (vImporteUCD + vImporteKW + vImportePot) * vIvaDecimal;
 
                                 Monto = vImporteUCD + vImporteKW + vImportePot + IVA;
-                            } else {
+                            } else if (uServicioInstalado.es_autoproductor) {
+                                ImporteAutoProductor = Consumo_A_Cobrar * paramDet.Precio_luz_autoproductor;
+                                IVA = (ImporteAutoProductor) * vIvaDecimal;
+                                Monto = ImporteAutoProductor + IVA;
+                            }else {
                                 if (Consumo_A_Cobrar > 300) {
                                     ImporteTNS = Consumo_A_Cobrar * paramDet.Preciotns;
                                     IVA = (ImporteTNS) * vIvaDecimal;
@@ -599,7 +614,9 @@ public class LecturaForm extends PBase {
                                 Monto = paramDet.Cargo_fijo_btdp;
                             } else if (uServicioInstalado.servicio_bajo_demandafp) {
                                 Monto = paramDet.Cargo_fijo_btdfp;
-                            } else  {
+                            } else if (uServicioInstalado.es_autoproductor) {
+                                Monto = paramDet.Cargo_fijo_autoproductor;
+                            }else  {
                                 Monto = paramDet.Cargo_fijo;
                             }
 
@@ -621,10 +638,9 @@ public class LecturaForm extends PBase {
                                 MontoMesAnterior = Calcula_Monto_Pago_Usuario_Anterior(auxFechaAnterior.getYear(), auxFechaAnterior.getMonthValue());
 
                                 Monto = (Monto + MontoMesAnterior + MontoMora) * MoraActual;
-                                //MontoMesAnterior = (MontoMesAnterior * paramDet.Mora) + MontoMesAnterior;
-                               // MontoMora = (Monto + MontoMesAnterior) * MoraActual;
-                                //Monto = 0;
+
                             } else if (uServicioInstalado.servicio_bajo_demanda) {
+
                                 vImporteUCD = Consumo_A_Cobrar * paramDet.Tarifa_demanda;
                                 vImporteKW = LecturaKW * paramDet.Precio_kw;
                                 vImportePot = uServicioInstalado.potencia_contratada * paramDet.Precio_pc;
@@ -633,9 +649,17 @@ public class LecturaForm extends PBase {
                                 Monto = paramDet.Luz_publica + vImporteUCD + vImporteKW + vImportePot + paramDet.Cargo_fijo_btdp + IVA;
                                 MontoMesAnterior = Calcula_Monto_Pago_Usuario_Anterior(auxFechaAnterior.getYear(), auxFechaAnterior.getMonthValue());
 
-                                //MontoMesAnterior = (MontoMesAnterior * paramDet.Mora) + MontoMesAnterior;
                                 Monto = (Monto + MontoMesAnterior + MontoMora) * MoraActual;
-                                //Monto = 0;
+
+                            } else if (uServicioInstalado.es_autoproductor){
+
+                                ImporteAutoProductor = Consumo_A_Cobrar * paramDet.Precio_luz_autoproductor;
+                                IVA = (ImporteAutoProductor + paramDet.Cargo_fijo_autoproductor) * vIvaDecimal;
+
+                                Monto = ImporteAutoProductor + IVA + paramDet.Cargo_fijo_autoproductor + paramDet.Luz_publica;
+                                MontoMesAnterior  = Calcula_Monto_Pago_Usuario_Anterior(auxFechaAnterior.getYear(), auxFechaAnterior.getMonthValue());
+                                Monto = (Monto + MontoMesAnterior + MontoMora) * MoraActual;
+
                             } else {
                                 if (Consumo_A_Cobrar > 300) {
                                     ImporteTNS = Consumo_A_Cobrar * paramDet.Preciotns;
@@ -650,9 +674,6 @@ public class LecturaForm extends PBase {
                                 Monto = (ImporteTS + ImporteTNS + IVA + paramDet.Cargo_fijo + paramDet.Luz_publica);
                                 MontoMesAnterior  = Calcula_Monto_Pago_Usuario_Anterior(auxFechaAnterior.getYear(), auxFechaAnterior.getMonthValue());
                                 Monto = (Monto + MontoMesAnterior + MontoMora) * MoraActual;
-                                //MontoMesAnterior = (MontoMesAnterior * paramDet.Mora) + MontoMesAnterior;
-                                //MontoMora = (Monto + MontoMesAnterior) * MoraActual;
-                                //Monto = 0;
                             }
                             break;
                     }
@@ -778,7 +799,11 @@ public class LecturaForm extends PBase {
                                 IVA = (vImporteUCD + vImporteKW + vImportePot) * vIvaDecimal;
 
                                 Monto = vImporteUCD + vImporteKW + vImportePot + IVA;
-                            } else {
+                            } else if (uServicioInstalado.es_autoproductor) {
+                                ImporteAutoProductor = Consumo_A_Cobrar * paramDet.Precio_luz_autoproductor;
+                                IVA = (ImporteAutoProductor) * vIvaDecimal;
+                                Monto = ImporteAutoProductor + IVA;
+                            }else {
                                 if (Consumo_A_Cobrar > 300) {
                                     ImporteTNS = Consumo_A_Cobrar * paramDet.Preciotns;
                                     IVA = (ImporteTNS + paramDet.Cargo_fijo) * vIvaDecimal;
@@ -800,6 +825,8 @@ public class LecturaForm extends PBase {
                                 Monto = paramDet.Cargo_fijo_btdp;
                             } else if (uServicioInstalado.servicio_bajo_demandafp) {
                                 Monto = paramDet.Cargo_fijo_btdfp;
+                            }else if (uServicioInstalado.es_autoproductor) {
+                                Monto = paramDet.Cargo_fijo_autoproductor;
                             } else {
                                 Monto = paramDet.Cargo_fijo;
                             }
@@ -836,6 +863,15 @@ public class LecturaForm extends PBase {
                                 MontoMesAnterior = (MontoMesAnterior * paramDet.Mora) + MontoMesAnterior;
                                 MontoMora = (Monto + MontoMesAnterior) * MoraActual;
                                 Monto = 0;
+                            } else if (uServicioInstalado.es_autoproductor){
+
+                                ImporteAutoProductor = Consumo_A_Cobrar * paramDet.Precio_luz_autoproductor;
+                                IVA = (ImporteAutoProductor + paramDet.Cargo_fijo_autoproductor) * vIvaDecimal;
+
+                                Monto = ImporteAutoProductor + IVA + paramDet.Cargo_fijo_autoproductor + paramDet.Luz_publica;
+                                MontoMesAnterior  = Calcula_Monto_Pago_Usuario_Anterior(auxFechaAnterior.getYear(), auxFechaAnterior.getMonthValue());
+                                Monto = (Monto + MontoMesAnterior + MontoMora) * MoraActual;
+
                             } else {
                                 if (Consumo_A_Cobrar > 300) {
                                     ImporteTNS = Consumo_A_Cobrar * paramDet.Preciotns;
@@ -972,7 +1008,7 @@ public class LecturaForm extends PBase {
 
             if (catalogo.guardarProforma(proforma)) {
                 tieneProforma = true;
-                sql = "UPDATE CORRELATIVO_PROFORMA SET ACTUAL = "+ correlativo;
+                sql = "UPDATE CORRELATIVO_PROFORMA SET ACTUAL = "+ correlativo + " WHERE IdTecnico = '" + gl.tecnico.IdTecnico + "'";
                 db.execSQL(sql);
 
                 IdProformaActual = catalogo.existeProforma(auxLectura.IdUsuarioServicio);
@@ -1130,6 +1166,8 @@ public class LecturaForm extends PBase {
     }
 
     private void doPrint() {
+        LocalDate fechaPago;
+
         try {
             clsBeLectura lecturaActual, lecturaAnterior = null;
             clsBeUsuarios_servicio usuario = null;
@@ -1138,7 +1176,7 @@ public class LecturaForm extends PBase {
             lecturaImp = new clsBeLecturaImp();
             lecturaImp.Nit = "NIT: " + gl.institucion.NIT_Emisor;
             lecturaImp.Direccion = "Dirección: " + gl.institucion.Direccion_emisor;
-            lecturaImp.Fecha = "Fecha: " + du.strFechaHora(du.getFechaCompleta());
+            lecturaImp.Fecha = "Fecha notificación: " + du.strFechaHora(du.getFechaCompleta());
             lecturaImp.Ruta = "Ruta: No." + gl.ruta.IdRuta;
             lecturaImp.Itinerario = "Itinerario: No." + gl.itinerario;
             lecturaImp.Tecnico = "Técnico: " + gl.tecnico.Nombre;
@@ -1155,9 +1193,9 @@ public class LecturaForm extends PBase {
 
                 lecturaImp.Usuario = "Usuario: " + usuario.IdUsuarioServicio+"-"+usuario.Nombres;
                 lecturaImp.Contador = "Contador: " + lecturaActual.IdContador;
-                lecturaImp.LecturaAnterior = "Lectura anterior: " + tmpLecturaAnterior+" KW";
-                lecturaImp.LecturaActual = "Lectura actual: " + lecturaActual.Lectura+" KW";
-                lecturaImp.Consumo = "Consumo: " + lecturaActual.Consumo+" KW";
+                lecturaImp.LecturaAnterior = "Lectura anterior: " + (int)tmpLecturaAnterior+" KW";
+                lecturaImp.LecturaActual = "Lectura actual: " + (int)lecturaActual.Lectura+" KW";
+                lecturaImp.Consumo = "Consumo: " + (int)lecturaActual.Consumo+" KW";
 
                 String msj = "";
 
@@ -1170,9 +1208,26 @@ public class LecturaForm extends PBase {
                 }
 
                 if (!msj.isEmpty()) {
-                    lecturaImp.Texto = msj +
-                            " Favor abocarse a oficina \n" +
-                            " de inmediato";
+                    msj += "favor abocarse a oficina de inmediato.";
+
+                    if (CantidadMesesPendientes>6){
+                        String fechaLocal = du.getFechaCompleta();;
+                        fechaPago = LocalDate.now();
+                        LocalDate fechaCorte = fechaPago.plusDays(1);
+                        msj +="\n \n SU NOTIFICACIÓN GENERA ORDEN DE CORTE A PARTIR DEL " +du.setFechaToString(fechaCorte) + ". " +
+                                "Si ya realizó su pago, favor hacer caso omiso.";
+
+                        lecturaImp.Notificacion = "1";
+
+                        lecturaActual.setObservaciones(lecturaImp.Texto);
+                        if (lecturaModel.actualizar(lecturaActual)) {
+                            helper.toast("Lectura actualizada con éxito");
+                        } else {
+                            helper.toast("Hubo problemas al actualizar la lectura.");
+                            return;
+                        }
+                    }
+                    lecturaImp.Texto =msj;
                 }
             } else {
                 helper.toast("Problemas al obtener información.");

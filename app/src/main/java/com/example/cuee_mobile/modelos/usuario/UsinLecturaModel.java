@@ -84,6 +84,8 @@ public class UsinLecturaModel {
             item.Usuario_Modifica = DT.getInt(8);
             item.Fecha_Modifica = DT.getString(9);
             item.StatCom = DT.getInt(10);
+            item.Mes = DT.getInt(11);
+            item.Anno = DT.getInt(12);
 
         } catch (Exception e) {
             Log.e("USUARIOS_SERVICIO", "setDatos: ", e );
@@ -108,6 +110,8 @@ public class UsinLecturaModel {
             ins.add("Usuario_Modifica", o.Usuario_Modifica);
             ins.add("Fecha_Modifica", o.Fecha_Modifica);
             ins.add("StatCom", o.StatCom);
+            ins.add("Mes", o.Mes);
+            ins.add("Anno", o.Anno);
 
             db.execSQL(ins.sql());
             exito = true;
