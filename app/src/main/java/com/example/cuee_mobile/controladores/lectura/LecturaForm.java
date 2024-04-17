@@ -1023,6 +1023,8 @@ public class LecturaForm extends PBase {
 
     private void generaJsonProf() {
         double total = 0, iva;
+        double tmpLecturaAnterior = 0;
+        clsBeLectura lecturaActual, lecturaAnterior = null;
 
         try {
             proformaImp = new clsBeProformaImp();
@@ -1055,11 +1057,19 @@ public class LecturaForm extends PBase {
                 proformaImp.proforma.detalle.add(detIva);
             }
 
+            lecturaModel.getLinea("WHERE IdLectura = " + pk);
+            if (lecturaModel.objLectura != null) {
+               lecturaAnterior = lecturaModel.getLecturaAnterior(IdUsuarioServicio);
+
+                tmpLecturaAnterior = lecturaAnterior == null ? 0 : lecturaAnterior.Lectura;
+            }
+
             proformaImp.Monto_letras = letras.convertirALetras(total).toUpperCase();
             proformaImp.Fecha_notificacion = du.setFechaImp();
             proformaImp.Total = total;
             proformaImp.consumos = catalogo.ultimosConsumos(IdUsuarioServicio);
             proformaImp.LecturaActual = "Lectura actual: "+txtLectura.getText().toString();
+            proformaImp.LecturaAnterior = "Lectura anterior: "+(int)tmpLecturaAnterior;
 
             Gson gson = new Gson();
             String  profJson = gson.toJson(proformaImp);
@@ -1214,8 +1224,10 @@ public class LecturaForm extends PBase {
                         String fechaLocal = du.getFechaCompleta();;
                         fechaPago = LocalDate.now();
                         LocalDate fechaCorte = fechaPago.plusDays(1);
-                        msj +="\n \n SU NOTIFICACIÓN GENERA ORDEN DE CORTE A PARTIR DEL " +du.setFechaToString(fechaCorte) + ". " +
-                                "Si ya realizó su pago, favor hacer caso omiso.";
+                        msj +="\n \n SU NOTIFICACIÓN GENERA ORDEN\n " +
+                                     "DE CORTE A PARTIR DEL " +du.setFechaToString(fechaCorte) + ".\n " +
+                                     "Si ya realizó su pago,\n" +
+                                     " favor hacer caso omiso.";
 
                         lecturaImp.Notificacion = "1";
 
