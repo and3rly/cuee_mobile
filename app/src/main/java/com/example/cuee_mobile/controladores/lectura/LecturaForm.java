@@ -171,7 +171,7 @@ public class LecturaForm extends PBase {
 
                     txtLectura.setText(Math.round(objLectura.Lectura) +"");
                     txtConsumo.setText(Math.round(objLectura.Consumo)+"");
-                    txtLecKW.setText(Math.round(objLectura.Lectura_kw)+"");
+                    txtLecKW.setText(objLectura.Lectura_kw+"");
                 }
             }
 
@@ -266,7 +266,7 @@ public class LecturaForm extends PBase {
             }
 
             if (calculosLectura()) {
-                txtConsumo.setText(consumo+"");
+                txtConsumo.setText(Math.round(consumo)+"");
                 if (consumo < 0) {
                     helper.msgbox("La lectura anterior: " + lecturaAnterior + " es mayor que la lectura ingresada: " + lecturaActual);
                     txtLectura.requestFocus();
