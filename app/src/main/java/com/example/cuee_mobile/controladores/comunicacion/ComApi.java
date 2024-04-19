@@ -357,9 +357,10 @@ public class ComApi extends PBase {
             lblPgr.setText("Enviando...");
 
             if (pendientesEnvio()) {
-                Handler timer = new Handler();
+                /*Handler timer = new Handler();
                 Runnable runner = this::AsyncCallSend;
-                timer.postDelayed(runner, 500);
+                timer.postDelayed(runner, 500);*/
+                enviar();
             } else {
                 helper.toast("No tiene datos pendientes para enviar.");
             }
@@ -1757,7 +1758,7 @@ public class ComApi extends PBase {
                     cant = 1;
                     enviaProforma(proformaModel.lista.get(idx));
                 } else {
-                    terminaEnvio();
+                    enviar();
                 }
             } else {
                 idx++;
@@ -1780,7 +1781,7 @@ public class ComApi extends PBase {
                     cant = 1;
                     enviaRazonesNoLectura(pendientesModel.lista.get(idx));
                 } else {
-                    terminaEnvio();
+                    enviar();
                 }
             } else {
                 idx++;
@@ -1803,7 +1804,7 @@ public class ComApi extends PBase {
                     cant = 1;
                     enviaCorrelativo(correlativo.lista.get(idx));
                 } else {
-                    terminaEnvio();
+                    enviar();
                 }
             } else {
                 idx++;
