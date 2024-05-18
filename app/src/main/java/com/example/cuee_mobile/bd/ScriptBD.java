@@ -356,6 +356,7 @@ public class ScriptBD {
                     "Nombre TEXT DEFAULT NULL," +
                     "Activo TEXT DEFAULT NULL," +
                     "IdTecnicoDef INTEGER DEFAULT NULL," +
+                    "Rec_ompleta INTEGER DEFAULT 0, " +
                     "PRIMARY KEY([IdRuta])" +
                     ");";
             db.execSQL(sql);

@@ -409,10 +409,9 @@ public class LecturaForm extends PBase {
                 }
             }
 
-            Double consumo = Double.valueOf(txtConsumo.getText().toString());
-            if (consumo > 0) {
-                getDatosGeneralesProforma();
-            }
+            //#AT20240514 Se genera la proforma siempre sin
+            //importa que el consumo sea = 0
+            getDatosGeneralesProforma();
 
             item = new clsBeServicios_instalado();
             item.IdInstalacion = auxLectura.IdInstalacion;

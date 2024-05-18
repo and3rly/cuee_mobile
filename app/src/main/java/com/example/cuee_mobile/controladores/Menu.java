@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.cuee_mobile.R;
 import com.example.cuee_mobile.adapter.MenuAdapter;
 import com.example.cuee_mobile.clases.auxLecturaServicio;
+import com.example.cuee_mobile.clases.clsBeCorrelativo_proforma;
 import com.example.cuee_mobile.clases.clsBeMenu;
 import com.example.cuee_mobile.clases.clsBePendientes_lectura;
 import com.example.cuee_mobile.controladores.comunicacion.ComApi;
@@ -121,7 +122,14 @@ public class Menu extends PBase {
         try {
             switch (idmenu) {
                 case 1:
-                    startActivity(new Intent(this, Lectura.class));
+                    clsBeCorrelativo_proforma corel = null;
+                    corel = corelModel.getCorrelativo(gl.tecnico.IdTecnico);
+
+                    if (corel != null) {
+                        startActivity(new Intent(this, Lectura.class));
+                    } else {
+                        helper.msgbox("No tiene un correlativo asignado el técnico: " +gl.tecnico.Nombre);
+                    }
                     break;
                 case 2:
                     menuConsultas();
@@ -145,7 +153,7 @@ public class Menu extends PBase {
                     break;
                 case 5:
                     lpendientes = lectura.getLecturasPendientes();
-                    //lpendientes.clear();
+                    lpendientes.clear();
 
                     if (lpendientes.size() > 0) {
                         helper.toast("Tiene usuarios pendientes de ingreso lectura.");

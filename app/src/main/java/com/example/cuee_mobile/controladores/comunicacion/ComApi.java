@@ -235,6 +235,12 @@ public class ComApi extends PBase {
             getUrlApi();
             setHandlers();
             existeDatosEnvio();
+
+            if (gl.admin) {
+                btnRecibir.setVisibility(View.VISIBLE);
+                btnEnviar.setVisibility(View.VISIBLE);
+            }
+
             lblVersion.setText("Versión" + gl.version+" / "+gl.vFecha);
             if (gl.ruta != null) {
                 if (gl.ruta.IdRuta != 0) {
@@ -1398,6 +1404,10 @@ public class ComApi extends PBase {
                             finish();
                             startActivity(new Intent(ComApi.this, MainActivity.class));
                         } else {
+                            if (gl.admin) {
+                                gl.admin = false;
+                                startActivity(new Intent(ComApi.this, MainActivity.class));
+                            }
                             finish();
                         }
                     } else {

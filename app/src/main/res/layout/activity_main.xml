@@ -181,11 +181,23 @@
         android:background="@color/blue_gray"
         android:gravity="center_horizontal|center_vertical">
 
+        <ImageView
+            android:id="@+id/imgRecibir"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/sinc"
+            android:visibility="gone" />
+
         <TextView
             android:id="@+id/lblVersion"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_horizontal|center_vertical"
+            android:layout_marginEnd="0dp"
+            android:layout_toStartOf="@+id/imgRecibir"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
             android:text="Versión 1.0"
             android:textColor="#FFFFFF"
             android:textSize="14sp" />

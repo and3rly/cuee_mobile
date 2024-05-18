@@ -548,4 +548,42 @@ public class CatalogoModel {
 
         return lista;
     }
+
+    public boolean RecepcionCompleta() {
+        boolean exito = false;
+        String [] nombresTablas = {
+                "COLOR","CONTADORES", "CORRELATIVO_PROFORMA","INSTITUCION",
+                "INSTITUCION_DETALLE","LECTURA","MARCAS","MESES_MORA_PAGADA",
+                "MESES_PAGO","PARAMETROS","RAZON_NO_LECTURA","RENGLONES","RUTA_LECTURA",
+                "RUTA_TECNICO","SERVICIOS_INSTALADO","TECNICOS","USUARIOS_POR_RUTA","USUARIOS_SERVICIO"
+        };
+
+        for (String nombreTabla : nombresTablas) {
+            if (tieneDatos(nombreTabla)) {
+                exito = true;
+            } else {
+                exito = false;
+                break;
+            }
+        }
+
+        return exito;
+    }
+
+    public boolean tieneDatos(String tabla) {
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + tabla, null);
+        int count = -1;
+
+        if (cursor != null) {
+            try {
+                if (cursor.moveToFirst()) {
+                    count = cursor.getInt(0);
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+
+        return count > 0;
+    }
 }

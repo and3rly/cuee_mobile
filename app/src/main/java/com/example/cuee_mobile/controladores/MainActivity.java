@@ -2,6 +2,8 @@ package com.example.cuee_mobile.controladores;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -10,6 +12,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -17,6 +20,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +33,7 @@ import com.example.cuee_mobile.clases.clsBeInstitucion;
 import com.example.cuee_mobile.clases.clsBeRuta_lectura;
 import com.example.cuee_mobile.clases.clsBeTecnicos;
 import com.example.cuee_mobile.controladores.comunicacion.ComApi;
+import com.example.cuee_mobile.modelos.CatalogoModel;
 import com.example.cuee_mobile.modelos.institucion.InstitucionModel;
 import com.example.cuee_mobile.modelos.mnt.TecnicoModel;
 import com.example.cuee_mobile.modelos.ruta.RutaLecturaModel;
@@ -41,8 +47,10 @@ public class MainActivity extends PBase {
     private EditText txtClave;
     private Spinner cmbTecnicos;
     private TextView lblEmpresa, lblRuta, lblVersion;
+    private ImageView imgRecibir;
     private InstitucionModel institucion;
     private RutaLecturaModel rutaLectura;
+    private CatalogoModel cat;
     private TecnicoModel tecnico;
     private clsBeInstitucion objInstitucion = null;
     private clsBeRuta_lectura objRutaLec = null;
@@ -70,6 +78,7 @@ public class MainActivity extends PBase {
             lblEmpresa = findViewById(R.id.lblEmpresa);
             lblVersion = findViewById(R.id.lblVersion);
             btnLogin = findViewById(R.id.btnLogin);
+            imgRecibir = findViewById(R.id.imgRecibir);
 
             setHandlers();
             setDatos();
@@ -80,6 +89,12 @@ public class MainActivity extends PBase {
     private void setDatos() {
         try {
             setModels();
+
+            if (!cat.RecepcionCompleta()) {
+                gl.rec_completa = false;
+                imgRecibir.setVisibility(View.VISIBLE);
+            }
+
             if (getInstitucion()) {
                 if (getRutaLectura()) {
                     getTecnicos();
@@ -137,6 +152,10 @@ public class MainActivity extends PBase {
 
                 }
             });
+
+            imgRecibir.setOnClickListener(view -> {
+                entraComunicacion();
+            });
         } catch (Exception e) {
             helper.msgbox(new Object() {}.getClass().getEnclosingClass().getName() +" - "+ e);
         }
@@ -147,6 +166,7 @@ public class MainActivity extends PBase {
             institucion = new InstitucionModel(this, Con, db);
             rutaLectura = new RutaLecturaModel(this, Con, db);
             tecnico = new TecnicoModel(this, Con,db);
+            cat = new CatalogoModel(this, Con, db);
         } catch (Exception e) {
             helper.msgbox(new Object() {}.getClass().getEnclosingClass().getName() +" - "+ e);
         }
@@ -238,6 +258,57 @@ public class MainActivity extends PBase {
         }
     }
 
+    private void entraComunicacion() {
+
+        try {
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+            alert.setTitle("Contraseña de administrador");
+            alert.setIcon(R.drawable.usuario);
+
+            LinearLayout layout = new LinearLayout(this);
+            layout.setOrientation(LinearLayout.VERTICAL);
+            int padding = (int) (this.getResources().getDisplayMetrics().density * 16);
+            layout.setPadding(padding, padding, padding, padding);
+
+            final EditText input = new EditText(this);
+            input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            input.setHint("******");
+            input.setText("");
+            input.requestFocus();
+
+            layout.addView(input);
+            alert.setView(layout);
+
+            alert.setPositiveButton("Aplicar", (dialog, whichButton) -> {
+                String s;
+
+                try {
+                    s = input.getText().toString().toLowerCase();
+
+                    if (s.equalsIgnoreCase("afti")) {
+                        gl.admin  = true;
+                        startActivity(new Intent(this, ComApi.class));
+                        super.finish();
+                    } else {
+                        helper.toast("Contraseña incorrecta");
+                    }
+
+                } catch (Exception e) {
+                    helper.msgbox(new Object() {
+                    }.getClass().getEnclosingMethod().getName() + e.getMessage() +"");
+                }
+            });
+
+            alert.setNegativeButton("Cancelar", (dialog, whichButton) -> {
+            });
+
+            alert.show();
+        } catch (Exception e) {
+            helper.msgbox(new Object() {}.getClass().getEnclosingMethod().getName()+e.getMessage() + " ");
+        }
+    }
+
     private void grantPermissions() {
         try {
 
@@ -276,6 +347,5 @@ public class MainActivity extends PBase {
                 Toast.makeText(this, "Permission not granted.", Toast.LENGTH_LONG).show();
             }
         } catch (Exception e){}
-
     }
 }
