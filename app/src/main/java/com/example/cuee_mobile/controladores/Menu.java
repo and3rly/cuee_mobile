@@ -153,7 +153,7 @@ public class Menu extends PBase {
                     break;
                 case 5:
                     lpendientes = lectura.getLecturasPendientes();
-                    lpendientes.clear();
+                    //lpendientes.clear();  Quitar comentario para realizar pruebas en envio
 
                     if (lpendientes.size() > 0) {
                         helper.toast("Tiene usuarios pendientes de ingreso lectura.");
