@@ -70,6 +70,7 @@ public class Lectura extends PBase {
             auxLectura = new auxLecturaServicio();
             auxLectura = (auxLecturaServicio) lista_servicios.getItemAtPosition(position);
             procesaLectura();
+            txtFiltro.setText("");
         });
 
         btnRegresar.setOnClickListener(view -> regresar());

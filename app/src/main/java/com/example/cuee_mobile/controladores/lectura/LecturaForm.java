@@ -1067,8 +1067,8 @@ public class LecturaForm extends PBase {
             proformaImp.Fecha_notificacion = du.setFechaImp();
             proformaImp.Total = total;
             proformaImp.consumos = catalogo.ultimosConsumos(IdUsuarioServicio);
-            proformaImp.LecturaActual = "Lectura actual: "+txtLectura.getText().toString();
-            proformaImp.LecturaAnterior = "Lectura anterior: "+(int)tmpLecturaAnterior;
+            proformaImp.LecturaActual = "Lectura actual: "+txtLectura.getText().toString()+" kwh";;
+            proformaImp.LecturaAnterior = "Lectura anterior: "+(int)tmpLecturaAnterior+" kwh";;
 
             Gson gson = new Gson();
             String  profJson = gson.toJson(proformaImp);
@@ -1202,9 +1202,9 @@ public class LecturaForm extends PBase {
 
                 lecturaImp.Usuario = "Usuario: " + usuario.IdUsuarioServicio+"-"+usuario.Nombres;
                 lecturaImp.Contador = "Contador: " + lecturaActual.IdContador;
-                lecturaImp.LecturaAnterior = "Lectura anterior: " + (int)tmpLecturaAnterior+" KW";
-                lecturaImp.LecturaActual = "Lectura actual: " + (int)lecturaActual.Lectura+" KW";
-                lecturaImp.Consumo = "Consumo: " + (int)lecturaActual.Consumo+" KW";
+                lecturaImp.LecturaAnterior = "Lectura anterior: " + (int)tmpLecturaAnterior+" kwh";
+                lecturaImp.LecturaActual = "Lectura actual: " + (int)lecturaActual.Lectura+" kwh";
+                lecturaImp.Consumo = "Consumo: " + (int)lecturaActual.Consumo+" kwh";
 
                 String msj = "";
 
