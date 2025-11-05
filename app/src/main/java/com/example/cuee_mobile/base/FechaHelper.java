@@ -260,6 +260,10 @@ public class FechaHelper {
     public LocalDate getFechaStr(String pfecha) {
         LocalDate fecha = null;
         try {
+            if (pfecha.contains("T")) {
+                pfecha = pfecha.substring(0, pfecha.indexOf("T"));
+            }
+
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             fecha =LocalDate.parse(pfecha, formatter);
         } catch (Exception e) {

@@ -294,12 +294,27 @@ public class LecturaForm extends PBase {
         clsBeContadores contadorActual;
         String contadorMesAnterior;
         double lecturaAnt;
+        clsBeLectura UltimaLectura;
 
         try {
 
             lecturaActual = Double.valueOf(txtLectura.getText().toString());
 
             LocalDate fechaAnterior = FechaPagoActual.minusMonths(1);
+            UltimaLectura = lecturaModel.getLecturaAnterior(IdUsuarioServicio);
+
+            if (UltimaLectura != null) {
+                LocalDate UltimaFechaLectura =  du.getFechaStr(UltimaLectura.Fecha);
+
+                if (UltimaFechaLectura.getYear() != fechaAnterior.getYear() || UltimaFechaLectura.getMonthValue() != fechaAnterior.getMonthValue()) {
+                    helper.msgbox("La lectura del mes anterior no existe (" +
+                            du.getNombreMes(fechaAnterior.getMonthValue()) + " " + fechaAnterior.getYear() + ").\n\n" +
+                            "Última lectura: " + UltimaFechaLectura);
+
+                    return false;
+                }
+            }
+
             lecturaAnt = lecturaModel.getLecturaAnteriorContador(auxLectura.IdUsuarioServicio,
                                                                     IdContadorActual,
                                                                     fechaAnterior.getYear(),
