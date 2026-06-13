@@ -93,6 +93,9 @@ public class InstitucionDetalleModel {
             item.Precio_pcfp = DT.getDouble(25);
             item.Precio_luz_autoproductor = DT.getDouble(26);
             item.Cargo_fijo_autoproductor = DT.getDouble(27);
+            item.TS_Rango_1_A_60 = DT.getDouble(28);
+            item.TS_Rango_61_A_88 = DT.getDouble(29);
+            item.TS_Rango_89_A_100 = DT.getDouble(30);
 
         } catch (Exception e) {
             Log.e("INSTITUCION_DETALLE", "setDatos: ", e);
@@ -152,6 +155,9 @@ public class InstitucionDetalleModel {
             ins.add("Precio_pcfp", obj.Precio_pcfp);
             ins.add("Precio_luz_autoproductor", obj.Precio_luz_autoproductor);
             ins.add("Cargo_fijo_autoproductor", obj.Cargo_fijo_autoproductor);
+            ins.add("TS_Rango_1_A_60", obj.TS_Rango_1_A_60);
+            ins.add("TS_Rango_61_A_88", obj.TS_Rango_61_A_88);
+            ins.add("TS_Rango_89_A_100", obj.TS_Rango_89_A_100);
 
             db.execSQL(ins.sql());
 

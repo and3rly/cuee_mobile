@@ -7,13 +7,13 @@ import android.util.Log;
 
 import com.example.cuee_mobile.bd.HelperBD;
 import com.example.cuee_mobile.clases.clsBeMeses_proforma;
+import com.example.cuee_mobile.clases.clsBePagos_detalle_rep;
 import com.example.cuee_mobile.clases.clsBeProforma;
 import com.example.cuee_mobile.clases.clsBeProforma_detalle;
 import com.example.cuee_mobile.clases.clsBeRazon_no_lectura;
+import com.example.cuee_mobile.clases.clsBeTmpAporteIndeUsuario;
 import com.example.cuee_mobile.clases.clsBeTmpProformaUs;
-import com.example.cuee_mobile.clases.clsBeTransformadores;
 import com.example.cuee_mobile.clases.clsBeUltimo_consumo;
-import com.example.cuee_mobile.clases.clsBeUsuario_sin_lectura;
 
 import java.util.ArrayList;
 
@@ -294,6 +294,14 @@ public class CatalogoModel {
                 ins.add("exento", tmp.exento);
                 ins.add("monto_gravable", tmp.monto_gravable);
                 ins.add("StatCom", "N");
+                ins.add("aplica_aporte_inde", tmp.aplica_aporte_inde);
+                ins.add("rango_aporte_inde", tmp.rango_aporte_inde);
+                ins.add("precio_ts_base", tmp.precio_ts_base);
+                ins.add("precio_ts_rango", tmp.precio_ts_rango);
+                ins.add("importe_energia_sin_aporte", tmp.importe_energia_sin_aporte);
+                ins.add("importe_aporte_inde", tmp.importe_aporte_inde);
+                ins.add("iva_aporte_inde", tmp.iva_aporte_inde);
+                ins.add("importe_energia_con_aporte", tmp.importe_energia_con_aporte);
 
                 db.execSQL(ins.sql());
             }
@@ -377,6 +385,14 @@ public class CatalogoModel {
                         itemdet.exento = DTD.getInt(6) == 1 ? true:false;
                         itemdet.monto_gravable = DTD.getDouble(7);
                         itemdet.StatCom = DTD.getString(8);
+                        itemdet.aplica_aporte_inde = DTD.getInt(9) ==  1 ? true : false;
+                        itemdet.rango_aporte_inde = DTD.getString(10);
+                        itemdet.precio_ts_base = DTD.getDouble(11);
+                        itemdet.precio_ts_rango = DTD.getDouble(12);
+                        itemdet.importe_energia_sin_aporte = DTD.getDouble(13);
+                        itemdet.importe_aporte_inde = DTD.getDouble(14);
+                        itemdet.iva_aporte_inde = DTD.getDouble(15);
+                        itemdet.importe_energia_con_aporte = DTD.getDouble(16);
 
                         item.detalle.add(itemdet);
                         DTD.moveToNext();
@@ -585,5 +601,69 @@ public class CatalogoModel {
         }
 
         return count > 0;
+    }
+
+    public boolean guardarAporteInde(clsBeTmpAporteIndeUsuario obj) {
+        try {
+            ins.init("TMP_APORTE_INDE_USUARIO");
+
+            ins.add("IdUsuarioServicio", obj.IdUsuarioServicio);
+            ins.add("idrenglon", obj.idrenglon);
+            ins.add("mes", obj.Mes);
+            ins.add("anno", obj.Anno);
+            ins.add("aplica_aporte_inde", obj.AplicaAporteInde ? 1 : 0);
+            ins.add("rango_aporte_inde", obj.RangoAporteInde);
+            ins.add("precio_ts_base", obj.PrecioTsBase);
+            ins.add("precio_ts_rango", obj.PrecioTsRango);
+            ins.add("importe_energia_sin_aporte", obj.ImporteEnergiaSinAporte);
+            ins.add("importe_aporte_inde", obj.ImporteAporteInde);
+            ins.add("iva_aporte_inde", obj.IvaAporteInde);
+            ins.add("importe_energia_con_aporte", obj.ImporteEnergiaConAporte);
+
+            db.execSQL(ins.sql());
+
+        } catch (Exception e) {
+            Log.e("CatalogoModel", "guardarTmpAporteIndeUsuario: ", e);
+            return false;
+        }
+
+        return true;
+    }
+
+    public clsBeTmpAporteIndeUsuario getAporteInde(int IdUsuarioServicio, int IdRenglon) {
+        clsBeTmpAporteIndeUsuario item = null;
+        Cursor DT = null;
+
+        try {
+            String sq = "SELECT * FROM TMP_APORTE_INDE_USUARIO " +
+                    "WHERE IdUsuarioServicio = " + IdUsuarioServicio + " " +
+                    "AND idrenglon = " + IdRenglon;
+
+            DT = Con.OpenDT(sq);
+
+            if (DT != null && DT.moveToFirst()) {
+                item = new clsBeTmpAporteIndeUsuario();
+
+                item.IdUsuarioServicio = DT.getInt(DT.getColumnIndexOrThrow("IdUsuarioServicio"));
+                item.idrenglon = DT.getInt(DT.getColumnIndexOrThrow("idrenglon"));
+                item.Mes = DT.getInt(DT.getColumnIndexOrThrow("mes"));
+                item.Anno = DT.getInt(DT.getColumnIndexOrThrow("anno"));
+                item.AplicaAporteInde = DT.getInt(DT.getColumnIndexOrThrow("aplica_aporte_inde")) == 1;
+                item.RangoAporteInde = DT.getString(DT.getColumnIndexOrThrow("rango_aporte_inde"));
+                item.PrecioTsBase = DT.getDouble(DT.getColumnIndexOrThrow("precio_ts_base"));
+                item.PrecioTsRango = DT.getDouble(DT.getColumnIndexOrThrow("precio_ts_rango"));
+                item.ImporteEnergiaSinAporte = DT.getDouble(DT.getColumnIndexOrThrow("importe_energia_sin_aporte"));
+                item.ImporteAporteInde = DT.getDouble(DT.getColumnIndexOrThrow("importe_aporte_inde"));
+                item.IvaAporteInde = DT.getDouble(DT.getColumnIndexOrThrow("iva_aporte_inde"));
+                item.ImporteEnergiaConAporte = DT.getDouble(DT.getColumnIndexOrThrow("importe_energia_con_aporte"));
+            }
+
+        } catch (Exception e) {
+            Log.e("CatalogoModel", "getAporteInde: ", e);
+        } finally {
+            if (DT != null) DT.close();
+        }
+
+        return item;
     }
 }

@@ -30,6 +30,9 @@ public class clsBeInstitucion_detalle {
     public double Precio_pcfp = 0.0;
     public double Precio_luz_autoproductor = 0.0;
     public double Cargo_fijo_autoproductor = 0.0;
+    public double TS_Rango_1_A_60 = 0;
+    public double TS_Rango_61_A_88 = 0;
+    public double TS_Rango_89_A_100 = 0;
 
     public int getIdInstitucion() {
         return IdInstitucion;

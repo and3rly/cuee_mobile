@@ -169,6 +169,14 @@ public class ScriptBD {
                     "exento INTEGER DEFAULT 0," +
                     "monto_gravable REAL DEFAULT NULL," +
                     "StatCom TEXT DEFAULT NULL," +
+                    "aplica_aporte_inde INTEGER DEFAULT 0," +
+                    "rango_aporte_inde TEXT DEFAULT NULL," +
+                    "precio_ts_base REAL DEFAULT NULL," +
+                    "precio_ts_rango REAL DEFAULT NULL," +
+                    "importe_energia_sin_aporte REAL DEFAULT NULL," +
+                    "importe_aporte_inde REAL DEFAULT NULL," +
+                    "iva_aporte_inde REAL DEFAULT NULL," +
+                    "importe_energia_con_aporte REAL DEFAULT NULL," +
                     "PRIMARY KEY ([idproforma], [idrenglon])" +
                     ");";
             db.execSQL(sql);
@@ -305,6 +313,9 @@ public class ScriptBD {
                     "Precio_pcfp REAL DEFAULT NULL," +
                     "Precio_luz_autoproductor REAL DEFAULT NULL," +
                     "Cargo_fijo_autoproductor REAL DEFAULT NULL," +
+                    "TS_Rango_1_A_60 REAL DEFAULT NULL," +
+                    "TS_Rango_61_A_88 REAL DEFAULT NULL," +
+                    "TS_Rango_89_A_100 REAL DEFAULT NULL," +
                     "PRIMARY KEY([IdInstitucion],[IdPeriodoParametros])" +
                     ");";
             db.execSQL(sql);
@@ -430,6 +441,14 @@ public class ScriptBD {
                     "servicio_bajo_demanda INTEGER DEFAULT 0," +
                     "IdPago INTEGER DEFAULT NULL," +
                     "servicio_bajo_demandafp INTEGER DEFAULT 0," +
+                    "aplica_aporte_inde INTEGER DEFAULT 0," +
+                    "rango_aporte_inde TEXT DEFAULT NULL," +
+                    "precio_ts_base REAL DEFAULT NULL," +
+                    "precio_ts_rango REAL DEFAULT NULL," +
+                    "importe_energia_sin_aporte REAL DEFAULT NULL," +
+                    "importe_aporte_inde REAL DEFAULT NULL," +
+                    "iva_aporte_inde REAL DEFAULT NULL," +
+                    "importe_energia_con_aporte REAL DEFAULT NULL," +
                     "PRIMARY KEY ([id],[idusuarioservicio])" +
                     ");";
             db.execSQL(sql);
@@ -511,6 +530,24 @@ public class ScriptBD {
                     "Mes INTEGER DEFAULT 0," +
                     "Anno INTEGER DEFAULT 0"+
                     ");";
+            db.execSQL(sql);
+
+            sql =  "CREATE TABLE [TMP_APORTE_INDE_USUARIO] (" +
+                    "IdUsuarioServicio INTEGER NOT NULL," +
+                    "idrenglon INTEGER NOT NULL," +
+                    "mes INTEGER NOT NULL," +
+                    "anno INTEGER NOT NULL," +
+                    "aplica_aporte_inde INTEGER NOT NULL DEFAULT 0," +
+                    "rango_aporte_inde TEXT DEFAULT NULL," +
+                    "precio_ts_base REAL DEFAULT 0," +
+                    "precio_ts_rango REAL DEFAULT 0," +
+                    "importe_energia_sin_aporte REAL DEFAULT 0," +
+                    "importe_aporte_inde REAL DEFAULT 0," +
+                    "iva_aporte_inde REAL DEFAULT 0," +
+                    "importe_energia_con_aporte REAL DEFAULT 0," +
+                    "PRIMARY KEY([IdUsuarioServicio],[mes],[anno],[idrenglon])" +
+                    ");";
+
             db.execSQL(sql);
 
         } catch (Exception e) {

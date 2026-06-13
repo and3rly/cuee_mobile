@@ -38,6 +38,10 @@ public class CueeHelper {
         return val;
     }
 
+    public double round6dec(double valor) {
+        return Math.round(valor * 1000000.0) / 1000000.0;
+    }
+
     public void toast(String mensaje) {
         Toast.makeText(context, mensaje, Toast.LENGTH_LONG).show();
     }
