@@ -82,6 +82,7 @@ public class LecturaForm extends PBase {
     private double tmpActualLect = 0;
     private  int IdProformaActual = 0, CantidadMesesPendientes;
     private UsinLecturaModel mdlSinLectura;
+    private double TarifaTS = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -588,6 +589,7 @@ public class LecturaForm extends PBase {
                 MoraActual = paramDet.Mora;
 
                 for (clsBeRenglones obj: renglonModel.lista) {
+                    TarifaTS = 0;
                     IdRenglon = obj.Idrenglon;
                     NomRenglon = obj.renglon;
 
@@ -620,11 +622,17 @@ public class LecturaForm extends PBase {
                                 } else if (Consumo_A_Cobrar <= 300) {
                                     if (Consumo_A_Cobrar <= 100) {
                                         if (Consumo_A_Cobrar <= 60) {
-                                            ImporteTS = Consumo_A_Cobrar * paramDet.TS_Rango_1_A_60;
+                                            TarifaTS = paramDet.TS_Rango_1_A_60;
                                         } else if (Consumo_A_Cobrar <= 88) {
-                                            ImporteTS = Consumo_A_Cobrar * paramDet.TS_Rango_61_A_88;
+                                            TarifaTS = paramDet.TS_Rango_61_A_88;
                                         } else {
-                                            ImporteTS = Consumo_A_Cobrar * paramDet.TS_Rango_89_A_100;
+                                            TarifaTS = paramDet.TS_Rango_89_A_100;
+                                        }
+
+                                        if (TarifaTS > 0) {
+                                            ImporteTS = Consumo_A_Cobrar * TarifaTS;
+                                        } else {
+                                            ImporteTS = Consumo_A_Cobrar * paramDet.Preciots;
                                         }
                                     } else {
                                         ImporteTS = Consumo_A_Cobrar * paramDet.Preciots;
@@ -733,7 +741,7 @@ public class LecturaForm extends PBase {
 
                     catalogo.guardarProformaUsuario(item);
 
-                    if (IdRenglon == 2) {
+                    if (IdRenglon == 2 && TarifaTS > 0) {
                         String TipoTarifaFactura = "";
                         boolean AplicaAporteINDE = false;
                         String RangoAporteINDE = "";
@@ -926,8 +934,6 @@ public class LecturaForm extends PBase {
                                         } else {
                                             ImporteTS = Consumo_A_Cobrar * paramDet.TS_Rango_89_A_100;
                                         }
-
-                                        ImporteAhorrado = (Consumo_A_Cobrar * paramDet.Preciots) - ImporteTS;
                                     } else {
                                         ImporteTS = Consumo_A_Cobrar * paramDet.Preciots;
                                     }
@@ -1008,8 +1014,6 @@ public class LecturaForm extends PBase {
                                         } else {
                                             ImporteTS = Consumo_A_Cobrar * paramDet.TS_Rango_89_A_100;
                                         }
-
-                                        ImporteAhorrado = (Consumo_A_Cobrar * paramDet.Preciots) - ImporteTS;
                                     } else {
                                         ImporteTS = Consumo_A_Cobrar * paramDet.Preciots;
                                     }

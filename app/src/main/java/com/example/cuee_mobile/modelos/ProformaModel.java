@@ -104,6 +104,14 @@ public class ProformaModel {
                     itemdet.exento = DT.getInt(6) == 1 ? true:false;
                     itemdet.monto_gravable = DT.getDouble(7);
                     itemdet.StatCom = DT.getString(8);
+                    itemdet.aplica_aporte_inde = DT.getInt(9) == 1 ? true : false;
+                    itemdet.rango_aporte_inde = DT.getString(10);
+                    itemdet.precio_ts_base = DT.getDouble(11);
+                    itemdet.precio_ts_rango = DT.getDouble(12);
+                    itemdet.importe_energia_sin_aporte = DT.getDouble(13);
+                    itemdet.importe_aporte_inde = DT.getDouble(14);
+                    itemdet.iva_aporte_inde = DT.getDouble(15);
+                    itemdet.importe_energia_con_aporte = DT.getDouble(16);
 
                     listaDet.add(itemdet);
                     DT.moveToNext();
