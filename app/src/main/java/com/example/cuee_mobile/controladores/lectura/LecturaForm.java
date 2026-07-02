@@ -460,9 +460,6 @@ public class LecturaForm extends PBase {
             sql = "DELETE FROM TMP_PROFORMA_USUARIO WHERE IdUsuarioServicio = " + IdUsuarioServicio;
             db.execSQL(sql);
 
-            sql = "DELETE FROM TMP_APORTE_INDE_USUARIO";
-            db.execSQL(sql);
-
             Calcula_Meses_Pago_Trans();
         } catch (Exception e) {
             helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+" getDatosGeneralesProforma - " + e);
@@ -739,8 +736,6 @@ public class LecturaForm extends PBase {
                     item.Cantidad = helper.round2dec(Monto);
                     item.Anio = anio;
 
-                    catalogo.guardarProformaUsuario(item);
-
                     if (IdRenglon == 2 && TarifaTS > 0) {
                         String TipoTarifaFactura = "";
                         boolean AplicaAporteINDE = false;
@@ -752,26 +747,25 @@ public class LecturaForm extends PBase {
                         double PrecioTSBaseINDE = 0;
                         double PrecioTSRangoINDE = 0;
 
-                        if (uServicioInstalado.servicio_bajo_demanda || uServicioInstalado.servicio_bajo_demandafp) {
+                        boolean esNoSubsidiado = uServicioInstalado.servicio_bajo_demanda
+                                || uServicioInstalado.servicio_bajo_demandafp;
+
+
+                        if (esNoSubsidiado) {
                             TipoTarifaFactura = "NS";
+                        } else if (Consumo_A_Cobrar <= 60) {
+                            TipoTarifaFactura = "TS 1-60";
+                        } else if (Consumo_A_Cobrar <= 88) {
+                            TipoTarifaFactura = "TS 61-88";
                         } else if (Consumo_A_Cobrar <= 100) {
-                            if (Consumo_A_Cobrar <= 60) {
-                                TipoTarifaFactura = "TS 1-60";
-                            } else if (Consumo_A_Cobrar <= 88) {
-                                TipoTarifaFactura = "TS 61-88";
-                            } else if (Consumo_A_Cobrar <= 100) {
-                                TipoTarifaFactura = "TS 89-100";
-                            }
+                            TipoTarifaFactura = "TS 89-100";
                         } else if (Consumo_A_Cobrar <= 300) {
                             TipoTarifaFactura = "S";
                         } else {
                             TipoTarifaFactura = "NS";
                         }
 
-                        if (!uServicioInstalado.servicio_bajo_demanda &&
-                                !uServicioInstalado.servicio_bajo_demandafp &&
-                                Consumo_A_Cobrar > 0 &&
-                                Consumo_A_Cobrar <= 100) {
+                        if (!esNoSubsidiado && Consumo_A_Cobrar > 0 && Consumo_A_Cobrar <= 100) {
 
                             PrecioTSBaseINDE = paramDet.Preciots;
                             ImporteEnergiaSinAporteINDE = helper.round2dec(Consumo_A_Cobrar * paramDet.Preciots);
@@ -784,9 +778,11 @@ public class LecturaForm extends PBase {
                                 RangoAporteINDE = TipoTarifaFactura;
                                 IvaAporteINDE = helper.round2dec(ImporteAporteINDE * vIvaDecimal);
                             }
+
                         } else if (Consumo_A_Cobrar > 300) {
                             ImporteEnergiaSinAporteINDE = helper.round2dec(ImporteTNS);
                             ImporteEnergiaConAporteINDE = ImporteEnergiaSinAporteINDE;
+
                         } else if (Consumo_A_Cobrar > 0) {
                             PrecioTSBaseINDE = helper.round6dec(paramDet.Preciots);
                             PrecioTSRangoINDE = helper.round6dec(paramDet.Preciots);
@@ -794,22 +790,17 @@ public class LecturaForm extends PBase {
                             ImporteEnergiaConAporteINDE = ImporteEnergiaSinAporteINDE;
                         }
 
-                        clsBeTmpAporteIndeUsuario tmp = new clsBeTmpAporteIndeUsuario();
-                        tmp.IdUsuarioServicio = auxLectura.IdUsuarioServicio;
-                        tmp.Anno = anio;
-                        tmp.Mes = mes;
-                        tmp.idrenglon = IdRenglon;
-                        tmp.AplicaAporteInde = AplicaAporteINDE;
-                        tmp.RangoAporteInde = RangoAporteINDE;
-                        tmp.PrecioTsBase = PrecioTSBaseINDE;
-                        tmp.PrecioTsRango = PrecioTSRangoINDE;
-                        tmp.ImporteEnergiaSinAporte = ImporteEnergiaSinAporteINDE;
-                        tmp.ImporteAporteInde = ImporteAporteINDE;
-                        tmp.IvaAporteInde = IvaAporteINDE;
-                        tmp.ImporteEnergiaConAporte = ImporteEnergiaConAporteINDE;
-
-                        catalogo.guardarAporteInde(tmp);
+                        item.aplica_aporte_inde = AplicaAporteINDE;
+                        item.rango_aporte_inde = RangoAporteINDE;
+                        item.precio_ts_base = PrecioTSBaseINDE;
+                        item.precio_ts_rango = PrecioTSRangoINDE;
+                        item.importe_energia_sin_aporte = ImporteEnergiaSinAporteINDE;
+                        item.importe_aporte_inde = ImporteAporteINDE;
+                        item.iva_aporte_inde = IvaAporteINDE;
+                        item.importe_energia_con_aporte = ImporteEnergiaConAporteINDE;
                     }
+
+                    catalogo.guardarProformaUsuario(item);
                 }
             }
 
@@ -1122,7 +1113,7 @@ public class LecturaForm extends PBase {
                     itemdet.monto_impuesto = 0;
                 }
 
-                if (obj.IdRenglon == 2) {
+                /*if (obj.IdRenglon == 2) {
                     clsBeTmpAporteIndeUsuario aporte = catalogo.getAporteInde(IdUsuarioServicio, obj.IdRenglon);
 
                     if (aporte != null) {
@@ -1135,7 +1126,7 @@ public class LecturaForm extends PBase {
                         itemdet.iva_aporte_inde = aporte.IvaAporteInde;
                         itemdet.importe_energia_con_aporte = aporte.ImporteEnergiaConAporte;
                     }
-                }
+                }*/
 
                 proforma.detalle.add(itemdet);
             }
@@ -1155,6 +1146,14 @@ public class LecturaForm extends PBase {
                     item.descripcion = obj.Descripcion;
                     item.cantidad = obj.Cantidad;
                     item.anno = obj.Anio;
+                    item.aplica_aporte_inde = obj.aplica_aporte_inde;
+                    item.rango_aporte_inde = obj.rango_aporte_inde;
+                    item.precio_ts_base = obj.precio_ts_base;
+                    item.precio_ts_rango = obj.precio_ts_rango;
+                    item.importe_energia_sin_aporte = obj.importe_energia_sin_aporte;
+                    item.importe_aporte_inde = obj.importe_aporte_inde;
+                    item.iva_aporte_inde = obj.iva_aporte_inde;
+                    item.importe_energia_con_aporte = obj.importe_energia_con_aporte;
 
                     proforma.MesesProforma.add(item);
                 }
@@ -1203,19 +1202,16 @@ public class LecturaForm extends PBase {
             total = proformaImp.proforma.detalle.stream().mapToDouble(clsBeProforma_detalle::getCantidad).sum();
             iva = proformaImp.proforma.detalle.stream().mapToDouble(clsBeProforma_detalle::getMonto_impuesto).sum();
 
-            clsBeProforma_detalle detAporteInde = proformaImp.proforma.detalle
-                    .stream()
-                    .filter(det -> det.idrenglon == 2 && det.aplica_aporte_inde)
-                    .findFirst()
-                    .orElse(null);
+            //#AT20260702 Obtener el ultimo mes solo el reglon 2
+            clsBeMeses_proforma AporteMes = catalogo.getAporteInde(proformaImp.proforma.idproforma);
 
             if (iva > 0) {
                 clsBeProforma_detalle detIva = new clsBeProforma_detalle();
                 detIva.descripcion = "IVA";
 
-                if (detAporteInde != null) {
-                    proformaImp.aporteInde = detAporteInde.importe_aporte_inde + detAporteInde.iva_aporte_inde;
-                    iva += detAporteInde.iva_aporte_inde;
+                if (AporteMes != null) {
+                    proformaImp.aporteInde = AporteMes.importe_aporte_inde + AporteMes.iva_aporte_inde;
+                    iva += AporteMes.iva_aporte_inde;
                 }
 
                 detIva.cantidad = helper.round2dec(iva);
@@ -1225,7 +1221,7 @@ public class LecturaForm extends PBase {
 
             for (clsBeProforma_detalle tmp: proformaImp.proforma.detalle) {
                 if (tmp.idrenglon == 2) {
-                    tmp.monto_gravable += detAporteInde.importe_aporte_inde;
+                    tmp.monto_gravable += AporteMes.importe_aporte_inde;
                 }
             }
 

@@ -189,6 +189,14 @@ public class ScriptBD {
                     "descripcion TEXT DEFAULT NULL," +
                     "cantidad REAL DEFAULT NULL," +
                     "anno INTEGER DEFAULT NULL," +
+                    "aplica_aporte_inde INTEGER DEFAULT 0," +
+                    "rango_aporte_inde TEXT DEFAULT NULL," +
+                    "precio_ts_base REAL DEFAULT NULL," +
+                    "precio_ts_rango REAL DEFAULT NULL," +
+                    "importe_energia_sin_aporte REAL DEFAULT NULL," +
+                    "importe_aporte_inde REAL DEFAULT NULL," +
+                    "iva_aporte_inde REAL DEFAULT NULL," +
+                    "importe_energia_con_aporte REAL DEFAULT NULL," +
                     "PRIMARY KEY([IdUsuarioServicio],[mes],[idrenglon],[anno])" +
                     ");";
             db.execSQL(sql);
@@ -350,7 +358,15 @@ public class ScriptBD {
                     "descripcion TEXT DEFAULT NULL," +
                     "cantidad REAL DEFAULT NULL," +
                     "anno INTEGER DEFAULT NULL,"+
-                    "StatCom INT DEFAULT 0"+
+                    "StatCom INT DEFAULT 0,"+
+                    "aplica_aporte_inde INTEGER DEFAULT 0," +
+                    "rango_aporte_inde TEXT DEFAULT NULL," +
+                    "precio_ts_base REAL DEFAULT NULL," +
+                    "precio_ts_rango REAL DEFAULT NULL," +
+                    "importe_energia_sin_aporte REAL DEFAULT NULL," +
+                    "importe_aporte_inde REAL DEFAULT NULL," +
+                    "iva_aporte_inde REAL DEFAULT NULL," +
+                    "importe_energia_con_aporte REAL DEFAULT NULL" +
                     ");";
             db.execSQL(sql);
 
@@ -530,24 +546,6 @@ public class ScriptBD {
                     "Mes INTEGER DEFAULT 0," +
                     "Anno INTEGER DEFAULT 0"+
                     ");";
-            db.execSQL(sql);
-
-            sql =  "CREATE TABLE [TMP_APORTE_INDE_USUARIO] (" +
-                    "IdUsuarioServicio INTEGER NOT NULL," +
-                    "idrenglon INTEGER NOT NULL," +
-                    "mes INTEGER NOT NULL," +
-                    "anno INTEGER NOT NULL," +
-                    "aplica_aporte_inde INTEGER NOT NULL DEFAULT 0," +
-                    "rango_aporte_inde TEXT DEFAULT NULL," +
-                    "precio_ts_base REAL DEFAULT 0," +
-                    "precio_ts_rango REAL DEFAULT 0," +
-                    "importe_energia_sin_aporte REAL DEFAULT 0," +
-                    "importe_aporte_inde REAL DEFAULT 0," +
-                    "iva_aporte_inde REAL DEFAULT 0," +
-                    "importe_energia_con_aporte REAL DEFAULT 0," +
-                    "PRIMARY KEY([IdUsuarioServicio],[mes],[anno],[idrenglon])" +
-                    ");";
-
             db.execSQL(sql);
 
         } catch (Exception e) {

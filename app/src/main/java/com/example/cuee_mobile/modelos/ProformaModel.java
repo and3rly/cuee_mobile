@@ -150,6 +150,14 @@ public class ProformaModel {
                     itemdet.descripcion = DT.getString(6);
                     itemdet.cantidad = DT.getDouble(7);
                     itemdet.anno = DT.getInt(8);
+                    itemdet.aplica_aporte_inde = DT.getInt(10) == 1;
+                    itemdet.rango_aporte_inde = DT.getString(11);
+                    itemdet.precio_ts_base = DT.getDouble(12);
+                    itemdet.precio_ts_rango = DT.getDouble(13);
+                    itemdet.importe_energia_sin_aporte = DT.getDouble(14);
+                    itemdet.importe_aporte_inde = DT.getDouble(15);
+                    itemdet.iva_aporte_inde = DT.getDouble(16);
+                    itemdet.importe_energia_con_aporte = DT.getDouble(17);
 
                     listaDet.add(itemdet);
                     DT.moveToNext();

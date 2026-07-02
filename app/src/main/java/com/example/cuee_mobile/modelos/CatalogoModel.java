@@ -220,6 +220,14 @@ public class CatalogoModel {
             ins.add("descripcion", obj.Descripcion);
             ins.add("cantidad", obj.Cantidad);
             ins.add("anno", obj.Anio);
+            ins.add("aplica_aporte_inde", obj.aplica_aporte_inde ? 1 : 0);
+            ins.add("rango_aporte_inde", obj.rango_aporte_inde);
+            ins.add("precio_ts_base", obj.precio_ts_base);
+            ins.add("precio_ts_rango", obj.precio_ts_rango);
+            ins.add("importe_energia_sin_aporte", obj.importe_energia_sin_aporte);
+            ins.add("importe_aporte_inde", obj.importe_aporte_inde);
+            ins.add("iva_aporte_inde", obj.iva_aporte_inde);
+            ins.add("importe_energia_con_aporte", obj.importe_energia_con_aporte);
 
             db.execSQL(ins.sql());
 
@@ -318,6 +326,14 @@ public class CatalogoModel {
                 ins.add("cantidad", o.cantidad);
                 ins.add("anno", o.anno);
                 ins.add("StatCom", 0);
+                ins.add("aplica_aporte_inde", o.aplica_aporte_inde ? 1 : 0);
+                ins.add("rango_aporte_inde", o.rango_aporte_inde);
+                ins.add("precio_ts_base", o.precio_ts_base);
+                ins.add("precio_ts_rango", o.precio_ts_rango);
+                ins.add("importe_energia_sin_aporte", o.importe_energia_sin_aporte);
+                ins.add("importe_aporte_inde", o.importe_aporte_inde);
+                ins.add("iva_aporte_inde", o.iva_aporte_inde);
+                ins.add("importe_energia_con_aporte", o.importe_energia_con_aporte);
 
                 db.execSQL(ins.sql());
             }
@@ -434,6 +450,14 @@ public class CatalogoModel {
                     item.Descripcion = DT.getString(4);
                     item.Cantidad = DT.getDouble(5);
                     item.Anio = DT.getInt(6);
+                    item.aplica_aporte_inde = DT.getInt(7) == 1;
+                    item.rango_aporte_inde = DT.getString(8);
+                    item.precio_ts_base = DT.getDouble(9);
+                    item.precio_ts_rango = DT.getDouble(10);
+                    item.importe_energia_sin_aporte = DT.getDouble(11);
+                    item.importe_aporte_inde = DT.getDouble(12);
+                    item.iva_aporte_inde = DT.getDouble(13);
+                    item.importe_energia_con_aporte = DT.getDouble(14);
 
                     lista.add(item);
                     DT.moveToNext();
@@ -630,32 +654,40 @@ public class CatalogoModel {
         return true;
     }
 
-    public clsBeTmpAporteIndeUsuario getAporteInde(int IdUsuarioServicio, int IdRenglon) {
-        clsBeTmpAporteIndeUsuario item = null;
+    public clsBeMeses_proforma getAporteInde(int idproforma) {
+        clsBeMeses_proforma item = null;
         Cursor DT = null;
 
         try {
-            String sq = "SELECT * FROM TMP_APORTE_INDE_USUARIO " +
-                    "WHERE IdUsuarioServicio = " + IdUsuarioServicio + " " +
-                    "AND idrenglon = " + IdRenglon;
+            String sq = "SELECT * FROM MESES_PROFORMA " +
+                    "WHERE idproforma = " + idproforma + " " +
+                    "AND idrenglon = 2 " +
+                    "ORDER BY anno DESC, nomes DESC " +
+                    "LIMIT 1";
 
             DT = Con.OpenDT(sq);
 
             if (DT != null && DT.moveToFirst()) {
-                item = new clsBeTmpAporteIndeUsuario();
+                item = new clsBeMeses_proforma();
 
+                item.idproformadet = DT.getInt(DT.getColumnIndexOrThrow("idproformadet"));
+                item.idproforma = DT.getInt(DT.getColumnIndexOrThrow("idproforma"));
                 item.IdUsuarioServicio = DT.getInt(DT.getColumnIndexOrThrow("IdUsuarioServicio"));
+                item.nomes = DT.getInt(DT.getColumnIndexOrThrow("nomes"));
+                item.mes = DT.getString(DT.getColumnIndexOrThrow("mes"));
                 item.idrenglon = DT.getInt(DT.getColumnIndexOrThrow("idrenglon"));
-                item.Mes = DT.getInt(DT.getColumnIndexOrThrow("mes"));
-                item.Anno = DT.getInt(DT.getColumnIndexOrThrow("anno"));
-                item.AplicaAporteInde = DT.getInt(DT.getColumnIndexOrThrow("aplica_aporte_inde")) == 1;
-                item.RangoAporteInde = DT.getString(DT.getColumnIndexOrThrow("rango_aporte_inde"));
-                item.PrecioTsBase = DT.getDouble(DT.getColumnIndexOrThrow("precio_ts_base"));
-                item.PrecioTsRango = DT.getDouble(DT.getColumnIndexOrThrow("precio_ts_rango"));
-                item.ImporteEnergiaSinAporte = DT.getDouble(DT.getColumnIndexOrThrow("importe_energia_sin_aporte"));
-                item.ImporteAporteInde = DT.getDouble(DT.getColumnIndexOrThrow("importe_aporte_inde"));
-                item.IvaAporteInde = DT.getDouble(DT.getColumnIndexOrThrow("iva_aporte_inde"));
-                item.ImporteEnergiaConAporte = DT.getDouble(DT.getColumnIndexOrThrow("importe_energia_con_aporte"));
+                item.descripcion = DT.getString(DT.getColumnIndexOrThrow("descripcion"));
+                item.cantidad = DT.getDouble(DT.getColumnIndexOrThrow("cantidad"));
+                item.anno = DT.getInt(DT.getColumnIndexOrThrow("anno"));
+                item.StatCom = DT.getInt(DT.getColumnIndexOrThrow("StatCom"));
+                item.aplica_aporte_inde = DT.getInt(DT.getColumnIndexOrThrow("aplica_aporte_inde")) == 1;
+                item.rango_aporte_inde = DT.getString(DT.getColumnIndexOrThrow("rango_aporte_inde"));
+                item.precio_ts_base = DT.getDouble(DT.getColumnIndexOrThrow("precio_ts_base"));
+                item.precio_ts_rango = DT.getDouble(DT.getColumnIndexOrThrow("precio_ts_rango"));
+                item.importe_energia_sin_aporte = DT.getDouble(DT.getColumnIndexOrThrow("importe_energia_sin_aporte"));
+                item.importe_aporte_inde = DT.getDouble(DT.getColumnIndexOrThrow("importe_aporte_inde"));
+                item.iva_aporte_inde = DT.getDouble(DT.getColumnIndexOrThrow("iva_aporte_inde"));
+                item.importe_energia_con_aporte = DT.getDouble(DT.getColumnIndexOrThrow("importe_energia_con_aporte"));
             }
 
         } catch (Exception e) {

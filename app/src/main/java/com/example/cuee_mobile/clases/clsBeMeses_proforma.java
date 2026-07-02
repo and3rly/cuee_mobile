@@ -12,6 +12,14 @@ public class clsBeMeses_proforma {
     public double cantidad = 0;
     public int anno = 0;
     public int StatCom = 0;
+    public boolean aplica_aporte_inde = false;
+    public String rango_aporte_inde = "";
+    public double precio_ts_base = 0;
+    public double precio_ts_rango = 0;
+    public double importe_energia_sin_aporte = 0;
+    public double importe_aporte_inde = 0;
+    public double iva_aporte_inde = 0;
+    public double importe_energia_con_aporte = 0;
 
     public int getIdproformadet() {
         return idproformadet;
