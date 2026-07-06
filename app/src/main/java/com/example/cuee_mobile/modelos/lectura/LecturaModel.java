@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.example.cuee_mobile.base.FechaHelper;
 import com.example.cuee_mobile.bd.HelperBD;
 import com.example.cuee_mobile.clases.auxLecturaServicio;
 import com.example.cuee_mobile.clases.clsBeLectura;
@@ -13,6 +14,7 @@ import com.example.cuee_mobile.clases.clsBePendientes_lectura;
 import java.util.ArrayList;
 
 public class LecturaModel {
+    private FechaHelper du;
     private Context context;
     private HelperBD Con;
     private SQLiteDatabase db;
@@ -32,6 +34,7 @@ public class LecturaModel {
         Con = con;
         db = dbase;
         ins = Con.Ins; upd = Con.Upd;
+        du = new FechaHelper(ct);
     }
 
     public void getLista(String sq) {
@@ -109,7 +112,7 @@ public class LecturaModel {
                     item.IdLectura = DT.getInt(0);
                     item.IdUsuarioServicio = DT.getInt(1);
                     item.IdContador = DT.getString(2);
-                    item.Fecha = DT.getString(12);
+                    item.Fecha = du.strFecha(DT.getString(3));
                     item.Lectura = DT.getDouble(4);
                     item.Consumo = DT.getDouble(5);
                     item.IdUsuario = DT.getInt(6);

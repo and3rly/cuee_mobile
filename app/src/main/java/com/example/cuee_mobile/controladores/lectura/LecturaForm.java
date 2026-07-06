@@ -487,6 +487,8 @@ public class LecturaForm extends PBase {
                     }
                 }
                 guardarProforma();
+            } else {
+                helper.toast("Más de 6 meses pendientes. No se generará la proforma.");
             }
         } catch (Exception e) {
             helper.msgbox(new Object() {} .getClass().getEnclosingClass().getName()+"  Calcula_Meses_Pago_Trans - "+ e);
@@ -1077,8 +1079,8 @@ public class LecturaForm extends PBase {
             proforma.proveedor = auxLectura.Usuario;
 
             if (CantidadMesesPendientes > 2) {
-                LocalDate fechaCorte = fechaPago.plusDays(1);
-                desc = "SU PROFORMA GENERA ORDEN DE CORTE A PARTIR DEL " +du.setFechaToString(fechaCorte) + ". " +
+                //#AT20260705 No se debe sumar dias para mostrar la fecha de corte.
+                desc = "SU PROFORMA GENERA ORDEN DE CORTE A PARTIR DEL " +du.setFechaToString(fechaPago) + ". " +
                         "Si ya realizó su pago, favor hacer caso omiso.";
             } else {
                 desc = "";
